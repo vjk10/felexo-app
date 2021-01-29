@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "142888533580",
+    "firebase_url": "https://felexo-wallpaperapp.firebaseio.com",
+    "project_id": "felexo-wallpaperapp",
+    "storage_bucket": "felexo-wallpaperapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:142888533580:android:b7aac5eba49af14b7cbee9",
+        "android_client_info": {
+          "package_name": "com.vlabs.felexo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "142888533580-ei58l7eruni6src533bpmjl55nm3rj3t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vlabs.felexo",
+            "certificate_hash": "d9a9edc74ed97bf96e3866cdb5f68e290f183541"
+          }
+        },
+        {
+          "client_id": "142888533580-jamclp39bj8lnapc20r5b89921l1liu7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlJKuXAq1FiPnomQQ_9CZCJ0p_lSMEgkE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "142888533580-jamclp39bj8lnapc20r5b89921l1liu7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      },
+      "admob_app_id": "ca-app-pub-1356887710608938~3220128931"
+    }
+  ],
+  "configuration_version": "1"
+}
