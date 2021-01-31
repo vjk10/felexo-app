@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:felexo/Color/colors.dart';
 import 'package:felexo/data/data.dart';
 import 'package:felexo/model/wallpapers-model.dart';
 import 'package:felexo/widget/widgets.dart';
@@ -21,6 +22,7 @@ class _SearchViewState extends State<SearchView> {
   String searchMessage = "Search for some amazing wallpapers!";
   final FirebaseAuth _auth = FirebaseAuth.instance;
   User user;
+  Color chip = iconColor.withAlpha(60);
   List<WallpaperModel> wallpapers = new List();
 
   @override
@@ -113,6 +115,134 @@ class _SearchViewState extends State<SearchView> {
                 "Search powered by Pexels",
                 style: TextStyle(fontFamily: 'Circular Bold', fontSize: 12),
               ),
+              SizedBox(height: 20),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      InkWell(
+                        onTap: () => {getSearchResults("color:black")},
+                        child: ColorChips(
+                          chipColor: chip,
+                          colorchip: "black",
+                          backgroundchip:
+                              Theme.of(context).colorScheme.secondary,
+                          foregroundchip: Colors.black,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                        onTap: () => {getSearchResults("color:white")},
+                        child: ColorChips(
+                          chipColor: chip,
+                          colorchip: "white",
+                          backgroundchip:
+                              Theme.of(context).colorScheme.secondary,
+                          foregroundchip: Colors.white,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                        onTap: () => {getSearchResults("color:red")},
+                        child: ColorChips(
+                          chipColor: chip,
+                          colorchip: "red",
+                          backgroundchip:
+                              Theme.of(context).colorScheme.secondary,
+                          foregroundchip: Colors.red,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                        onTap: () => {getSearchResults("color:yellow")},
+                        child: ColorChips(
+                          chipColor: chip,
+                          colorchip: "yellow",
+                          backgroundchip:
+                              Theme.of(context).colorScheme.secondary,
+                          foregroundchip: Colors.yellow,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                        onTap: () => {getSearchResults("color:purple")},
+                        child: ColorChips(
+                          chipColor: chip,
+                          colorchip: "purple",
+                          backgroundchip:
+                              Theme.of(context).colorScheme.secondary,
+                          foregroundchip: Colors.purple,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                        onTap: () => {getSearchResults("color:blue")},
+                        child: ColorChips(
+                          chipColor: chip,
+                          colorchip: "blue",
+                          backgroundchip:
+                              Theme.of(context).colorScheme.secondary,
+                          foregroundchip: Colors.blue,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                        onTap: () => {getSearchResults("color:brown")},
+                        child: ColorChips(
+                          chipColor: chip,
+                          colorchip: "brown",
+                          backgroundchip:
+                              Theme.of(context).colorScheme.secondary,
+                          foregroundchip: Colors.brown,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                        onTap: () => {getSearchResults("color:green")},
+                        child: ColorChips(
+                          chipColor: chip,
+                          colorchip: "green",
+                          backgroundchip:
+                              Theme.of(context).colorScheme.secondary,
+                          foregroundchip: Colors.green,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                        onTap: () => {getSearchResults("color:pink")},
+                        child: ColorChips(
+                          chipColor: chip,
+                          colorchip: "pink",
+                          backgroundchip:
+                              Theme.of(context).colorScheme.secondary,
+                          foregroundchip: Colors.pink,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               SizedBox(
                 height: MediaQuery.of(context).size.height / 7,
               ),
@@ -181,29 +311,6 @@ class _SearchViewState extends State<SearchView> {
                           Icons.search,
                           color: Theme.of(context).colorScheme.primary,
                         )
-                        // IconButton(
-                        //   icon: Icon(
-                        //     Icons.search,
-                        //     color: Colors.white,
-                        //   ),
-                        //   onPressed: () {
-                        //     if (searchController.text.isEmpty) {
-                        //       Fluttertoast.showToast(
-                        //           msg: "Search Box Empty",
-                        //           backgroundColor: cardColor,
-                        //           textColor: Colors.black,
-                        //           toastLength: Toast.LENGTH_SHORT,
-                        //           fontSize: 10);
-                        //       searchComplete = false;
-                        //       setState(() {});
-                        //     }
-                        //     if (searchController.text.isNotEmpty) {
-                        //       searchComplete = false;
-                        //       setState(() {});
-                        //       getSearchResults(searchController.text);
-                        //     }
-                        //   },
-                        // )
                       ],
                     ),
                   ),
@@ -212,6 +319,136 @@ class _SearchViewState extends State<SearchView> {
               Text(
                 "Search powered by Pexels",
                 style: TextStyle(fontFamily: 'Circular Bold', fontSize: 12),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      InkWell(
+                        onTap: () => {getSearchResults("color:black")},
+                        child: ColorChips(
+                          chipColor: chip,
+                          colorchip: "black",
+                          backgroundchip:
+                              Theme.of(context).colorScheme.secondary,
+                          foregroundchip: Colors.black,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                        onTap: () => {getSearchResults("color:white")},
+                        child: ColorChips(
+                          chipColor: chip,
+                          colorchip: "white",
+                          backgroundchip:
+                              Theme.of(context).colorScheme.secondary,
+                          foregroundchip: Colors.white,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                        onTap: () => {getSearchResults("color:red")},
+                        child: ColorChips(
+                          chipColor: chip,
+                          colorchip: "red",
+                          backgroundchip:
+                              Theme.of(context).colorScheme.secondary,
+                          foregroundchip: Colors.red,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                        onTap: () => {getSearchResults("color:yellow")},
+                        child: ColorChips(
+                          chipColor: chip,
+                          colorchip: "yellow",
+                          backgroundchip:
+                              Theme.of(context).colorScheme.secondary,
+                          foregroundchip: Colors.yellow,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                        onTap: () => {getSearchResults("color:purple")},
+                        child: ColorChips(
+                          chipColor: chip,
+                          colorchip: "purple",
+                          backgroundchip:
+                              Theme.of(context).colorScheme.secondary,
+                          foregroundchip: Colors.purple,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                        onTap: () => {getSearchResults("color:blue")},
+                        child: ColorChips(
+                          chipColor: chip,
+                          colorchip: "blue",
+                          backgroundchip:
+                              Theme.of(context).colorScheme.secondary,
+                          foregroundchip: Colors.blue,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                        onTap: () => {getSearchResults("color:brown")},
+                        child: ColorChips(
+                          chipColor: chip,
+                          colorchip: "brown",
+                          backgroundchip:
+                              Theme.of(context).colorScheme.secondary,
+                          foregroundchip: Colors.brown,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                        onTap: () => {getSearchResults("color:green")},
+                        child: ColorChips(
+                          chipColor: chip,
+                          colorchip: "green",
+                          backgroundchip:
+                              Theme.of(context).colorScheme.secondary,
+                          foregroundchip: Colors.green,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                        onTap: () => {getSearchResults("color:pink")},
+                        child: ColorChips(
+                          chipColor: chip,
+                          colorchip: "pink",
+                          backgroundchip:
+                              Theme.of(context).colorScheme.secondary,
+                          foregroundchip: Colors.pink,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                    ],
+                  ),
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 20.0),
@@ -226,7 +463,6 @@ class _SearchViewState extends State<SearchView> {
         ),
       );
     }
-
     return Scaffold();
   }
 }
