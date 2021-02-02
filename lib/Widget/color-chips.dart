@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +22,7 @@ class _ColorChipsState extends State<ColorChips> {
   Widget build(BuildContext context) {
     return Container(
       height: 40,
-      width: 90,
+      width: 110,
       decoration: BoxDecoration(
           color: widget.chipColor, borderRadius: BorderRadius.circular(25)),
       child: Row(
@@ -42,7 +43,18 @@ class _ColorChipsState extends State<ColorChips> {
           SizedBox(
             width: 10,
           ),
-          Text(widget.colorchip),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: AutoSizeText(
+                widget.colorchip,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                maxFontSize: 15,
+                minFontSize: 10,
+              ),
+            ),
+          ),
         ],
       ),
     );

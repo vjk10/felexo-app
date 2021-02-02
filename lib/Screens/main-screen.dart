@@ -2,6 +2,7 @@ import 'package:felexo/Color/colors.dart';
 import 'package:felexo/Views/views.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -22,77 +23,40 @@ class _MainScreenState extends State<MainScreen> {
     ];
     return Scaffold(
         body: tabs[_currentIndex],
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.shifting,
-          currentIndex: _currentIndex,
-          items: [
-            BottomNavigationBarItem(
-                backgroundColor: Theme.of(context).appBarTheme.color,
-                // ignore: deprecated_member_use
-                title: Text(
-                  'Home',
-                  style: Theme.of(context).textTheme.subtitle2,
-                ),
-                icon: Icon(
-                  Icons.home_outlined,
-                  size: 24,
-                  color: iconColor,
-                )),
-            BottomNavigationBarItem(
-                backgroundColor: Theme.of(context).appBarTheme.color,
-                // ignore: deprecated_member_use
-                title: Text(
-                  'Search',
-                  style: Theme.of(context).textTheme.subtitle2,
-                ),
-                icon: Icon(
-                  Icons.search_outlined,
-                  size: 24,
-                  color: iconColor,
-                )),
-            BottomNavigationBarItem(
-                backgroundColor: Theme.of(context).appBarTheme.color,
-                // ignore: deprecated_member_use
-                title: Text(
-                  'Categories',
-                  style: Theme.of(context).textTheme.subtitle2,
-                ),
-                icon: Icon(
-                  Icons.category_outlined,
-                  size: 24,
-                  color: iconColor,
-                )),
-            BottomNavigationBarItem(
-                backgroundColor: Theme.of(context).appBarTheme.color,
-                // ignore: deprecated_member_use
-                title: Text(
-                  'Settings',
-                  style: Theme.of(context).textTheme.subtitle2,
-                ),
-                icon: Icon(
-                  Icons.settings_outlined,
-                  size: 24,
-                  color: iconColor,
-                )),
-            BottomNavigationBarItem(
-                backgroundColor: Theme.of(context).appBarTheme.color,
-                // ignore: deprecated_member_use
-                title: Text(
-                  'Profile',
-                  style: Theme.of(context).textTheme.subtitle2,
-                ),
-                icon: Icon(
-                  Icons.account_circle_outlined,
-                  size: 24,
-                  color: iconColor,
-                )),
-          ],
-          onTap: (index) {
-            HapticFeedback.heavyImpact();
-            setState(() {
-              _currentIndex = index;
-            });
-          },
+        extendBody: true,
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
+          child: FloatingNavbar(
+            selectedBackgroundColor: Theme.of(context).colorScheme.secondary,
+            borderRadius: 10,
+            itemBorderRadius: 10,
+            iconSize: 24,
+            fontSize: 9,
+            padding: const EdgeInsets.fromLTRB(0, 15.0, 0, 15.0),
+            // selectedItemColor: Theme.of(context).colorScheme.primary,
+            selectedItemColor: iconColor,
+            unselectedItemColor: Theme.of(context).colorScheme.secondary,
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            currentIndex: _currentIndex,
+            items: [
+              FloatingNavbarItem(
+                icon: Icons.dashboard_sharp,
+                title: "Curated",
+              ),
+              FloatingNavbarItem(icon: Icons.search_sharp, title: "Search"),
+              FloatingNavbarItem(
+                  icon: Icons.category_sharp, title: "Categories"),
+              FloatingNavbarItem(icon: Icons.settings_sharp, title: "Settings"),
+              FloatingNavbarItem(
+                  icon: Icons.account_circle_sharp, title: "Profile"),
+            ],
+            onTap: (index) {
+              HapticFeedback.heavyImpact();
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+          ),
         ));
   }
 }

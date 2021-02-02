@@ -124,17 +124,21 @@ class _CategoriesResultState extends State<CategoriesResult> {
                       child: Padding(
                           padding:
                               EdgeInsets.only(top: 10, bottom: 2, right: 10),
-                          child: FlatButton.icon(
+                          child: RaisedButton(
                             splashColor: iconColor,
                             onPressed: () {
                               pageNumber = pageNumber + 1;
                               getMoreWallpapers(widget.categoryName);
                             },
-                            icon: Icon(Icons.arrow_circle_down_outlined),
+                            color: Theme.of(context).colorScheme.primary,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
-                            label: Text(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Text(
                               "Load More",
+                              style: TextStyle(
+                                  color:
+                                      Theme.of(context).colorScheme.secondary),
                             ),
                           )),
                     ),

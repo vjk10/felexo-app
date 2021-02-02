@@ -41,6 +41,7 @@ class _ProfileViewState extends State<ProfileView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
       appBar: AppBar(
         centerTitle: true,
         iconTheme: IconThemeData(color: iconColor),
@@ -128,11 +129,11 @@ class _ProfileViewState extends State<ProfileView> {
               ),
               Column(
                 children: [
-                  SizedBox(height: 10),
+                  SizedBox(height: 5),
                   Row(
                     children: [
                       Container(
-                          height: MediaQuery.of(context).size.height - 380,
+                          height: MediaQuery.of(context).size.height - 383,
                           width: MediaQuery.of(context).size.width,
                           child: FavoritesView())
                     ],

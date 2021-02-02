@@ -31,7 +31,7 @@ Widget wallpaperGrid(
                 borderRadius: BorderRadius.circular(12),
                 child: Container(
                   decoration: BoxDecoration(
-                      color: Theme.of(context).backgroundColor,
+                      color: HexColor(wallpaper.avgColor),
                       borderRadius: BorderRadius.circular(12),
                       shape: BoxShape.rectangle),
                   child: Stack(children: [
@@ -60,22 +60,18 @@ Widget wallpaperGrid(
                       tag: wallpaper,
                       child: GestureDetector(
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: FadeInImage(
-                            placeholder:
-                                AssetImage("assets/images/loading.gif"),
-                            fadeInDuration: Duration(seconds: 1),
-                            fadeInCurve: Curves.easeIn,
-                            image: NetworkImage(wallpaper.src.portrait),
-                            fit: BoxFit.cover,
-                            height: 400,
-                          ),
-                        ),
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.network(
+                              wallpaper.src.portrait,
+                              height: 800,
+                              fit: BoxFit.fill,
+                            )),
                         onTap: () {
                           Navigator.push(
                               context,
                               ScaleRoute(context,
                                   page: WallPaperView(
+                                    avgColor: wallpaper.avgColor,
                                     uid: uid,
                                     photographerUrl: wallpaper.photographerUrl,
                                     imgUrl: wallpaper.src.portrait,
@@ -94,6 +90,7 @@ Widget wallpaperGrid(
                             context,
                             ScaleRoute(context,
                                 page: WallPaperView(
+                                  avgColor: wallpaper.avgColor.toString(),
                                   uid: uid,
                                   photographerUrl: wallpaper.photographerUrl,
                                   imgUrl: wallpaper.src.portrait,
@@ -130,7 +127,7 @@ Widget wallpaperGrid(
                                     Align(
                                       alignment: Alignment.bottomLeft,
                                       child: AutoSizeText(
-                                        "Creator: " + wallpaper.photographer,
+                                        wallpaper.photographer,
                                         style: TextStyle(
                                             color: textColor,
                                             fontFamily: 'Circular Black',
@@ -147,8 +144,7 @@ Widget wallpaperGrid(
                                     Align(
                                       alignment: Alignment.bottomLeft,
                                       child: AutoSizeText(
-                                        "ID: " +
-                                            wallpaper.photographerId.toString(),
+                                        wallpaper.photographerId.toString(),
                                         style: TextStyle(
                                             color: textColor,
                                             fontFamily: 'Circular Black',

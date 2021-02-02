@@ -19,6 +19,8 @@ class _SearchViewState extends State<SearchView> {
   TextEditingController searchController = new TextEditingController();
   bool searchComplete = false;
   int noOfImages = 30;
+  int pageNumber = 1;
+  String searchQ;
   String searchMessage = "Search for some amazing wallpapers!";
   final FirebaseAuth _auth = FirebaseAuth.instance;
   User user;
@@ -28,6 +30,7 @@ class _SearchViewState extends State<SearchView> {
   @override
   void initState() {
     super.initState();
+
     initUser();
   }
 
@@ -55,6 +58,31 @@ class _SearchViewState extends State<SearchView> {
       searchComplete = true;
       setState(() {});
     });
+  }
+
+  void getMoreSearchResults(String searchQuery) async {
+    await http.get(
+        "https://api.pexels.com/v1/search?query=$searchQuery&page=$pageNumber&per_page=$noOfImages",
+        headers: {"Authorization": apiKey}).then((value) {
+      Map<String, dynamic> jsonData = jsonDecode(value.body);
+      // print(value.body.toString());
+      wallpapers = new List();
+      jsonData["photos"].forEach((element) {
+        WallpaperModel wallpaperModel = new WallpaperModel();
+        wallpaperModel = WallpaperModel.fromMap(element);
+        wallpapers.add(wallpaperModel);
+      });
+      searchComplete = true;
+      if (pageNumber == 0) {
+        pageNumber = 1;
+      }
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -98,6 +126,7 @@ class _SearchViewState extends State<SearchView> {
                             textCapitalization: TextCapitalization.words,
                             onSubmitted: (String str) {
                               str = searchController.text;
+                              searchQ = str;
                               getSearchResults(str);
                             },
                           ),
@@ -123,7 +152,10 @@ class _SearchViewState extends State<SearchView> {
                   child: Row(
                     children: [
                       InkWell(
-                        onTap: () => {getSearchResults("color:black")},
+                        onTap: () => {
+                          getSearchResults("color:black"),
+                          searchQ = "color:black"
+                        },
                         child: ColorChips(
                           chipColor: chip,
                           colorchip: "black",
@@ -136,7 +168,10 @@ class _SearchViewState extends State<SearchView> {
                         width: 10,
                       ),
                       InkWell(
-                        onTap: () => {getSearchResults("color:white")},
+                        onTap: () => {
+                          getSearchResults("color:white"),
+                          searchQ = "color:white"
+                        },
                         child: ColorChips(
                           chipColor: chip,
                           colorchip: "white",
@@ -149,7 +184,10 @@ class _SearchViewState extends State<SearchView> {
                         width: 10,
                       ),
                       InkWell(
-                        onTap: () => {getSearchResults("color:red")},
+                        onTap: () => {
+                          getSearchResults("color:red"),
+                          searchQ = "color:red"
+                        },
                         child: ColorChips(
                           chipColor: chip,
                           colorchip: "red",
@@ -162,7 +200,10 @@ class _SearchViewState extends State<SearchView> {
                         width: 10,
                       ),
                       InkWell(
-                        onTap: () => {getSearchResults("color:yellow")},
+                        onTap: () => {
+                          getSearchResults("color:yellow"),
+                          searchQ = "color:yellow"
+                        },
                         child: ColorChips(
                           chipColor: chip,
                           colorchip: "yellow",
@@ -175,7 +216,10 @@ class _SearchViewState extends State<SearchView> {
                         width: 10,
                       ),
                       InkWell(
-                        onTap: () => {getSearchResults("color:purple")},
+                        onTap: () => {
+                          getSearchResults("color:purple"),
+                          searchQ = "color:purple"
+                        },
                         child: ColorChips(
                           chipColor: chip,
                           colorchip: "purple",
@@ -188,7 +232,10 @@ class _SearchViewState extends State<SearchView> {
                         width: 10,
                       ),
                       InkWell(
-                        onTap: () => {getSearchResults("color:blue")},
+                        onTap: () => {
+                          getSearchResults("color:blue"),
+                          searchQ = "color:blue"
+                        },
                         child: ColorChips(
                           chipColor: chip,
                           colorchip: "blue",
@@ -201,7 +248,10 @@ class _SearchViewState extends State<SearchView> {
                         width: 10,
                       ),
                       InkWell(
-                        onTap: () => {getSearchResults("color:brown")},
+                        onTap: () => {
+                          getSearchResults("color:brown"),
+                          searchQ = "color:brown"
+                        },
                         child: ColorChips(
                           chipColor: chip,
                           colorchip: "brown",
@@ -214,7 +264,10 @@ class _SearchViewState extends State<SearchView> {
                         width: 10,
                       ),
                       InkWell(
-                        onTap: () => {getSearchResults("color:green")},
+                        onTap: () => {
+                          getSearchResults("color:green"),
+                          searchQ = "color:green"
+                        },
                         child: ColorChips(
                           chipColor: chip,
                           colorchip: "green",
@@ -227,13 +280,80 @@ class _SearchViewState extends State<SearchView> {
                         width: 10,
                       ),
                       InkWell(
-                        onTap: () => {getSearchResults("color:pink")},
+                        onTap: () => {
+                          getSearchResults("color:pink"),
+                          searchQ = "color:pink"
+                        },
                         child: ColorChips(
                           chipColor: chip,
                           colorchip: "pink",
                           backgroundchip:
                               Theme.of(context).colorScheme.secondary,
                           foregroundchip: Colors.pink,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                        onTap: () => {
+                          getSearchResults("color:turquoise"),
+                          searchQ = "color:turquoise"
+                        },
+                        child: ColorChips(
+                          chipColor: chip,
+                          colorchip: "turquoise",
+                          backgroundchip:
+                              Theme.of(context).colorScheme.secondary,
+                          foregroundchip: HexColor("#30D5C8"),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                        onTap: () => {
+                          getSearchResults("color:orange"),
+                          searchQ = "color:orange"
+                        },
+                        child: ColorChips(
+                          chipColor: chip,
+                          colorchip: "orange",
+                          backgroundchip:
+                              Theme.of(context).colorScheme.secondary,
+                          foregroundchip: Colors.orange,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                        onTap: () => {
+                          getSearchResults("color:violet"),
+                          searchQ = "color:violet"
+                        },
+                        child: ColorChips(
+                          chipColor: chip,
+                          colorchip: "violet",
+                          backgroundchip:
+                              Theme.of(context).colorScheme.secondary,
+                          foregroundchip: HexColor("#EE82EE"),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                        onTap: () => {
+                          getSearchResults("color:gray"),
+                          searchQ = "color:gray"
+                        },
+                        child: ColorChips(
+                          chipColor: chip,
+                          colorchip: "gray",
+                          backgroundchip:
+                              Theme.of(context).colorScheme.secondary,
+                          foregroundchip: Colors.grey,
                         ),
                       ),
                       SizedBox(
@@ -299,6 +419,7 @@ class _SearchViewState extends State<SearchView> {
                             textCapitalization: TextCapitalization.words,
                             onSubmitted: (String str) {
                               str = searchController.text;
+                              searchQ = str;
                               getSearchResults(str);
                             },
                             onTap: () {
@@ -330,7 +451,10 @@ class _SearchViewState extends State<SearchView> {
                   child: Row(
                     children: [
                       InkWell(
-                        onTap: () => {getSearchResults("color:black")},
+                        onTap: () => {
+                          getSearchResults("color:black"),
+                          searchQ = "color:black"
+                        },
                         child: ColorChips(
                           chipColor: chip,
                           colorchip: "black",
@@ -343,7 +467,10 @@ class _SearchViewState extends State<SearchView> {
                         width: 10,
                       ),
                       InkWell(
-                        onTap: () => {getSearchResults("color:white")},
+                        onTap: () => {
+                          getSearchResults("color:white"),
+                          searchQ = "color:white"
+                        },
                         child: ColorChips(
                           chipColor: chip,
                           colorchip: "white",
@@ -356,7 +483,10 @@ class _SearchViewState extends State<SearchView> {
                         width: 10,
                       ),
                       InkWell(
-                        onTap: () => {getSearchResults("color:red")},
+                        onTap: () => {
+                          getSearchResults("color:red"),
+                          searchQ = "color:red"
+                        },
                         child: ColorChips(
                           chipColor: chip,
                           colorchip: "red",
@@ -369,7 +499,10 @@ class _SearchViewState extends State<SearchView> {
                         width: 10,
                       ),
                       InkWell(
-                        onTap: () => {getSearchResults("color:yellow")},
+                        onTap: () => {
+                          getSearchResults("color:yellow"),
+                          searchQ = "color:yellow"
+                        },
                         child: ColorChips(
                           chipColor: chip,
                           colorchip: "yellow",
@@ -382,7 +515,10 @@ class _SearchViewState extends State<SearchView> {
                         width: 10,
                       ),
                       InkWell(
-                        onTap: () => {getSearchResults("color:purple")},
+                        onTap: () => {
+                          getSearchResults("color:purple"),
+                          searchQ = "color:purple"
+                        },
                         child: ColorChips(
                           chipColor: chip,
                           colorchip: "purple",
@@ -395,7 +531,10 @@ class _SearchViewState extends State<SearchView> {
                         width: 10,
                       ),
                       InkWell(
-                        onTap: () => {getSearchResults("color:blue")},
+                        onTap: () => {
+                          getSearchResults("color:blue"),
+                          searchQ = "color:blue"
+                        },
                         child: ColorChips(
                           chipColor: chip,
                           colorchip: "blue",
@@ -408,7 +547,10 @@ class _SearchViewState extends State<SearchView> {
                         width: 10,
                       ),
                       InkWell(
-                        onTap: () => {getSearchResults("color:brown")},
+                        onTap: () => {
+                          getSearchResults("color:brown"),
+                          searchQ = "color:brown"
+                        },
                         child: ColorChips(
                           chipColor: chip,
                           colorchip: "brown",
@@ -421,7 +563,10 @@ class _SearchViewState extends State<SearchView> {
                         width: 10,
                       ),
                       InkWell(
-                        onTap: () => {getSearchResults("color:green")},
+                        onTap: () => {
+                          getSearchResults("color:green"),
+                          searchQ = "color:green"
+                        },
                         child: ColorChips(
                           chipColor: chip,
                           colorchip: "green",
@@ -434,7 +579,10 @@ class _SearchViewState extends State<SearchView> {
                         width: 10,
                       ),
                       InkWell(
-                        onTap: () => {getSearchResults("color:pink")},
+                        onTap: () => {
+                          getSearchResults("color:pink"),
+                          searchQ = "color:pink"
+                        },
                         child: ColorChips(
                           chipColor: chip,
                           colorchip: "pink",
@@ -446,12 +594,114 @@ class _SearchViewState extends State<SearchView> {
                       SizedBox(
                         width: 10,
                       ),
+                      InkWell(
+                        onTap: () => {
+                          getSearchResults("color:turquoise"),
+                          searchQ = "color:turquoise"
+                        },
+                        child: ColorChips(
+                          chipColor: chip,
+                          colorchip: "turquoise",
+                          backgroundchip:
+                              Theme.of(context).colorScheme.secondary,
+                          foregroundchip: HexColor("#30D5C8"),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                        onTap: () => {
+                          getSearchResults("color:orange"),
+                          searchQ = "color:orange"
+                        },
+                        child: ColorChips(
+                          chipColor: chip,
+                          colorchip: "orange",
+                          backgroundchip:
+                              Theme.of(context).colorScheme.secondary,
+                          foregroundchip: Colors.orange,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                        onTap: () => {
+                          getSearchResults("color:violet"),
+                          searchQ = "color:violet"
+                        },
+                        child: ColorChips(
+                          chipColor: chip,
+                          colorchip: "violet",
+                          backgroundchip:
+                              Theme.of(context).colorScheme.secondary,
+                          foregroundchip: HexColor("#EE82EE"),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                        onTap: () => {
+                          getSearchResults("color:gray"),
+                          searchQ = "color:gray"
+                        },
+                        child: ColorChips(
+                          chipColor: chip,
+                          colorchip: "gray",
+                          backgroundchip:
+                              Theme.of(context).colorScheme.secondary,
+                          foregroundchip: Colors.grey,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
                     ],
                   ),
                 ),
               ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.navigate_before_outlined,
+                    ),
+                    onPressed: () {
+                      pageNumber = pageNumber - 1;
+                      getMoreSearchResults(searchQ);
+                    },
+                  ),
+                  Container(
+                      width: 20,
+                      height: 20,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      child: Center(
+                        child: Text(
+                          pageNumber.toString(),
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary),
+                        ),
+                      )),
+                  IconButton(
+                    icon: Icon(
+                      Icons.navigate_next_outlined,
+                    ),
+                    onPressed: () {
+                      pageNumber = pageNumber + 1;
+                      getMoreSearchResults(searchQ);
+                    },
+                  ),
+                ],
+              ),
               Padding(
-                padding: const EdgeInsets.only(top: 20.0),
+                padding: const EdgeInsets.only(top: 5.0),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: wallpaperGrid(

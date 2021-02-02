@@ -35,7 +35,8 @@ class WallpaperControls extends StatefulWidget {
       photographerID,
       originalUrl,
       photographerUrl,
-      uid;
+      uid,
+      avgColor;
   bool favExists;
   GlobalKey<ScaffoldState> key;
   WallpaperControls(
@@ -46,6 +47,7 @@ class WallpaperControls extends StatefulWidget {
       @required this.photographer,
       @required this.photographerID,
       @required this.photographerUrl,
+      @required this.avgColor,
       @required this.favExists,
       @required this.key});
   @override
@@ -447,7 +449,8 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                                 "photoID": widget.photoID.toString(),
                                 "photographerID":
                                     widget.photographerID.toString(),
-                                "originalUrl": widget.originalUrl
+                                "originalUrl": widget.originalUrl,
+                                "avgColor": widget.avgColor,
                               });
                               setState(() {
                                 widget.favExists = !widget.favExists;

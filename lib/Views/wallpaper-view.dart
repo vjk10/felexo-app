@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:felexo/Color/colors.dart';
 import 'package:felexo/Widget/wallpaper-controls.dart';
@@ -8,7 +9,8 @@ import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class WallPaperView extends StatefulWidget {
-  final String imgUrl,
+  final String avgColor,
+      imgUrl,
       photoID,
       photographer,
       photographerID,
@@ -16,7 +18,8 @@ class WallPaperView extends StatefulWidget {
       photographerUrl,
       uid;
   WallPaperView(
-      {@required this.uid,
+      {this.avgColor,
+      @required this.uid,
       @required this.imgUrl,
       @required this.originalUrl,
       @required this.photoID,
@@ -159,18 +162,18 @@ class _WallPaperViewState extends State<WallPaperView> {
             Container(
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
+                color: HexColor(widget.avgColor),
                 child: GestureDetector(
                     onTap: () {
                       setState(() {
                         transparent = !transparent;
                       });
                     },
-                    child: FadeInImage.assetNetwork(
-                        fit: BoxFit.cover,
-                        fadeInCurve: Curves.easeIn,
-                        fadeInDuration: const Duration(seconds: 1),
-                        placeholder: "assets/images/loading.gif",
-                        image: widget.imgUrl))),
+                    child: Image.network(
+                      widget.imgUrl,
+                      fit: BoxFit.fitHeight,
+                      height: MediaQuery.of(context).size.height,
+                    ))),
             Padding(
               padding: const EdgeInsets.only(left: 0, right: 0, bottom: 0.0),
               child: Align(
@@ -208,46 +211,56 @@ class _WallPaperViewState extends State<WallPaperView> {
                                 onTap: () {
                                   launch(widget.photographerUrl);
                                 },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
-                                      border: Border.all(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary,
-                                          width: 3)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(5.0),
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.account_circle,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary,
-                                        ),
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        Text(
-                                          widget.photographer,
-                                          style: TextStyle(
+                                child: Flexible(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                        border: Border.all(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                            width: 3)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Flexible(
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.account_circle,
                                               color: Theme.of(context)
                                                   .colorScheme
                                                   .primary,
-                                              fontFamily: 'Circular Black',
-                                              fontSize: 20),
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            AutoSizeText(
+                                              widget.photographer,
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
+                                              softWrap: false,
+                                              maxFontSize: 25,
+                                              minFontSize: 15,
+                                              style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary,
+                                                fontFamily: 'Circular Black',
+                                                // fontSize: 20
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            // Icon(
+                                            //   Icons.check_circle,
+                                            //   color: iconColor,
+                                            // )
+                                          ],
                                         ),
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        Icon(
-                                          Icons.check_circle,
-                                          color: iconColor,
-                                        )
-                                      ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -303,6 +316,7 @@ class _WallPaperViewState extends State<WallPaperView> {
                             key: globalKey,
                             favExists: favExists,
                             uid: user.uid,
+                            avgColor: widget.avgColor,
                             imgUrl: widget.imgUrl,
                             originalUrl: widget.originalUrl,
                             photoID: widget.photoID,
