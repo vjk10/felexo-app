@@ -100,6 +100,7 @@ class Favorites {
   final String photoID;
   final String photographerID;
   final String photographer;
+  final String avgColor;
 
   Favorites(
       {this.imgUrl,
@@ -107,10 +108,12 @@ class Favorites {
       this.photoID,
       this.photographer,
       this.photographerID,
+      this.avgColor,
       this.photographerUrl})
       : assert(imgUrl != null),
         assert(originalUrl != null),
         assert(photoID != null),
+        assert(avgColor != null),
         assert(photographer != null),
         assert(photographerID != null),
         assert(photographerUrl != null);

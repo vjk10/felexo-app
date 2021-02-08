@@ -24,7 +24,7 @@ MaterialColor textColor = MaterialColor(0xFFFFFFFF, color);
 MaterialColor iconColor = MaterialColor(0xFF7074DB, color);
 MaterialColor wallpaperColor = MaterialColor(0xFF2C0E5C, color);
 
-class HexColor extends Color {
+class Hexcolor extends Color {
   static int _getColorFromHex(String hexColor) {
     hexColor = hexColor.toUpperCase().replaceAll("#", "");
     if (hexColor.length == 6) {
@@ -33,5 +33,5 @@ class HexColor extends Color {
     return int.parse(hexColor, radix: 16);
   }
 
-  HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
+  Hexcolor(final String hexColor) : super(_getColorFromHex(hexColor));
 }

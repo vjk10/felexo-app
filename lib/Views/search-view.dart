@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:felexo/Color/colors.dart';
+import 'package:felexo/Widget/widgets.dart';
 import 'package:felexo/data/data.dart';
 import 'package:felexo/model/wallpapers-model.dart';
-import 'package:felexo/widget/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -43,7 +43,7 @@ class _SearchViewState extends State<SearchView> {
     setState(() {});
   }
 
-  void getSearchResults(String searchQuery) async {
+  Future<List> getSearchResults(String searchQuery) async {
     await http.get(
         "https://api.pexels.com/v1/search?query=$searchQuery&per_page=$noOfImages",
         headers: {"Authorization": apiKey}).then((value) {
@@ -58,9 +58,10 @@ class _SearchViewState extends State<SearchView> {
       searchComplete = true;
       setState(() {});
     });
+    return wallpapers;
   }
 
-  void getMoreSearchResults(String searchQuery) async {
+  Future<List> getMoreSearchResults(String searchQuery) async {
     await http.get(
         "https://api.pexels.com/v1/search?query=$searchQuery&page=$pageNumber&per_page=$noOfImages",
         headers: {"Authorization": apiKey}).then((value) {
@@ -78,6 +79,7 @@ class _SearchViewState extends State<SearchView> {
       }
       setState(() {});
     });
+    return wallpapers;
   }
 
   @override
@@ -305,7 +307,7 @@ class _SearchViewState extends State<SearchView> {
                           colorchip: "turquoise",
                           backgroundchip:
                               Theme.of(context).colorScheme.secondary,
-                          foregroundchip: HexColor("#30D5C8"),
+                          foregroundchip: Hexcolor("#30D5C8"),
                         ),
                       ),
                       SizedBox(
@@ -337,7 +339,7 @@ class _SearchViewState extends State<SearchView> {
                           colorchip: "violet",
                           backgroundchip:
                               Theme.of(context).colorScheme.secondary,
-                          foregroundchip: HexColor("#EE82EE"),
+                          foregroundchip: Hexcolor("#EE82EE"),
                         ),
                       ),
                       SizedBox(
@@ -604,7 +606,7 @@ class _SearchViewState extends State<SearchView> {
                           colorchip: "turquoise",
                           backgroundchip:
                               Theme.of(context).colorScheme.secondary,
-                          foregroundchip: HexColor("#30D5C8"),
+                          foregroundchip: Hexcolor("#30D5C8"),
                         ),
                       ),
                       SizedBox(
@@ -636,7 +638,7 @@ class _SearchViewState extends State<SearchView> {
                           colorchip: "violet",
                           backgroundchip:
                               Theme.of(context).colorScheme.secondary,
-                          foregroundchip: HexColor("#EE82EE"),
+                          foregroundchip: Hexcolor("#EE82EE"),
                         ),
                       ),
                       SizedBox(
@@ -704,7 +706,7 @@ class _SearchViewState extends State<SearchView> {
                 padding: const EdgeInsets.only(top: 5.0),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  child: wallpaperGrid(
+                  child: wallpaperSearchGrid(
                       wallpapers: wallpapers, context: context, uid: user.uid),
                 ),
               ),

@@ -39,6 +39,11 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,

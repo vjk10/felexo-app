@@ -25,7 +25,7 @@ class _MainScreenState extends State<MainScreen> {
         body: tabs[_currentIndex],
         extendBody: true,
         bottomNavigationBar: Padding(
-          padding: const EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
+          padding: const EdgeInsets.fromLTRB(0.0, 0, 0.0, 0),
           child: FloatingNavbar(
             selectedBackgroundColor: Theme.of(context).colorScheme.secondary,
             borderRadius: 10,

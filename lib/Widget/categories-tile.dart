@@ -21,7 +21,7 @@ class CategoriesTile extends StatelessWidget {
             children: [
               Padding(
                 padding:
-                    const EdgeInsets.only(top: 0, bottom: 5, left: 5, right: 5),
+                    const EdgeInsets.only(top: 0, bottom: 0, left: 5, right: 5),
                 child: Center(
                   child: Container(
                     decoration: BoxDecoration(

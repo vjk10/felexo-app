@@ -30,6 +30,11 @@ class _CategoriesViewState extends State<CategoriesView> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return StreamProvider<List<Categories>>.value(
         value: CategoryService().categories,

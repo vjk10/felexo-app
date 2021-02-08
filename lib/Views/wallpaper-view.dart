@@ -48,10 +48,15 @@ class _WallPaperViewState extends State<WallPaperView> {
   String wallpaperLocation;
   final globalKey = GlobalKey<ScaffoldState>();
   var result = "Waiting to set wallpapers";
-
+  var foregroundColor;
   @override
   void initState() {
     transparent = false;
+    foregroundColor = Hexcolor(widget.avgColor).computeLuminance() > 0.5
+        ? Colors.black
+        : Colors.white;
+    print("AVG:" + widget.avgColor.toString());
+    print(foregroundColor);
     findIfFav();
     initUser();
     super.initState();
@@ -98,6 +103,11 @@ class _WallPaperViewState extends State<WallPaperView> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
@@ -139,6 +149,7 @@ class _WallPaperViewState extends State<WallPaperView> {
             padding: const EdgeInsets.all(8.0),
             child: Container(
                 decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
                     color: Theme.of(context).colorScheme.secondary,
                     border: Border.all(
                         color: Theme.of(context).colorScheme.primary,
@@ -162,7 +173,7 @@ class _WallPaperViewState extends State<WallPaperView> {
             Container(
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
-                color: HexColor(widget.avgColor),
+                color: Hexcolor(widget.avgColor),
                 child: GestureDetector(
                     onTap: () {
                       setState(() {
@@ -179,13 +190,12 @@ class _WallPaperViewState extends State<WallPaperView> {
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.all(0.0),
                   child: AnimatedContainer(
                     duration: Duration(milliseconds: 500),
                     curve: Curves.easeInOut,
                     width: _width,
                     height: _height,
-                    // width: MediaQuery.of(context).size.width,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
                         boxShadow: [
@@ -197,7 +207,7 @@ class _WallPaperViewState extends State<WallPaperView> {
                         ],
                         color: transparent
                             ? Colors.transparent
-                            : Theme.of(context).colorScheme.secondary),
+                            : Hexcolor(widget.avgColor)),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -211,56 +221,43 @@ class _WallPaperViewState extends State<WallPaperView> {
                                 onTap: () {
                                   launch(widget.photographerUrl);
                                 },
-                                child: Flexible(
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                        border: Border.all(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary,
-                                            width: 3)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(5.0),
-                                      child: Flexible(
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              Icons.account_circle,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary,
-                                            ),
-                                            SizedBox(
-                                              width: 10,
-                                            ),
-                                            AutoSizeText(
-                                              widget.photographer,
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 1,
-                                              softWrap: false,
-                                              maxFontSize: 25,
-                                              minFontSize: 15,
-                                              style: TextStyle(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .primary,
-                                                fontFamily: 'Circular Black',
-                                                // fontSize: 20
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 10,
-                                            ),
-                                            // Icon(
-                                            //   Icons.check_circle,
-                                            //   color: iconColor,
-                                            // )
-                                          ],
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: Colors.transparent,
+                                      border: Border.all(
+                                          color: foregroundColor, width: 3)),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(5.0),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.account_circle,
+                                          color: foregroundColor,
                                         ),
-                                      ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        AutoSizeText(
+                                          widget.photographer,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          softWrap: false,
+                                          maxFontSize: 25,
+                                          minFontSize: 15,
+                                          style: TextStyle(
+                                            color: foregroundColor,
+                                            fontFamily: 'Circular Black',
+                                            // fontSize: 20
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        // Icon(
+                                        //   Icons.check_circle,
+                                        //   color: iconColor,
+                                        // )
+                                      ],
                                     ),
                                   ),
                                 ),
@@ -276,22 +273,16 @@ class _WallPaperViewState extends State<WallPaperView> {
                             children: [
                               Container(
                                 decoration: BoxDecoration(
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
+                                    color: Colors.transparent,
                                     border: Border.all(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                        width: 3)),
+                                        color: foregroundColor, width: 3)),
                                 child: Padding(
                                   padding: const EdgeInsets.all(5.0),
                                   child: Row(
                                     children: [
                                       Icon(
                                         Icons.info,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
+                                        color: foregroundColor,
                                       ),
                                       SizedBox(
                                         width: 10,
@@ -299,9 +290,7 @@ class _WallPaperViewState extends State<WallPaperView> {
                                       Text(
                                         widget.photographerID,
                                         style: TextStyle(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary,
+                                            color: foregroundColor,
                                             fontFamily: 'Circular Black',
                                             fontSize: 15),
                                       ),
@@ -313,7 +302,7 @@ class _WallPaperViewState extends State<WallPaperView> {
                           ),
                         ),
                         WallpaperControls(
-                            key: globalKey,
+                            foregroundColor: foregroundColor,
                             favExists: favExists,
                             uid: user.uid,
                             avgColor: widget.avgColor,
@@ -429,9 +418,7 @@ class _WallPaperViewState extends State<WallPaperView> {
                                   child: Text(
                                     "Wallpaper provided by Pexels",
                                     style: TextStyle(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
+                                        color: foregroundColor,
                                         fontFamily: 'Circular Black',
                                         fontSize: 10),
                                   ),

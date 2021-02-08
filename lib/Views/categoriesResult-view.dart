@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:felexo/Color/colors.dart';
+import 'package:felexo/Widget/widgets.dart';
 import 'package:felexo/data/data.dart';
 import 'package:felexo/model/wallpapers-model.dart';
-import 'package:felexo/widget/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -114,7 +114,7 @@ class _CategoriesResultState extends State<CategoriesResult> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 10.0),
-                      child: wallpaperGrid(
+                      child: wallpaperSearchGrid(
                           wallpapers: wallpapers,
                           context: context,
                           uid: user.uid),

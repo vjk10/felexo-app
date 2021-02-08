@@ -6,7 +6,6 @@ import 'package:felexo/Color/colors.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:wallpaper_manager/wallpaper_manager.dart';
@@ -25,7 +24,6 @@ bool downloading = false;
 bool setWall = false;
 User user;
 String wallpaperLocation;
-GlobalKey<ScaffoldState> globalKey1, globalKey2;
 
 // ignore: must_be_immutable
 class WallpaperControls extends StatefulWidget {
@@ -37,8 +35,8 @@ class WallpaperControls extends StatefulWidget {
       photographerUrl,
       uid,
       avgColor;
+  var foregroundColor;
   bool favExists;
-  GlobalKey<ScaffoldState> key;
   WallpaperControls(
       {@required this.uid,
       @required this.imgUrl,
@@ -49,7 +47,7 @@ class WallpaperControls extends StatefulWidget {
       @required this.photographerUrl,
       @required this.avgColor,
       @required this.favExists,
-      @required this.key});
+      @required this.foregroundColor});
   @override
   _WallpaperControlsState createState() => _WallpaperControlsState();
 }
@@ -103,7 +101,6 @@ class _WallpaperControlsState extends State<WallpaperControls> {
         ? Padding(
             padding: const EdgeInsets.only(top: 54.0, bottom: 20),
             child: SizedBox(
-              key: globalKey1,
               width: 280,
               height: 5,
               child: LinearProgressIndicator(
@@ -113,14 +110,12 @@ class _WallpaperControlsState extends State<WallpaperControls> {
             ),
           )
         : Container(
-            key: globalKey2,
             width: 250,
             height: 85,
             color: Colors.transparent,
             child: Scaffold(
               backgroundColor: Colors.transparent,
               body: Padding(
-                key: widget.key,
                 padding: const EdgeInsets.only(bottom: 0.0),
                 child: Column(
                   children: [
@@ -139,8 +134,7 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                                   child: Icon(
                                     Icons.save,
                                     size: 30,
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
+                                    color: widget.foregroundColor,
                                   ),
                                   onTap: () {
                                     interstitialAd = createInterstitialAd()
@@ -264,8 +258,7 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                                   child: Icon(
                                     Icons.wallpaper,
                                     size: 30,
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
+                                    color: widget.foregroundColor,
                                   ),
                                 ),
                               )
@@ -418,7 +411,7 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                                     size: 30,
                                     color: widget.favExists
                                         ? Colors.redAccent
-                                        : Theme.of(context).colorScheme.primary,
+                                        : widget.foregroundColor,
                                   ),
                                 ),
                               )
@@ -429,12 +422,21 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                               ..load()
                               ..show();
                             if (widget.favExists == true) {
-                              HapticFeedback.mediumImpact();
-                              widget.key.currentState.showSnackBar(SnackBar(
-                                content: Text("Added to favorites!"),
-                                backgroundColor:
-                                    Theme.of(context).colorScheme.primary,
-                              ));
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                        title: Text("Favorites"),
+                                        content:
+                                            Text("Already added to Favorites!"),
+                                        actions: [
+                                          FlatButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text("Ok"),
+                                          )
+                                        ],
+                                      ));
                             }
                             if (widget.favExists != true) {
                               FirebaseFirestore.instance
@@ -455,12 +457,6 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                               setState(() {
                                 widget.favExists = !widget.favExists;
                               });
-                              HapticFeedback.mediumImpact();
-                              widget.key.currentState.showSnackBar(SnackBar(
-                                content: Text("Added to favorites!"),
-                                backgroundColor:
-                                    Theme.of(context).colorScheme.primary,
-                              ));
                             }
                           },
                         ),
@@ -497,10 +493,14 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                                     "photoID": widget.photoID.toString(),
                                     "photographerID":
                                         widget.photographerID.toString(),
-                                    "originalUrl": widget.originalUrl
+                                    "originalUrl": widget.originalUrl,
+                                    "avgColor": widget.avgColor,
                                   });
                                 },
-                                child: Icon(Icons.calendar_today_outlined)),
+                                child: Icon(
+                                  Icons.calendar_today_outlined,
+                                  color: widget.foregroundColor,
+                                )),
                           )
                       ],
                     ),

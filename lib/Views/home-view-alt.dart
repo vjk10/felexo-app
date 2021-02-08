@@ -15,12 +15,12 @@ import 'package:http/http.dart' as http;
 
 const String testDevices = "mobileID";
 
-class HomeView extends StatefulWidget {
+class HomeViewAlt extends StatefulWidget {
   @override
-  _HomeViewState createState() => _HomeViewState();
+  _HomeViewAltState createState() => _HomeViewAltState();
 }
 
-class _HomeViewState extends State<HomeView>
+class _HomeViewAltState extends State<HomeViewAlt>
     with SingleTickerProviderStateMixin {
   AnimationController controller;
   Animation<double> animation;
@@ -54,7 +54,6 @@ class _HomeViewState extends State<HomeView>
         AnimationController(duration: Duration(minutes: 1), vsync: this);
     getTrendingWallpapers();
     super.initState();
-
     initUser();
     animation = Tween<double>(begin: 1, end: 2).animate(controller)
       ..addListener(() {
@@ -101,10 +100,8 @@ class _HomeViewState extends State<HomeView>
         photographer = event.data()['photographer'].toString();
         photographerID = event.data()['photographerID'].toString();
         photographerUrl = event.data()['photographerUrl'].toString();
-        avgColor = event.data()['avgColor'].toString();
       });
     }
-
     assert(imgUrl != null);
     assert(originalUrl != null);
     assert(photoID != null);
@@ -237,9 +234,6 @@ class _HomeViewState extends State<HomeView>
                                     Text(
                                       "Daily Special",
                                       style: TextStyle(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
                                         fontSize: 50,
                                         shadows: <Shadow>[
                                           Shadow(

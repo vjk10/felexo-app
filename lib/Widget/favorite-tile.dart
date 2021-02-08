@@ -73,6 +73,7 @@ class _FavoriteTileState extends State<FavoriteTile> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => WallPaperView(
+                            avgColor: widget.favorites.avgColor,
                             uid: user.uid,
                             imgUrl: widget.favorites.imgUrl,
                             originalUrl: widget.favorites.originalUrl,

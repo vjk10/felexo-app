@@ -14,6 +14,7 @@ class DatabaseService {
           photoID: doc.data()['photoID'] ?? '',
           photographer: doc.data()['photographer'] ?? '',
           photographerID: doc.data()['photographerID'] ?? '',
+          avgColor: doc.data()['avgColor'],
           photographerUrl: doc.data()['photographerUrl'] ?? '');
     }).toList();
   }

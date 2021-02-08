@@ -50,6 +50,11 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final themeModeNotifier = Provider.of<ThemeModeNotifier>(context);
     if (MediaQuery.of(context).platformBrightness == Brightness.light) {
