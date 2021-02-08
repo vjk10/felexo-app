@@ -22,6 +22,7 @@ class _CategoriesResultState extends State<CategoriesResult> {
   User user;
   int noOfImages = 30;
   bool imagesLoaded = false;
+  bool _buttonVisible = true;
   int pageNumber = 1;
   List<WallpaperModel> wallpapers = new List();
 
@@ -55,6 +56,7 @@ class _CategoriesResultState extends State<CategoriesResult> {
       wallpapers.add(wallpaperModel);
     });
     imagesLoaded = true;
+    _buttonVisible = !_buttonVisible;
     setState(() {});
   }
 
@@ -124,21 +126,38 @@ class _CategoriesResultState extends State<CategoriesResult> {
                       child: Padding(
                           padding:
                               EdgeInsets.only(top: 10, bottom: 2, right: 10),
-                          child: RaisedButton(
-                            splashColor: iconColor,
-                            onPressed: () {
-                              pageNumber = pageNumber + 1;
-                              getMoreWallpapers(widget.categoryName);
-                            },
-                            color: Theme.of(context).colorScheme.primary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Text(
-                              "Load More",
-                              style: TextStyle(
-                                  color:
-                                      Theme.of(context).colorScheme.secondary),
+                          child: Visibility(
+                              visible: !_buttonVisible,
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation(iconColor),
+                              ))),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                          padding:
+                              EdgeInsets.only(top: 10, bottom: 2, right: 10),
+                          child: Visibility(
+                            visible: _buttonVisible,
+                            child: RaisedButton(
+                              splashColor: iconColor,
+                              onPressed: () {
+                                _buttonVisible = !_buttonVisible;
+                                setState(() {});
+                                pageNumber = pageNumber + 1;
+                                getMoreWallpapers(widget.categoryName);
+                              },
+                              color: Theme.of(context).colorScheme.primary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Text(
+                                "Load More",
+                                style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
+                              ),
                             ),
                           )),
                     ),

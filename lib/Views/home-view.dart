@@ -11,6 +11,7 @@ import 'package:felexo/model/wallpapers-model.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
 const String testDevices = "mobileID";
@@ -41,6 +42,7 @@ class _HomeViewState extends State<HomeView>
       avgColor,
       nextPage,
       photographerUrl;
+  var foregroundColor;
   int pageNumber = 1;
   Timer timer;
   bool isLoading = true;
@@ -51,23 +53,23 @@ class _HomeViewState extends State<HomeView>
     FirebaseAdMob.instance.initialize(appId: InterstitialAd.testAdUnitId);
 
     controller =
-        AnimationController(duration: Duration(minutes: 1), vsync: this);
+        AnimationController(duration: Duration(seconds: 5), vsync: this);
     getTrendingWallpapers();
     super.initState();
 
     initUser();
-    animation = Tween<double>(begin: 1, end: 2).animate(controller)
+    animation = Tween<double>(begin: 0, end: 1).animate(controller)
       ..addListener(() {
         setState(() {});
-      })
-      ..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          controller.reverse();
-        }
-        if (status == AnimationStatus.dismissed) {
-          controller.forward();
-        }
       });
+    // ..addStatusListener((status) {
+    //   if (status == AnimationStatus.completed) {
+    //     controller.reverse();
+    //   }
+    //   if (status == AnimationStatus.dismissed) {
+    //     controller.forward();
+    //   }
+    // });
     controller.forward();
     // _scrollController = new ScrollController()..addListener(_scrollListener);
   }
@@ -90,27 +92,27 @@ class _HomeViewState extends State<HomeView>
       photographerUrl = event.data()['photographerUrl'].toString();
       avgColor = event.data()['avgColor'].toString();
     });
-    if (imgUrl == "") {
-      DocumentReference documentReference = FirebaseFirestore.instance
-          .collection("DailySpecial")
-          .doc("DailySpecial");
-      documentReference.snapshots().listen((event) {
-        imgUrl = event.data()['imgUrl'].toString();
-        originalUrl = event.data()['originalUrl'].toString();
-        photoID = event.data()['photoID'].toString();
-        photographer = event.data()['photographer'].toString();
-        photographerID = event.data()['photographerID'].toString();
-        photographerUrl = event.data()['photographerUrl'].toString();
-        avgColor = event.data()['avgColor'].toString();
-      });
-    }
-
+    // if (imgUrl == "") {
+    //   DocumentReference documentReference = FirebaseFirestore.instance
+    //       .collection("DailySpecial")
+    //       .doc("DailySpecial");
+    //   documentReference.snapshots().listen((event) {
+    //     imgUrl = event.data()['imgUrl'].toString();
+    //     originalUrl = event.data()['originalUrl'].toString();
+    //     photoID = event.data()['photoID'].toString();
+    //     photographer = event.data()['photographer'].toString();
+    //     photographerID = event.data()['photographerID'].toString();
+    //     photographerUrl = event.data()['photographerUrl'].toString();
+    //     avgColor = event.data()['avgColor'].toString();
+    //   });
+    // }
     assert(imgUrl != null);
     assert(originalUrl != null);
     assert(photoID != null);
     assert(photographer != null);
     assert(photographerID != null);
     assert(photographerUrl != null);
+    assert(avgColor != null);
   }
 
   Future<List> getTrendingWallpapers() async {
@@ -132,6 +134,12 @@ class _HomeViewState extends State<HomeView>
       isLoading = false;
       imagesLoaded = true;
     });
+    foregroundColor = Hexcolor(avgColor).computeLuminance() > 0.5
+        ? Colors.black
+        : Colors.white;
+    // print("AVG:" + avgColor.toString());
+    // print("FG: " + foregroundColor.toString());
+    setState(() {});
     return wallpapers;
   }
 
@@ -147,6 +155,7 @@ class _HomeViewState extends State<HomeView>
     setState(() {
       imagesLoaded = true;
     });
+
     print("Next" + jsonData["next_page"].toString());
     nextPage = jsonData["next_page"].toString();
     return wallpapers;
@@ -219,12 +228,18 @@ class _HomeViewState extends State<HomeView>
                                   height: MediaQuery.of(context).size.width,
                                   child: Container(
                                     color: Hexcolor(avgColor),
-                                    child: Transform.scale(
-                                      scale: animation.value,
+                                    child: AnimatedBuilder(
+                                      animation: controller,
                                       child: Image.network(
                                         imgUrl,
                                         fit: BoxFit.fill,
                                       ),
+                                      builder: (context, Widget child) {
+                                        return Opacity(
+                                          opacity: animation.value,
+                                          child: child,
+                                        );
+                                      },
                                     ),
                                   ),
                                 ),
@@ -237,9 +252,7 @@ class _HomeViewState extends State<HomeView>
                                     Text(
                                       "Daily Special",
                                       style: TextStyle(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
+                                        color: foregroundColor,
                                         fontSize: 50,
                                         shadows: <Shadow>[
                                           Shadow(
@@ -289,6 +302,7 @@ class _HomeViewState extends State<HomeView>
                             ),
                             onPressed: () {
                               pageNumber = pageNumber + 1;
+                              HapticFeedback.mediumImpact();
                               getMoreWallpapers();
                               _lBVisiblity = false;
                               setState(() {});

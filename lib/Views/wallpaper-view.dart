@@ -44,7 +44,6 @@ class _WallPaperViewState extends State<WallPaperView> {
   bool transparent = false;
   User user;
   double _height = 200;
-  double _width;
   String wallpaperLocation;
   final globalKey = GlobalKey<ScaffoldState>();
   var result = "Waiting to set wallpapers";
@@ -91,12 +90,10 @@ class _WallPaperViewState extends State<WallPaperView> {
   _updateState() {
     if (fullScreen == true) {
       _height = 0;
-      _width = 0;
     }
     if (fullScreen == false) {
       findIfFav();
       _height = 200;
-      _width = MediaQuery.of(context).size.width;
     }
     if (transparent == true) {}
     if (transparent == false) {}
@@ -193,8 +190,8 @@ class _WallPaperViewState extends State<WallPaperView> {
                   padding: const EdgeInsets.all(0.0),
                   child: AnimatedContainer(
                     duration: Duration(milliseconds: 500),
-                    curve: Curves.easeInOut,
-                    width: _width,
+                    curve: Curves.linear,
+                    width: MediaQuery.of(context).size.width,
                     height: _height,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
