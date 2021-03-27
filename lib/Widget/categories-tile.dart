@@ -21,7 +21,7 @@ class CategoriesTile extends StatelessWidget {
             children: [
               Padding(
                 padding:
-                    const EdgeInsets.only(top: 0, bottom: 0, left: 5, right: 5),
+                    const EdgeInsets.only(top: 0, bottom: 0, left: 0, right: 0),
                 child: Center(
                   child: Container(
                     decoration: BoxDecoration(
@@ -34,7 +34,7 @@ class CategoriesTile extends StatelessWidget {
                           fit: BoxFit.fill,
                           imageUrl: categories.imgUrl,
                         ),
-                        mainAxisExtent: 400.0,
+                        mainAxisExtent: 200.0,
                         direction: AxisDirection.up,
                         flipDirection: true,
                       ),
@@ -49,18 +49,19 @@ class CategoriesTile extends StatelessWidget {
                   ClipRRect(
                     child: Container(
                       width: width,
-                      height: 400,
+                      height: 200,
                       padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 60),
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 80),
                       alignment: Alignment.bottomRight,
                       child: BorderedText(
                         strokeColor: Colors.black,
                         strokeWidth: 8,
                         child: Text(
-                          categories.categoryName,
+                          categories.categoryName.toUpperCase(),
                           style: TextStyle(
-                              fontSize: 40,
-                              fontFamily: 'Circular Black',
+                              letterSpacing: 5,
+                              fontSize: 30,
+                              fontFamily: 'Theme Bold',
                               color: textColor),
                         ),
                       ),

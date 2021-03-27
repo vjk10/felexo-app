@@ -25,7 +25,7 @@ class _HomeViewState extends State<HomeView>
     with SingleTickerProviderStateMixin {
   AnimationController controller;
   Animation<double> animation;
-  List<WallpaperModel> wallpapers = new List();
+  List<WallpaperModel> wallpapers = [];
   bool imagesLoaded = false;
   bool _lBVisiblity = false;
   String dailyTitle;
@@ -164,10 +164,10 @@ class _HomeViewState extends State<HomeView>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text("Curated", style: Theme.of(context).textTheme.headline6),
-        ),
+        // appBar: AppBar(
+        //   centerTitle: true,
+        //   title: Text("Curated", style: Theme.of(context).textTheme.headline6),
+        // ),
         key: _globalKey,
         backgroundColor: Theme.of(context).backgroundColor,
         body: SafeArea(
@@ -203,74 +203,74 @@ class _HomeViewState extends State<HomeView>
                     physics: BouncingScrollPhysics(),
                     child: Column(
                       children: [
+                        // Padding(
+                        //   padding: const EdgeInsets.all(20.0),
+                        //   child: InkWell(
+                        //     onTap: () {
+                        //       Navigator.push(
+                        //           context,
+                        //           MaterialPageRoute(
+                        //               builder: (context) => WallPaperView(
+                        //                   avgColor: avgColor,
+                        //                   uid: user.uid,
+                        //                   imgUrl: imgUrl,
+                        //                   originalUrl: originalUrl,
+                        //                   photoID: photoID,
+                        //                   photographer: photographer,
+                        //                   photographerID: photographerID,
+                        //                   photographerUrl: photographerUrl)));
+                        //     },
+                        //     child: ClipRRect(
+                        //       borderRadius: BorderRadius.circular(10),
+                        //       child: Stack(children: [
+                        //         Container(
+                        //           width: MediaQuery.of(context).size.width,
+                        //           height: MediaQuery.of(context).size.width,
+                        //           child: Container(
+                        //             color: Hexcolor(avgColor),
+                        //             child: AnimatedBuilder(
+                        //               animation: controller,
+                        //               child: Image.network(
+                        //                 imgUrl,
+                        //                 fit: BoxFit.fill,
+                        //               ),
+                        //               builder: (context, Widget child) {
+                        //                 return Opacity(
+                        //                   opacity: animation.value,
+                        //                   child: child,
+                        //                 );
+                        //               },
+                        //             ),
+                        //           ),
+                        //         ),
+                        //         Container(
+                        //           width: MediaQuery.of(context).size.width,
+                        //           height: MediaQuery.of(context).size.width,
+                        //           color: Hexcolor(avgColor).withOpacity(0.3),
+                        //           alignment: Alignment.center,
+                        //           child: Stack(children: [
+                        //             Text(
+                        //               "Daily Special",
+                        //               style: TextStyle(
+                        //                 color: foregroundColor,
+                        //                 fontSize: 50,
+                        //                 shadows: <Shadow>[
+                        //                   Shadow(
+                        //                     offset: Offset(8.0, 10.0),
+                        //                     blurRadius: 50.0,
+                        //                     color: Colors.black,
+                        //                   ),
+                        //                 ],
+                        //               ),
+                        //             ),
+                        //           ]),
+                        //         ),
+                        //       ]),
+                        //     ),
+                        //   ),
+                        // ),
                         Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => WallPaperView(
-                                          avgColor: avgColor,
-                                          uid: user.uid,
-                                          imgUrl: imgUrl,
-                                          originalUrl: originalUrl,
-                                          photoID: photoID,
-                                          photographer: photographer,
-                                          photographerID: photographerID,
-                                          photographerUrl: photographerUrl)));
-                            },
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Stack(children: [
-                                Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: MediaQuery.of(context).size.width,
-                                  child: Container(
-                                    color: Hexcolor(avgColor),
-                                    child: AnimatedBuilder(
-                                      animation: controller,
-                                      child: Image.network(
-                                        imgUrl,
-                                        fit: BoxFit.fill,
-                                      ),
-                                      builder: (context, Widget child) {
-                                        return Opacity(
-                                          opacity: animation.value,
-                                          child: child,
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: MediaQuery.of(context).size.width,
-                                  color: Hexcolor(avgColor).withOpacity(0.3),
-                                  alignment: Alignment.center,
-                                  child: Stack(children: [
-                                    Text(
-                                      "Daily Special",
-                                      style: TextStyle(
-                                        color: foregroundColor,
-                                        fontSize: 50,
-                                        shadows: <Shadow>[
-                                          Shadow(
-                                            offset: Offset(8.0, 10.0),
-                                            blurRadius: 50.0,
-                                            color: Colors.black,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ]),
-                                ),
-                              ]),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                            padding: const EdgeInsets.fromLTRB(8, 10, 8, 0),
+                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                             child: imagesLoaded
                                 ? Curated()
                                 : Column(
@@ -294,12 +294,13 @@ class _HomeViewState extends State<HomeView>
                         child: Container(
                           width: 110,
                           height: 40,
-                          child: RaisedButton(
-                            elevation: 5,
-                            color: Theme.of(context).backgroundColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                primary: buttonColor,
+                                onPrimary: textColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                )),
                             onPressed: () {
                               pageNumber = pageNumber + 1;
                               HapticFeedback.mediumImpact();

@@ -25,7 +25,7 @@ class _SearchViewState extends State<SearchView> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   User user;
   Color chip = iconColor.withAlpha(60);
-  List<WallpaperModel> wallpapers = new List();
+  List<WallpaperModel> wallpapers = [];
 
   @override
   void initState() {
@@ -49,7 +49,7 @@ class _SearchViewState extends State<SearchView> {
         headers: {"Authorization": apiKey}).then((value) {
       Map<String, dynamic> jsonData = jsonDecode(value.body);
       // print(value.body.toString());
-      wallpapers = new List();
+      wallpapers = [];
       jsonData["photos"].forEach((element) {
         WallpaperModel wallpaperModel = new WallpaperModel();
         wallpaperModel = WallpaperModel.fromMap(element);
@@ -67,7 +67,7 @@ class _SearchViewState extends State<SearchView> {
         headers: {"Authorization": apiKey}).then((value) {
       Map<String, dynamic> jsonData = jsonDecode(value.body);
       // print(value.body.toString());
-      wallpapers = new List();
+      wallpapers = [];
       jsonData["photos"].forEach((element) {
         WallpaperModel wallpaperModel = new WallpaperModel();
         wallpaperModel = WallpaperModel.fromMap(element);

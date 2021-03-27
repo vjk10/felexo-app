@@ -18,7 +18,8 @@ class Curated extends StatefulWidget {
 }
 
 class _CuratedState extends State<Curated> {
-  List<WallpaperModel> wallpapers = new List();
+  List<WallpaperModel> wallpapers = [];
+  bool _buttonVisible = false;
   String wallpaperLocation,
       uid,
       imgUrl,
@@ -66,6 +67,7 @@ class _CuratedState extends State<Curated> {
     print("Next" + jsonData["next_page"].toString());
     nextPage = jsonData["next_page"].toString();
     moreVisible = false;
+    _buttonVisible = !_buttonVisible;
     setState(() {});
     return wallpapers;
   }
@@ -82,6 +84,7 @@ class _CuratedState extends State<Curated> {
   @override
   void initState() {
     getTrendingWallpapers();
+    _buttonVisible = true;
     super.initState();
   }
 
@@ -101,20 +104,20 @@ class _CuratedState extends State<Curated> {
                   crossAxisCount: 2,
                   physics: BouncingScrollPhysics(),
                   childAspectRatio: 0.6,
-                  padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                  mainAxisSpacing: 5.0,
-                  crossAxisSpacing: 5.0,
+                  padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                  mainAxisSpacing: 0.0,
+                  crossAxisSpacing: 0.0,
                   children: wallpapers.map((wallpaper) {
                     return GridTile(
                       child: Material(
                         type: MaterialType.card,
                         shadowColor: Theme.of(context).backgroundColor,
                         elevation: 5,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(0),
                         child: Container(
                           decoration: BoxDecoration(
                               color: Hexcolor(wallpaper.avgColor),
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(0),
                               shape: BoxShape.rectangle),
                           child: Stack(children: [
                             Column(
@@ -122,7 +125,7 @@ class _CuratedState extends State<Curated> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Padding(
-                                  padding: EdgeInsets.only(bottom: 10),
+                                  padding: EdgeInsets.only(bottom: 0),
                                 ),
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -142,7 +145,7 @@ class _CuratedState extends State<Curated> {
                             ),
                             GestureDetector(
                               child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
+                                  borderRadius: BorderRadius.circular(0),
                                   child: Image.network(
                                     wallpaper.src.portrait,
                                     height: 800,
@@ -187,70 +190,70 @@ class _CuratedState extends State<Curated> {
                                               .toString(),
                                         )));
                               },
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 200.0),
-                                child: Container(
-                                  height: 200,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                      gradient: LinearGradient(
-                                          colors: [
-                                            Colors.transparent,
-                                            Colors.black12,
-                                            Colors.black38,
-                                            Colors.black45
-                                          ],
-                                          begin: Alignment.center,
-                                          end: Alignment.bottomCenter)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Align(
-                                              alignment: Alignment.bottomLeft,
-                                              child: AutoSizeText(
-                                                wallpaper.photographer,
-                                                style: TextStyle(
-                                                    color: textColor,
-                                                    fontFamily:
-                                                        'Circular Black',
-                                                    fontSize: 20),
-                                                maxLines: 1,
-                                                minFontSize: 5,
-                                                maxFontSize: 8,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            Align(
-                                              alignment: Alignment.bottomLeft,
-                                              child: AutoSizeText(
-                                                wallpaper.photographerId
-                                                    .toString(),
-                                                style: TextStyle(
-                                                    color: textColor,
-                                                    fontFamily:
-                                                        'Circular Black',
-                                                    fontSize: 15),
-                                                maxLines: 1,
-                                                minFontSize: 5,
-                                                maxFontSize: 10,
-                                              ),
-                                            ),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
+                              // child: Padding(
+                              //   padding: const EdgeInsets.only(top: 200.0),
+                              //   child: Container(
+                              //     height: 200,
+                              //     decoration: BoxDecoration(
+                              //         borderRadius: BorderRadius.circular(0),
+                              //         gradient: LinearGradient(
+                              //             colors: [
+                              //               Colors.transparent,
+                              //               Colors.black12,
+                              //               Colors.black38,
+                              //               Colors.black45
+                              //             ],
+                              //             begin: Alignment.center,
+                              //             end: Alignment.bottomCenter)),
+                              //     child: Padding(
+                              //       padding: const EdgeInsets.all(8.0),
+                              //       child: Column(
+                              //         crossAxisAlignment:
+                              //             CrossAxisAlignment.end,
+                              //         mainAxisAlignment: MainAxisAlignment.end,
+                              //         children: [
+                              //           Row(
+                              //             children: [
+                              //               Align(
+                              //                 alignment: Alignment.bottomLeft,
+                              //                 child: AutoSizeText(
+                              //                   wallpaper.photographer,
+                              //                   style: TextStyle(
+                              //                       color: textColor,
+                              //                       fontFamily:
+                              //                           'Circular Black',
+                              //                       fontSize: 20),
+                              //                   maxLines: 1,
+                              //                   minFontSize: 5,
+                              //                   maxFontSize: 8,
+                              //                 ),
+                              //               ),
+                              //             ],
+                              //           ),
+                              //           Row(
+                              //             children: [
+                              //               Align(
+                              //                 alignment: Alignment.bottomLeft,
+                              //                 child: AutoSizeText(
+                              //                   wallpaper.photographerId
+                              //                       .toString(),
+                              //                   style: TextStyle(
+                              //                       color: textColor,
+                              //                       fontFamily:
+                              //                           'Circular Black',
+                              //                       fontSize: 15),
+                              //                   maxLines: 1,
+                              //                   minFontSize: 5,
+                              //                   maxFontSize: 10,
+                              //                 ),
+                              //               ),
+                              //             ],
+                              //           )
+                              //         ],
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ),
                             )
                           ]),
                         ),
@@ -258,33 +261,87 @@ class _CuratedState extends State<Curated> {
                     );
                   }).toList(),
                 )
-              : CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation(iconColor),
+              : Container(
+                  color: Theme.of(context).scaffoldBackgroundColor,
                 ),
         ),
         SizedBox(
-          height: 20,
+          height: 0,
         ),
-        Visibility(
-            visible: moreVisible,
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation(iconColor),
-            )),
-        Visibility(
-          visible: !moreVisible,
-          child: FlatButton(
-            color: Theme.of(context).colorScheme.primary,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-            child: Text(
-              "Load More",
-              style: TextStyle(color: Theme.of(context).backgroundColor),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Visibility(
+              visible: !_buttonVisible,
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: 50,
+                decoration: BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  color: Theme.of(context).backgroundColor,
+                ),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: 550,
+                      height: 5,
+                      child: LinearProgressIndicator(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.secondary,
+                          valueColor: AlwaysStoppedAnimation(
+                            Theme.of(context).colorScheme.primary,
+                          )),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10.0),
+                      child: Text(
+                        "LOADING...",
+                        style: Theme.of(context).textTheme.button,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    SizedBox(
+                      width: 550,
+                      height: 5,
+                      child: LinearProgressIndicator(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.secondary,
+                          valueColor: AlwaysStoppedAnimation(
+                            Theme.of(context).colorScheme.primary,
+                          )),
+                    ),
+                  ],
+                ),
+              )),
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Visibility(
+            visible: _buttonVisible,
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: 50,
+              child: ElevatedButton(
+                onPressed: () {
+                  _buttonVisible = !_buttonVisible;
+                  setState(() {});
+                  getMoreWallpapers();
+                },
+                style: ElevatedButton.styleFrom(
+                  primary: Theme.of(context).colorScheme.primary,
+                  onPrimary: textColor,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(0)),
+                ),
+                child: Text(
+                  "LOAD MORE",
+                  style: TextStyle(
+                      fontFamily: 'Theme Bold',
+                      color: Theme.of(context).colorScheme.secondary),
+                ),
+              ),
             ),
-            onPressed: () {
-              moreVisible = true;
-              setState(() {});
-              getMoreWallpapers();
-            },
           ),
         ),
       ],

@@ -159,7 +159,7 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                                                       padding:
                                                           const EdgeInsets.all(
                                                               8.0),
-                                                      child: FlatButton(
+                                                      child: TextButton(
                                                         child: Column(
                                                           children: [
                                                             Icon(
@@ -199,7 +199,7 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                                                       padding:
                                                           const EdgeInsets.all(
                                                               8.0),
-                                                      child: FlatButton(
+                                                      child: TextButton(
                                                         child: Column(
                                                           children: [
                                                             Icon(
@@ -286,7 +286,7 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                                             Padding(
                                               padding:
                                                   const EdgeInsets.all(8.0),
-                                              child: FlatButton(
+                                              child: TextButton(
                                                 child: Column(
                                                   children: [
                                                     Icon(
@@ -320,7 +320,7 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                                             Padding(
                                               padding:
                                                   const EdgeInsets.all(8.0),
-                                              child: FlatButton(
+                                              child: TextButton(
                                                 child: Column(
                                                   children: [
                                                     Icon(
@@ -354,7 +354,7 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                                             Padding(
                                               padding:
                                                   const EdgeInsets.all(8.0),
-                                              child: FlatButton(
+                                              child: TextButton(
                                                 child: Column(
                                                   children: [
                                                     Icon(
@@ -429,7 +429,7 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                                         content:
                                             Text("Already added to Favorites!"),
                                         actions: [
-                                          FlatButton(
+                                          TextButton(
                                             onPressed: () {
                                               Navigator.of(context).pop();
                                             },
@@ -475,7 +475,7 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                                             content:
                                                 Text("Daily Special Added!"),
                                             actions: [
-                                              FlatButton(
+                                              TextButton(
                                                 onPressed: () {
                                                   Navigator.of(context).pop();
                                                 },
@@ -533,7 +533,7 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                   content: Text("Wallpaper Saved to Device!",
                       style: Theme.of(context).textTheme.subtitle1),
                   actions: [
-                    FlatButton(
+                    TextButton(
                       child: Text(
                         "OK",
                         style: TextStyle(
@@ -567,7 +567,7 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                 content: Text("Choose Size",
                     style: Theme.of(context).textTheme.subtitle1),
                 actions: [
-                  FlatButton(
+                  TextButton(
                     child: Text("Compressed",
                         style: Theme.of(context).textTheme.subtitle1),
                     onPressed: () async {
@@ -577,7 +577,7 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                       });
                     },
                   ),
-                  FlatButton(
+                  TextButton(
                     child: Text("Original",
                         style: Theme.of(context).textTheme.subtitle1),
                     onPressed: () async {
@@ -614,7 +614,7 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                     content: Text("Wallpaper Set :)",
                         style: Theme.of(context).textTheme.subtitle1),
                     actions: [
-                      FlatButton(
+                      TextButton(
                         child: Text("OK",
                             style: Theme.of(context).textTheme.subtitle1),
                         onPressed: () {

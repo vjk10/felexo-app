@@ -1,11 +1,8 @@
-import 'package:bordered_text/bordered_text.dart';
 import 'package:felexo/Color/colors.dart';
 import 'package:felexo/Services/authentication-service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
-import 'package:lottie/lottie.dart';
 import 'package:permission/permission.dart';
 
 class LandingPage extends StatefulWidget {
@@ -57,119 +54,150 @@ class _LandingPageState extends State<LandingPage>
       DeviceOrientation.portraitUp,
     ]);
     return Scaffold(
-        body: Stack(children: [
-      Align(
-        alignment: Alignment.bottomCenter,
-        child: darkMode
-            ? Lottie.asset(
-                "assets/lottie/wavesDark.json",
-                fit: BoxFit.cover,
-                height: MediaQuery.of(context).size.height,
-                controller: controller,
-                onLoaded: (composition) {
-                  controller
-                    ..duration = composition.duration
-                    ..forward()
-                    ..addListener(() {
-                      setState(() {});
-                    })
-                    ..addStatusListener((status) {
-                      if (status == AnimationStatus.completed) {
-                        controller.repeat();
-                      }
-                    });
-                },
-              )
-            : Lottie.asset(
-                "assets/lottie/waves.json",
-                fit: BoxFit.cover,
-                height: MediaQuery.of(context).size.height,
-                animate: true,
-                controller: controller,
-                onLoaded: (composition) {
-                  controller
-                    ..duration = composition.duration
-                    ..forward()
-                    ..addListener(() {
-                      setState(() {});
-                    })
-                    ..addStatusListener((status) {
-                      if (status == AnimationStatus.completed) {
-                        controller.repeat();
-                      }
-                    });
-                },
-              ),
-      ),
-      Align(
-          alignment: Alignment.center,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  BorderedText(
-                    strokeColor: Theme.of(context).colorScheme.primary,
-                    strokeWidth: 3,
-                    child: Text("Felexo",
-                        style: TextStyle(
-                            color: Colors.transparent, fontSize: 100)),
-                  ),
-                ],
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  BorderedText(
-                    strokeColor: Theme.of(context).colorScheme.primary,
-                    strokeWidth: 1,
-                    child: Text("A library of amazing wallpapers",
-                        style:
-                            TextStyle(color: Colors.transparent, fontSize: 20)),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GoogleSignInButton(
-                    borderRadius: 10,
-                    textStyle: TextStyle(fontFamily: "Circular Bold"),
-                    darkMode: darkMode,
-                    onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                                backgroundColor:
-                                    Theme.of(context).backgroundColor,
-                                content: Row(
-                                  children: [
-                                    CircularProgressIndicator(
-                                      valueColor:
-                                          AlwaysStoppedAnimation(iconColor),
+        body: SafeArea(
+      child: Stack(children: [
+        // Align(
+        //   alignment: Alignment.topLeft,
+        //   child: Padding(
+        //     padding: const EdgeInsets.all(15.0),
+        //     child: InkWell(
+        //         onTap: () {
+        //           HapticFeedback.mediumImpact();
+        //           if (isDark == true) {
+        //             onThemeChanged("ThemeMode.dark", themeModeNotifier);
+        //           } else if (isDark == false) {
+        //             onThemeChanged("ThemeMode.light", themeModeNotifier);
+        //           }
+        //           setState(() {});
+        //         },
+        //         child: Icon(Icons.brightness_4_outlined)),
+        //   ),
+        // ),
+        Align(
+            alignment: Alignment.center,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 150,
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("FELEXO",
+                            style: TextStyle(
+                                fontFamily: 'Theme Black',
+                                color: Theme.of(context).colorScheme.secondary,
+                                fontSize: 80)),
+                      ],
+                    )),
+                SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          onPrimary: Theme.of(context).colorScheme.background,
+                          elevation: 15,
+                          padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.zero),
+                          shadowColor: Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withOpacity(1),
+                          onSurface: Theme.of(context).colorScheme.secondary),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            "assets/images/googleIcon.png",
+                            scale: 4,
+                          ),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Text("SIGN IN WITH GOOGLE")
+                        ],
+                      ),
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                                  backgroundColor: Colors.transparent,
+                                  content: Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 70,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.rectangle,
+                                      color: Theme.of(context).backgroundColor,
                                     ),
-                                    SizedBox(
-                                      width: 20,
+                                    child: Column(
+                                      children: [
+                                        SizedBox(
+                                          width: 550,
+                                          height: 5,
+                                          child: LinearProgressIndicator(
+                                              backgroundColor: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary,
+                                              valueColor:
+                                                  AlwaysStoppedAnimation(
+                                                Theme.of(context)
+                                                    .colorScheme
+                                                    .primary,
+                                              )),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 20.0),
+                                          child: Text(
+                                            "VERIFYING CREDENTIALS",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 23,
+                                        ),
+                                        SizedBox(
+                                          width: 550,
+                                          height: 5,
+                                          child: LinearProgressIndicator(
+                                              backgroundColor: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary,
+                                              valueColor:
+                                                  AlwaysStoppedAnimation(
+                                                Theme.of(context)
+                                                    .colorScheme
+                                                    .primary,
+                                              )),
+                                        ),
+                                      ],
                                     ),
-                                    Text("Verifying Credentials")
-                                  ],
-                                ),
-                              ));
-                      signInWithGoogle(context);
-                    },
-                  ),
-                ],
-              )
-            ],
-          )),
-    ]));
+                                  ),
+                                ));
+                        signInWithGoogle(context);
+                      },
+                    ),
+                  ],
+                )
+              ],
+            )),
+      ]),
+    ));
   }
 }

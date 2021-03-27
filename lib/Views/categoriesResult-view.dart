@@ -24,6 +24,7 @@ class _CategoriesResultState extends State<CategoriesResult> {
   bool imagesLoaded = false;
   bool _buttonVisible = true;
   int pageNumber = 1;
+  // ignore: deprecated_member_use
   List<WallpaperModel> wallpapers = new List();
 
   getCateogryWallpapers(String categoryName) async {
@@ -84,13 +85,10 @@ class _CategoriesResultState extends State<CategoriesResult> {
     if (imagesLoaded == true) {
       return Scaffold(
           appBar: AppBar(
-            centerTitle: true,
-            iconTheme: IconThemeData(color: iconColor),
             title: Text(
-              "Categories",
+              widget.categoryName,
               style: Theme.of(context).textTheme.headline6,
             ),
-            elevation: 5,
           ),
           body: SingleChildScrollView(
               child: Padding(
@@ -103,17 +101,17 @@ class _CategoriesResultState extends State<CategoriesResult> {
                     Padding(
                       padding: EdgeInsets.only(top: 0),
                     ),
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: Padding(
-                        padding: EdgeInsets.only(top: 0, bottom: 2, left: 10),
-                        child: Text(
-                          widget.categoryName,
-                          style: TextStyle(
-                              fontFamily: 'Circular Black', fontSize: 25),
-                        ),
-                      ),
-                    ),
+                    // Align(
+                    //   alignment: Alignment.topLeft,
+                    //   child: Padding(
+                    //     padding: EdgeInsets.only(top: 0, bottom: 2, left: 10),
+                    //     child: Text(
+                    //       widget.categoryName,
+                    //       style: TextStyle(
+                    //           fontFamily: 'Theme Black', fontSize: 25),
+                    //     ),
+                    //   ),
+                    // ),
                     Padding(
                       padding: const EdgeInsets.only(top: 10.0),
                       child: wallpaperSearchGrid(
@@ -123,43 +121,83 @@ class _CategoriesResultState extends State<CategoriesResult> {
                     ),
                     Align(
                       alignment: Alignment.bottomCenter,
-                      child: Padding(
-                          padding:
-                              EdgeInsets.only(top: 10, bottom: 2, right: 10),
-                          child: Visibility(
-                              visible: !_buttonVisible,
-                              child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation(iconColor),
-                              ))),
+                      child: Visibility(
+                          visible: !_buttonVisible,
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.rectangle,
+                              color: Theme.of(context).backgroundColor,
+                            ),
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  width: 550,
+                                  height: 5,
+                                  child: LinearProgressIndicator(
+                                      backgroundColor: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
+                                      valueColor: AlwaysStoppedAnimation(
+                                        Theme.of(context).colorScheme.primary,
+                                      )),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 10.0),
+                                  child: Text(
+                                    "LOADING...",
+                                    style: Theme.of(context).textTheme.button,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                SizedBox(
+                                  width: 550,
+                                  height: 5,
+                                  child: LinearProgressIndicator(
+                                      backgroundColor: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
+                                      valueColor: AlwaysStoppedAnimation(
+                                        Theme.of(context).colorScheme.primary,
+                                      )),
+                                ),
+                              ],
+                            ),
+                          )),
                     ),
                     Align(
                       alignment: Alignment.bottomCenter,
-                      child: Padding(
-                          padding:
-                              EdgeInsets.only(top: 10, bottom: 2, right: 10),
-                          child: Visibility(
-                            visible: _buttonVisible,
-                            child: RaisedButton(
-                              splashColor: iconColor,
-                              onPressed: () {
-                                _buttonVisible = !_buttonVisible;
-                                setState(() {});
-                                pageNumber = pageNumber + 1;
-                                getMoreWallpapers(widget.categoryName);
-                              },
-                              color: Theme.of(context).colorScheme.primary,
+                      child: Visibility(
+                        visible: _buttonVisible,
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 50,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _buttonVisible = !_buttonVisible;
+                              setState(() {});
+                              pageNumber = pageNumber + 1;
+                              getMoreWallpapers(widget.categoryName);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              primary: Theme.of(context).colorScheme.primary,
+                              onPrimary: textColor,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Text(
-                                "Load More",
-                                style: TextStyle(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary),
-                              ),
+                                  borderRadius: BorderRadius.circular(0)),
                             ),
-                          )),
+                            child: Text(
+                              "LOAD MORE",
+                              style: TextStyle(
+                                  fontFamily: 'Theme Bold',
+                                  color:
+                                      Theme.of(context).colorScheme.secondary),
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),

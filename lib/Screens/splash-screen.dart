@@ -5,12 +5,16 @@ import 'package:felexo/Color/colors.dart';
 import 'package:felexo/Screens/main-screen.dart';
 import 'package:felexo/Services/animation-route.dart';
 import 'package:felexo/Services/authentication-service.dart';
+import 'package:felexo/Views/main-view.dart';
+import 'package:felexo/theme/app-theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:lottie/lottie.dart';
 import 'package:permission/permission.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -25,6 +29,8 @@ class _SplashScreenState extends State<SplashScreen>
   bool visibility = false;
   User user;
   double height = 500;
+  String _systemTheme;
+  bool isDark = true;
 
   @override
   void initState() {
@@ -35,10 +41,11 @@ class _SplashScreenState extends State<SplashScreen>
     Timer(Duration(seconds: 3), () async {
       if (_auth.currentUser != null) {
         Navigator.pushAndRemoveUntil(
-            context, FadeRoute(context, page: MainScreen()), (route) => false);
+            context, FadeRoute(context, page: MainView()), (route) => false);
       } else {
         visibility = true;
         height = MediaQuery.of(context).size.height;
+        setState(() {});
       }
     });
   }
@@ -73,136 +80,205 @@ class _SplashScreenState extends State<SplashScreen>
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
+    final themeModeNotifier = Provider.of<ThemeModeNotifier>(context);
+    if (MediaQuery.of(context).platformBrightness == Brightness.light) {
+      isDark = false;
+    }
+    _systemTheme = (themeModeNotifier.getMode().toString());
+    if (_systemTheme == "") {
+      SharedPreferences.getInstance().then((themePrefs) async {
+        String theme = themePrefs.getString("appTheme");
+        if (theme == "ThemeMode.system") {
+          _systemTheme = "ThemeMode.system";
+        }
+        if (theme == "ThemeMode.dark") {
+          _systemTheme = "ThemeMode.dark";
+        }
+        if (theme == "ThemeMode.light") {
+          _systemTheme = "ThemeMode.light";
+        }
+      });
+    }
+    if (_systemTheme != "") {
+      SharedPreferences.getInstance().then((themePrefs) async {
+        String theme = themePrefs.getString("appTheme");
+        if (theme == "ThemeMode.system") {
+          _systemTheme = "ThemeMode.system";
+        }
+        if (theme == "ThemeMode.dark") {
+          _systemTheme = "ThemeMode.dark";
+        }
+        if (theme == "ThemeMode.light") {
+          _systemTheme = "ThemeMode.light";
+        }
+      });
+    }
+    print(_systemTheme);
     return Scaffold(
-        body: Stack(children: [
-      SizedBox(
-        height: 10,
-      ),
-      Align(
-        alignment: Alignment.bottomCenter,
-        child: darkMode
-            ? AnimatedContainer(
-                duration: Duration(seconds: 3),
-                curve: Curves.ease,
-                height: height,
-                child: Lottie.asset(
-                  "assets/lottie/wavesDark.json",
-                  controller: controller,
-                  fit: BoxFit.cover,
-                  width: MediaQuery.of(context).size.width,
-                  onLoaded: (composition) {
-                    controller
-                      ..duration = composition.duration
-                      ..forward()
-                      ..addListener(() {
-                        setState(() {});
-                      })
-                      ..addStatusListener((status) {
-                        if (status == AnimationStatus.completed) {
-                          controller.repeat();
-                        }
-                      });
-                  },
+        body: SafeArea(
+      child: Stack(children: [
+        // Align(
+        //   alignment: Alignment.topLeft,
+        //   child: Padding(
+        //     padding: const EdgeInsets.all(15.0),
+        //     child: InkWell(
+        //         onTap: () {
+        //           HapticFeedback.mediumImpact();
+        //           if (isDark == true) {
+        //             onThemeChanged("ThemeMode.dark", themeModeNotifier);
+        //           } else if (isDark == false) {
+        //             onThemeChanged("ThemeMode.light", themeModeNotifier);
+        //           }
+        //           setState(() {});
+        //         },
+        //         child: Icon(Icons.brightness_4_outlined)),
+        //   ),
+        // ),
+        Align(
+            alignment: Alignment.center,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 150,
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("FELEXO",
+                            style: TextStyle(
+                                fontFamily: 'Theme Black',
+                                color: Theme.of(context).colorScheme.secondary,
+                                fontSize: 80)),
+                      ],
+                    )),
+                SizedBox(
+                  height: 10,
                 ),
-              )
-            : AnimatedContainer(
-                duration: Duration(seconds: 3),
-                curve: Curves.ease,
-                height: height,
-                child: Lottie.asset(
-                  "assets/lottie/waves.json",
-                  controller: controller,
-                  fit: BoxFit.cover,
-                  height: height,
-                  width: MediaQuery.of(context).size.width,
-                  onLoaded: (composition) {
-                    controller
-                      ..duration = composition.duration
-                      ..forward()
-                      ..addListener(() {
-                        setState(() {});
-                      })
-                      ..addStatusListener((status) {
-                        if (status == AnimationStatus.completed) {
-                          controller.repeat();
-                        }
-                      });
-                  },
+                SizedBox(
+                  height: 20,
                 ),
-              ),
-      ),
-      Align(
-          alignment: Alignment.center,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  BorderedText(
-                    strokeColor: Theme.of(context).colorScheme.primary,
-                    strokeWidth: 3,
-                    child: Text("Felexo",
-                        style: TextStyle(
-                            color: Colors.transparent, fontSize: 100)),
-                  ),
-                ],
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  BorderedText(
-                    strokeColor: Theme.of(context).colorScheme.primary,
-                    strokeWidth: 1,
-                    child: Text("A library of amazing wallpapers",
-                        style:
-                            TextStyle(color: Colors.transparent, fontSize: 20)),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Visibility(
-                    visible: visibility,
-                    child: GoogleSignInButton(
-                      borderRadius: 10,
-                      textStyle: TextStyle(fontFamily: "Circular Bold"),
-                      darkMode: darkMode,
-                      onPressed: () {
-                        showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                                  backgroundColor:
-                                      Theme.of(context).backgroundColor,
-                                  content: Row(
-                                    children: [
-                                      CircularProgressIndicator(
-                                        valueColor:
-                                            AlwaysStoppedAnimation(iconColor),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Visibility(
+                      visible: visibility,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            onPrimary: Theme.of(context).colorScheme.background,
+                            elevation: 15,
+                            padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.zero),
+                            shadowColor: Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withOpacity(1),
+                            onSurface: Theme.of(context).colorScheme.secondary),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              "assets/images/googleIcon.png",
+                              scale: 4,
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            Text("SIGN IN WITH GOOGLE")
+                          ],
+                        ),
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                    backgroundColor: Colors.transparent,
+                                    content: Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      height: 70,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.rectangle,
+                                        color:
+                                            Theme.of(context).backgroundColor,
                                       ),
-                                      SizedBox(
-                                        width: 20,
+                                      child: Column(
+                                        children: [
+                                          SizedBox(
+                                            width: 550,
+                                            height: 5,
+                                            child: LinearProgressIndicator(
+                                                backgroundColor:
+                                                    Theme.of(context)
+                                                        .colorScheme
+                                                        .secondary,
+                                                valueColor:
+                                                    AlwaysStoppedAnimation(
+                                                  Theme.of(context)
+                                                      .colorScheme
+                                                      .primary,
+                                                )),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 20.0),
+                                            child: Text(
+                                              "VERIFYING CREDENTIALS",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .button,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 23,
+                                          ),
+                                          SizedBox(
+                                            width: 550,
+                                            height: 5,
+                                            child: LinearProgressIndicator(
+                                                backgroundColor:
+                                                    Theme.of(context)
+                                                        .colorScheme
+                                                        .secondary,
+                                                valueColor:
+                                                    AlwaysStoppedAnimation(
+                                                  Theme.of(context)
+                                                      .colorScheme
+                                                      .primary,
+                                                )),
+                                          ),
+                                        ],
                                       ),
-                                      Text("Verifying Credentials")
-                                    ],
-                                  ),
-                                ));
-                        signInWithGoogle(context);
-                      },
+                                    ),
+                                  ));
+                          signInWithGoogle(context);
+                        },
+                      ),
                     ),
-                  ),
-                ],
-              )
-            ],
-          )),
-    ]));
+                  ],
+                )
+              ],
+            )),
+      ]),
+    ));
+  }
+
+  void onThemeChanged(String val, ThemeModeNotifier themeModeNotifier) async {
+    var themeModePrefs = await SharedPreferences.getInstance();
+    if (val == "ThemeMode.system") {
+      themeModeNotifier.setMode(ThemeMode.system);
+    }
+    if (val == "ThemeMode.dark") {
+      themeModeNotifier.setMode(ThemeMode.dark);
+    }
+    if (val == "ThemeMode.light") {
+      themeModeNotifier.setMode(ThemeMode.light);
+    }
+    themeModePrefs.setString("appTheme", val);
   }
 }

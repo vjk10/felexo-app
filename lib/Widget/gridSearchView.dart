@@ -19,20 +19,20 @@ Widget wallpaperSearchGrid(
           crossAxisCount: 2,
           physics: ClampingScrollPhysics(),
           childAspectRatio: 0.6,
-          padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-          mainAxisSpacing: 5.0,
-          crossAxisSpacing: 5.0,
+          padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+          mainAxisSpacing: 0.0,
+          crossAxisSpacing: 0.0,
           children: wallpapers.map((wallpaper) {
             return GridTile(
               child: Material(
                 type: MaterialType.card,
                 shadowColor: Theme.of(context).backgroundColor,
                 elevation: 5,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(0),
                 child: Container(
                   decoration: BoxDecoration(
                       color: Hexcolor(wallpaper.avgColor),
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(0),
                       shape: BoxShape.rectangle),
                   child: Stack(children: [
                     Column(
@@ -60,7 +60,7 @@ Widget wallpaperSearchGrid(
                       tag: wallpaper,
                       child: GestureDetector(
                         child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(0),
                             child: Image.network(
                               wallpaper.src.portrait,
                               height: 800,
@@ -101,66 +101,66 @@ Widget wallpaperSearchGrid(
                                       wallpaper.photographerId.toString(),
                                 )));
                       },
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 200.0),
-                        child: Container(
-                          height: 200,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              gradient: LinearGradient(
-                                  colors: [
-                                    Colors.transparent,
-                                    Colors.black12,
-                                    Colors.black38,
-                                    Colors.black45
-                                  ],
-                                  begin: Alignment.center,
-                                  end: Alignment.bottomCenter)),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Row(
-                                  children: [
-                                    Align(
-                                      alignment: Alignment.bottomLeft,
-                                      child: AutoSizeText(
-                                        wallpaper.photographer,
-                                        style: TextStyle(
-                                            color: textColor,
-                                            fontFamily: 'Circular Black',
-                                            fontSize: 20),
-                                        maxLines: 1,
-                                        minFontSize: 5,
-                                        maxFontSize: 8,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Align(
-                                      alignment: Alignment.bottomLeft,
-                                      child: AutoSizeText(
-                                        wallpaper.photographerId.toString(),
-                                        style: TextStyle(
-                                            color: textColor,
-                                            fontFamily: 'Circular Black',
-                                            fontSize: 15),
-                                        maxLines: 1,
-                                        minFontSize: 5,
-                                        maxFontSize: 10,
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
+                      // child: Padding(
+                      //   padding: const EdgeInsets.only(top: 200.0),
+                      //   child: Container(
+                      //     height: 200,
+                      //     decoration: BoxDecoration(
+                      //         borderRadius: BorderRadius.circular(0),
+                      //         gradient: LinearGradient(
+                      //             colors: [
+                      //               Colors.transparent,
+                      //               Colors.black12,
+                      //               Colors.black38,
+                      //               Colors.black45
+                      //             ],
+                      //             begin: Alignment.center,
+                      //             end: Alignment.bottomCenter)),
+                      //     child: Padding(
+                      //       padding: const EdgeInsets.all(8.0),
+                      //       child: Column(
+                      //         crossAxisAlignment: CrossAxisAlignment.end,
+                      //         mainAxisAlignment: MainAxisAlignment.end,
+                      //         children: [
+                      //           Row(
+                      //             children: [
+                      //               Align(
+                      //                 alignment: Alignment.bottomLeft,
+                      //                 child: AutoSizeText(
+                      //                   wallpaper.photographer,
+                      //                   style: TextStyle(
+                      //                       color: textColor,
+                      //                       fontFamily: 'Circular Black',
+                      //                       fontSize: 20),
+                      //                   maxLines: 1,
+                      //                   minFontSize: 5,
+                      //                   maxFontSize: 8,
+                      //                 ),
+                      //               ),
+                      //             ],
+                      //           ),
+                      //           Row(
+                      //             children: [
+                      //               Align(
+                      //                 alignment: Alignment.bottomLeft,
+                      //                 child: AutoSizeText(
+                      //                   wallpaper.photographerId.toString(),
+                      //                   style: TextStyle(
+                      //                       color: textColor,
+                      //                       fontFamily: 'Circular Black',
+                      //                       fontSize: 15),
+                      //                   maxLines: 1,
+                      //                   minFontSize: 5,
+                      //                   maxFontSize: 10,
+                      //                 ),
+                      //               ),
+                      //             ],
+                      //           )
+                      //         ],
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
                     )
                     // Padding(
                     //   padding: const EdgeInsets.only(bottom: 15.0),

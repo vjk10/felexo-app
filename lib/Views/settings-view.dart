@@ -92,7 +92,7 @@ class _SettingsViewState extends State<SettingsView> {
     print(_systemTheme);
     return Scaffold(
       key: globalKey,
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         centerTitle: true,
         title: Text("Settings", style: Theme.of(context).textTheme.headline6),
@@ -277,6 +277,7 @@ class _SettingsViewState extends State<SettingsView> {
                     (await getTemporaryDirectory()).path + '/com.vlabs.felexo';
                 new Directory(appDir).delete(recursive: true)
                   ..whenComplete(() =>
+                      // ignore: deprecated_member_use
                       globalKey.currentState.showSnackBar(SnackBar(
                         content: Text(
                           "Cache Deleted!",
@@ -500,11 +501,11 @@ class _SettingsViewState extends State<SettingsView> {
                             Container(
                               width: 100,
                               height: 40,
-                              child: RaisedButton(
-                                splashColor: textColor,
-                                elevation: 5,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8)),
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(8))),
                                 onPressed: () async {
                                   feedbackToken =
                                       "#" + randomAlphaNumeric(5).toString();
@@ -526,7 +527,7 @@ class _SettingsViewState extends State<SettingsView> {
                                                 .colorScheme
                                                 .secondary,
                                             actions: [
-                                              FlatButton(
+                                              TextButton(
                                                 onPressed: () {
                                                   Navigator.pop(context);
                                                 },
@@ -547,7 +548,6 @@ class _SettingsViewState extends State<SettingsView> {
                                             ),
                                           ));
                                 },
-                                color: buttonColor,
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.center,

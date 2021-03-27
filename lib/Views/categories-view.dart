@@ -37,15 +37,6 @@ class _CategoriesViewState extends State<CategoriesView> {
   @override
   Widget build(BuildContext context) {
     return StreamProvider<List<Categories>>.value(
-        value: CategoryService().categories,
-        child: Scaffold(
-            appBar: AppBar(
-              centerTitle: true,
-              iconTheme: IconThemeData(color: iconColor),
-              title: Text("Categories",
-                  style: Theme.of(context).textTheme.headline6),
-              elevation: 5,
-            ),
-            body: CategoriesList()));
+        value: CategoryService().categories, child: CategoriesList());
   }
 }

@@ -3,6 +3,7 @@ import 'package:felexo/Color/colors.dart';
 import 'package:felexo/Screens/landing-page.dart';
 import 'package:felexo/Screens/main-screen.dart';
 import 'package:felexo/Services/animation-route.dart';
+import 'package:felexo/Views/main-view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -47,7 +48,7 @@ Future<String> signInWithGoogle(BuildContext context) async {
     });
 
     Navigator.pushAndRemoveUntil(
-        context, FadeRoute(context, page: MainScreen()), (route) => false);
+        context, FadeRoute(context, page: MainView()), (route) => false);
   } catch (e) {
     String message = e.message;
     if (e is PlatformException) {
@@ -60,20 +61,19 @@ Future<String> signInWithGoogle(BuildContext context) async {
                     side: BorderSide(color: Colors.black, width: 3)),
                 title: Text(
                   "Error",
-                  style: TextStyle(
-                      fontFamily: 'Nunito-ExtraBold', color: textColor),
+                  style: TextStyle(fontFamily: 'Theme Bold', color: textColor),
                 ),
                 content: Text(
                   "$message",
-                  style: TextStyle(
-                      fontFamily: 'Nunito-ExtraBold', color: textColor),
+                  style: TextStyle(fontFamily: 'Theme Bold', color: textColor),
                 ),
                 actions: [
+                  // ignore: deprecated_member_use
                   FlatButton(
                     child: Text(
                       "OK",
-                      style: TextStyle(
-                          fontFamily: 'Nunito-ExtraBold', color: textColor),
+                      style:
+                          TextStyle(fontFamily: 'Theme Bold', color: textColor),
                     ),
                     onPressed: () {
                       Navigator.pop(context);
@@ -90,20 +90,19 @@ Future<String> signInWithGoogle(BuildContext context) async {
                     side: BorderSide(color: Colors.black, width: 8)),
                 title: Text(
                   "Error",
-                  style: TextStyle(
-                      fontFamily: 'Nunito-ExtraBold', color: textColor),
+                  style: TextStyle(fontFamily: 'Theme Bold', color: textColor),
                 ),
                 content: Text(
                   "Something is wrong! Please Try Again...",
-                  style: TextStyle(
-                      fontFamily: 'Nunito-ExtraBold', color: textColor),
+                  style: TextStyle(fontFamily: 'Theme Bold', color: textColor),
                 ),
                 actions: [
+                  // ignore: deprecated_member_use
                   FlatButton(
                     child: Text(
                       "OK",
-                      style: TextStyle(
-                          fontFamily: 'Nunito-ExtraBold', color: textColor),
+                      style:
+                          TextStyle(fontFamily: 'Theme Bold', color: textColor),
                     ),
                     onPressed: () {
                       Navigator.pop(context);

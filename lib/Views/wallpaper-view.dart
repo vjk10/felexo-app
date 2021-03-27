@@ -114,13 +114,14 @@ class _WallPaperViewState extends State<WallPaperView> {
           actions: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: RaisedButton(
-                  color: Theme.of(context).colorScheme.secondary,
-                  elevation: 5,
-                  shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                          width: 3,
-                          color: Theme.of(context).colorScheme.primary)),
+              child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      primary: buttonColor,
+                      onPrimary: textColor,
+                      shape: RoundedRectangleBorder(
+                          side: BorderSide(
+                              width: 3,
+                              color: Theme.of(context).colorScheme.primary))),
                   onPressed: () {
                     setState(() {
                       fullScreen = !fullScreen;
