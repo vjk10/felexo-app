@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:felexo/Color/colors.dart';
 import 'package:felexo/Screens/landing-page.dart';
-import 'package:felexo/Screens/main-screen.dart';
 import 'package:felexo/Services/animation-route.dart';
 import 'package:felexo/Views/main-view.dart';
 import 'package:firebase_auth/firebase_auth.dart';

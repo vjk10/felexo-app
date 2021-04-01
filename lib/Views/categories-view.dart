@@ -1,4 +1,3 @@
-import 'package:felexo/Color/colors.dart';
 import 'package:felexo/Data/categories-data.dart';
 import 'package:felexo/Services/categories-list.dart';
 import 'package:firebase_auth/firebase_auth.dart';

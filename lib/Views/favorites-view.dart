@@ -30,8 +30,11 @@ class _FavoritesViewState extends State<FavoritesView> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<List<Favorites>>.value(
-        value: DatabaseService(uid: user.uid).favorites,
-        child: FavoritesList());
+    return Container(
+      height: 800,
+      child: StreamProvider<List<Favorites>>.value(
+          value: DatabaseService(uid: user.uid).favorites,
+          child: FavoritesList()),
+    );
   }
 }

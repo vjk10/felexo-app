@@ -1,4 +1,3 @@
-import 'package:felexo/Color/colors.dart';
 import 'package:felexo/Services/authentication-service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

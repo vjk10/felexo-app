@@ -22,6 +22,7 @@ MaterialColor cardColorLight = MaterialColor(0xFFF5F5F5, color);
 MaterialColor buttonColor = MaterialColor(0xFF7074DB, color);
 MaterialColor textColor = MaterialColor(0xFFFFFFFF, color);
 MaterialColor iconColor = MaterialColor(0xFFFFFFFF, color);
+MaterialColor iconColorLight = MaterialColor(0xFF000000, color);
 MaterialColor wallpaperColor = MaterialColor(0xFF2C0E5C, color);
 
 class Hexcolor extends Color {

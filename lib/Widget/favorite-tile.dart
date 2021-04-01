@@ -3,6 +3,7 @@ import 'package:felexo/Views/wallpaper-view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:felexo/Color/colors.dart';
 
 class FavoriteTile extends StatefulWidget {
   final Favorites favorites;
@@ -32,18 +33,14 @@ class _FavoriteTileState extends State<FavoriteTile> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      child: Material(
+    return Scaffold(
+      body: Material(
         type: MaterialType.card,
-        elevation: 5,
-        borderRadius: BorderRadius.circular(12),
         child: Container(
-          width: 300,
-          height: 300,
+          height: 800,
           decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.secondary,
-              borderRadius: BorderRadius.circular(12),
+              color: Hexcolor(widget.favorites.avgColor),
+              borderRadius: BorderRadius.circular(0),
               shape: BoxShape.rectangle),
           child: Stack(alignment: Alignment.center, children: [
             Column(
@@ -51,7 +48,7 @@ class _FavoriteTileState extends State<FavoriteTile> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
-                  padding: EdgeInsets.only(bottom: 5),
+                  padding: EdgeInsets.only(bottom: 0),
                 ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -61,7 +58,7 @@ class _FavoriteTileState extends State<FavoriteTile> {
                       "Loading Images...",
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,
-                          fontFamily: 'Circular Bold'),
+                          fontFamily: 'Thene Bold'),
                     )
                   ],
                 )
@@ -84,15 +81,12 @@ class _FavoriteTileState extends State<FavoriteTile> {
                                 widget.favorites.photographerUrl)));
               },
               child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: FadeInImage.assetNetwork(
-                      width: 300,
-                      height: 300,
-                      fit: BoxFit.cover,
-                      fadeInCurve: Curves.easeIn,
-                      fadeInDuration: const Duration(seconds: 1),
-                      placeholder: "assets/images/loading.gif",
-                      image: widget.favorites.imgUrl)),
+                child: Image.network(
+                  widget.favorites.imgUrl,
+                  height: 800,
+                  fit: BoxFit.fill,
+                ),
+              ),
             ),
           ]),
         ),

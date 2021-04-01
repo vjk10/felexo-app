@@ -1,8 +1,5 @@
 import 'dart:async';
 
-import 'package:bordered_text/bordered_text.dart';
-import 'package:felexo/Color/colors.dart';
-import 'package:felexo/Screens/main-screen.dart';
 import 'package:felexo/Services/animation-route.dart';
 import 'package:felexo/Services/authentication-service.dart';
 import 'package:felexo/Views/main-view.dart';
@@ -10,8 +7,6 @@ import 'package:felexo/theme/app-theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
-import 'package:lottie/lottie.dart';
 import 'package:permission/permission.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';

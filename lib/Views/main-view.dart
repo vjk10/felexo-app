@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:felexo/Views/collections-view.dart';
+import 'package:felexo/Views/search-delegate.dart';
 import 'package:flutter/material.dart';
 
 import 'views.dart';
@@ -10,7 +13,9 @@ class MainView extends StatefulWidget {
 class _MainViewState extends State<MainView>
     with SingleTickerProviderStateMixin {
   TabController _tabController;
-  int _currentIndex = 0;
+  final suggestions = FirebaseFirestore.instance;
+
+  List defaultSuggestions = [];
 
   final pages = [
     HomeView(),
@@ -20,127 +25,167 @@ class _MainViewState extends State<MainView>
     ProfileView()
   ];
 
+  final myTabs = [
+    const Tab(text: "Curated"),
+    const Tab(text: "Collections"),
+    const Tab(text: "Favorites"),
+    const Tab(text: "Categories"),
+  ];
+
   @override
   void initState() {
-    // TODO: implement initState
+    fetchSuggestions();
     _tabController = new TabController(length: 4, vsync: this);
     super.initState();
   }
 
+  void fetchSuggestions() async {
+    suggestions.collection("Categories").get().then((QuerySnapshot snapshot) {
+      snapshot.docs.map((e) {
+        // print(e.data()["CategoryName"]);
+        defaultSuggestions.add(e.data()["CategoryName"]);
+      }).toList();
+    });
+    print(defaultSuggestions.toString());
+  }
+
   @override
   void dispose() {
-    // TODO: implement dispose
     _tabController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
-      body: DefaultTabController(
-        length: 4,
-        child: NestedScrollView(
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            return <Widget>[
-              SliverAppBar(
-                elevation: 15,
-                backgroundColor: Theme.of(context).colorScheme.secondary,
-                expandedHeight: 250.0,
-                floating: true,
-                pinned: true,
-                centerTitle: true,
-                title: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      "FELEXO",
-                      style: Theme.of(context).textTheme.headline2,
-                    ),
-                  ],
-                ),
-                // leading: Icon(Icons.brightness_4_outlined),
-                actions: [
-                  InkWell(
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => SettingsView()));
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 10.0),
-                      child: Icon(
-                        Icons.settings_outlined,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
-                  )
-                ],
-                forceElevated: true,
-                shadowColor: Theme.of(context).colorScheme.primary,
-                flexibleSpace: FlexibleSpaceBar(
-                  stretchModes: [
-                    StretchMode.fadeTitle,
-                    StretchMode.blurBackground
-                  ],
+    return Scaffold(
+      body: SafeArea(
+        child: DefaultTabController(
+          length: myTabs.length,
+          child: NestedScrollView(
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
+              return <Widget>[
+                SliverAppBar(
+                  elevation: 15,
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
+                  expandedHeight: 200.0,
+                  floating: true,
+                  pinned: true,
                   centerTitle: true,
-                  background: Padding(
-                    padding: const EdgeInsets.all(25.0),
-                    child: Center(
-                      child: Material(
-                        shadowColor: Theme.of(context).colorScheme.primary,
-                        elevation: 10,
-                        borderRadius: BorderRadius.circular(30),
-                        child: TextField(
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                  borderRadius: BorderRadius.circular(30)),
-                              hintText: "Search across the library of Pexels",
-                              hintStyle: Theme.of(context).textTheme.caption,
-                              prefixIcon: Icon(
-                                Icons.search_sharp,
-                                color: Theme.of(context).colorScheme.primary,
-                              )),
+                  title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "FELEXO",
+                        style: Theme.of(context).textTheme.headline3,
+                      ),
+                    ],
+                  ),
+                  actions: [
+                    InkWell(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => SettingsView()));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 10.0),
+                        child: Icon(
+                          Icons.settings_outlined,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
+                      ),
+                    )
+                  ],
+                  forceElevated: true,
+                  shadowColor: Theme.of(context).colorScheme.primary,
+                  flexibleSpace: FlexibleSpaceBar(
+                    stretchModes: [
+                      StretchMode.fadeTitle,
+                      StretchMode.blurBackground
+                    ],
+                    centerTitle: true,
+                    background: Padding(
+                      padding:
+                          const EdgeInsets.only(top: 40.0, left: 10, right: 10),
+                      child: Stack(
+                        children: [
+                          Align(
+                              alignment: Alignment.topCenter,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 18.0),
+                                child: Text("A library of amazing wallpapers!"),
+                              )),
+                          InkWell(
+                            onTap: () {
+                              showSearch(
+                                  context: context,
+                                  delegate:
+                                      WallpaperSearch(defaultSuggestions));
+                            },
+                            child: Center(
+                              child: Material(
+                                  shadowColor:
+                                      Theme.of(context).colorScheme.primary,
+                                  elevation: 10,
+                                  borderRadius: BorderRadius.circular(30),
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    height: 54,
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        SizedBox(
+                                          width: 20,
+                                        ),
+                                        Icon(Icons.search),
+                                        SizedBox(
+                                          width: 20,
+                                        ),
+                                        Text(
+                                            "Search across the library of Pexels")
+                                      ],
+                                    ),
+                                  )),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
+                  backwardsCompatibility: true,
+                  collapsedHeight: 80,
+                  bottom: TabBar(
+                      isScrollable: true,
+                      enableFeedback: true,
+                      controller: _tabController,
+                      labelColor: Theme.of(context).colorScheme.primary,
+                      unselectedLabelColor:
+                          Theme.of(context).colorScheme.primary,
+                      labelStyle: Theme.of(context).textTheme.button,
+                      indicatorSize: TabBarIndicatorSize.label,
+                      tabs: myTabs),
                 ),
-                backwardsCompatibility: true,
-                collapsedHeight: 100,
-                bottom: TabBar(
-                  // isScrollable: true,
-                  enableFeedback: true,
-                  controller: _tabController,
-                  labelColor: Theme.of(context).colorScheme.primary,
-                  unselectedLabelColor: Theme.of(context).colorScheme.primary,
-                  labelStyle: Theme.of(context).textTheme.button,
-                  indicatorSize: TabBarIndicatorSize.label,
-                  tabs: [
-                    const Tab(text: "Curated"),
-                    const Tab(text: "Videos"),
-                    const Tab(text: "Favorites"),
-                    const Tab(text: "Categories"),
-                  ],
-                ),
-              ),
-            ];
-          },
-          body: TabBarView(
-            controller: _tabController,
-            children: [
-              HomeView(),
-              HomeView(),
-              HomeView(),
-              CategoriesView(),
-            ],
+              ];
+            },
+            body: TabBarView(
+              controller: _tabController,
+              children: [
+                HomeView(),
+                CollectionsView(),
+                FavoritesView(),
+                CategoriesView(),
+              ],
+            ),
           ),
         ),
       ),
-    ));
+    );
   }
 }

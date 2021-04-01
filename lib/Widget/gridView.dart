@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:felexo/Color/colors.dart';
 import 'package:felexo/Data/data.dart';
 import 'package:felexo/Services/animation-route.dart';
@@ -35,6 +34,7 @@ class _CuratedState extends State<Curated> {
   bool imagesLoaded = false;
   bool moreVisible = false;
   User user;
+  var foregroundColor;
 
   Future<List> getTrendingWallpapers() async {
     var response = await http.get(
@@ -108,6 +108,11 @@ class _CuratedState extends State<Curated> {
                   mainAxisSpacing: 0.0,
                   crossAxisSpacing: 0.0,
                   children: wallpapers.map((wallpaper) {
+                    foregroundColor =
+                        Hexcolor(wallpaper.avgColor).computeLuminance() > 0.5
+                            ? Colors.black
+                            : Colors.white;
+                    setState(() {});
                     return GridTile(
                       child: Material(
                         type: MaterialType.card,
@@ -134,10 +139,8 @@ class _CuratedState extends State<Curated> {
                                     Text(
                                       "Loading Images...",
                                       style: TextStyle(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary,
-                                          fontFamily: 'Circular Black'),
+                                          color: foregroundColor,
+                                          fontFamily: 'Theme Bold'),
                                     )
                                   ],
                                 )

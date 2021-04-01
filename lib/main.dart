@@ -35,7 +35,7 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final themeModeNotifier = Provider.of<ThemeModeNotifier>(context);
+    // final themeModeNotifier = Provider.of<ThemeModeNotifier>(context);
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Felexo',

@@ -47,3 +47,9 @@ class Categories {
       : assert(imgUrl != null),
         assert(categoryName != null);
 }
+
+class Suggestions {
+  final String suggestionString;
+
+  Suggestions({this.suggestionString}) : assert(suggestionString != null);
+}

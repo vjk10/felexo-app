@@ -1,11 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:felexo/Color/colors.dart';
 import 'package:felexo/Data/data.dart';
-import 'package:felexo/Views/wallpaper-view.dart';
 import 'package:felexo/Widget/widgets.dart';
 import 'package:felexo/model/wallpapers-model.dart';
 import 'package:firebase_admob/firebase_admob.dart';

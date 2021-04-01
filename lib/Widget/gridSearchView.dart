@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:felexo/Color/colors.dart';
 import 'package:felexo/Services/animation-route.dart';
 import 'package:felexo/Views/wallpaper-view.dart';
