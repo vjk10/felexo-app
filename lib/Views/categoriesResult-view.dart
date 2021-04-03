@@ -29,7 +29,8 @@ class _CategoriesResultState extends State<CategoriesResult> {
 
   getCateogryWallpapers(String categoryName) async {
     var response = await http.get(
-        "https://api.pexels.com/v1/search/?page=2&per_page=$noOfImages&query=$categoryName",
+        Uri.parse(
+            "https://api.pexels.com/v1/search/?page=2&per_page=$noOfImages&query=$categoryName"),
         headers: {"Authorization": apiKey});
     // print(response.body.toString());
 
@@ -45,7 +46,8 @@ class _CategoriesResultState extends State<CategoriesResult> {
 
   getMoreWallpapers(String categoryName) async {
     var response = await http.get(
-        "https://api.pexels.com/v1/search/?page=$pageNumber&per_page=10&query=$categoryName",
+        Uri.parse(
+            "https://api.pexels.com/v1/search/?page=$pageNumber&per_page=10&query=$categoryName"),
         headers: {"Authorization": apiKey});
     // print(response.body.toString());
 
@@ -95,7 +97,7 @@ class _CategoriesResultState extends State<CategoriesResult> {
             padding: const EdgeInsets.only(top: 1.0),
             child: Container(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                padding: EdgeInsets.symmetric(horizontal: 00, vertical: 00),
                 child: Column(
                   children: [
                     Padding(
@@ -219,19 +221,24 @@ class _CategoriesResultState extends State<CategoriesResult> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CircularProgressIndicator(
+              LinearProgressIndicator(
                 valueColor: AlwaysStoppedAnimation(iconColor),
-                strokeWidth: 3,
               ),
               SizedBox(
-                height: 5,
+                height: 20,
               ),
               Text(
                 "Loading...",
                 style: TextStyle(
-                  fontFamily: 'Circular Bold',
+                  fontFamily: 'Theme Bold',
                   fontSize: 20,
                 ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              LinearProgressIndicator(
+                valueColor: AlwaysStoppedAnimation(iconColor),
               ),
             ],
           ),

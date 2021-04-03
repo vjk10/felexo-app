@@ -11,6 +11,7 @@ final ThemeData darkTheme = ThemeData(
   primaryColor: Colors.black,
   primaryColorDark: Colors.white,
   appBarTheme: AppBarTheme(
+      elevation: 0,
       centerTitle: true,
       color: Colors.black,
       textTheme: TextTheme(
@@ -19,7 +20,7 @@ final ThemeData darkTheme = ThemeData(
         headline3: TextStyle(color: textColor, fontFamily: 'Theme Black'),
         headline4: TextStyle(color: textColor, fontFamily: 'Theme Black'),
         headline5: TextStyle(color: textColor, fontFamily: 'Theme Black'),
-        headline6: TextStyle(color: textColor, fontFamily: 'Theme Regular'),
+        headline6: TextStyle(color: textColor, fontFamily: 'Theme Bold'),
         subtitle1: TextStyle(color: textColor, fontFamily: 'Theme Regular'),
         subtitle2: TextStyle(color: textColor, fontFamily: 'Theme Regular'),
         bodyText1: TextStyle(color: textColor, fontFamily: 'Theme Regular'),
@@ -42,7 +43,7 @@ final ThemeData darkTheme = ThemeData(
     headline3: TextStyle(color: textColor, fontFamily: 'Theme Black'),
     headline4: TextStyle(color: textColor, fontFamily: 'Theme Black'),
     headline5: TextStyle(color: textColor, fontFamily: 'Theme Black'),
-    headline6: TextStyle(color: textColor, fontFamily: 'Theme Regular'),
+    headline6: TextStyle(color: textColor, fontFamily: 'Theme Bold'),
     subtitle1: TextStyle(color: textColor, fontFamily: 'Theme Regular'),
     subtitle2: TextStyle(color: textColor, fontFamily: 'Theme Regular'),
     bodyText1: TextStyle(color: textColor, fontFamily: 'Theme Regular'),
@@ -63,6 +64,7 @@ final ThemeData lightTheme = ThemeData(
   primaryColor: Colors.white,
   primaryColorDark: Colors.black,
   appBarTheme: AppBarTheme(
+      elevation: 0,
       centerTitle: true,
       color: Colors.white,
       textTheme: TextTheme(
@@ -71,7 +73,7 @@ final ThemeData lightTheme = ThemeData(
         headline3: TextStyle(color: Colors.black, fontFamily: 'Theme Black'),
         headline4: TextStyle(color: Colors.black, fontFamily: 'Theme Black'),
         headline5: TextStyle(color: Colors.black, fontFamily: 'Theme Black'),
-        headline6: TextStyle(color: Colors.black, fontFamily: 'Theme Regular'),
+        headline6: TextStyle(color: Colors.black, fontFamily: 'Theme Bold'),
         subtitle1: TextStyle(color: Colors.black, fontFamily: 'Theme Bold'),
         subtitle2: TextStyle(color: Colors.black, fontFamily: 'Theme Regular'),
         bodyText1: TextStyle(color: Colors.black, fontFamily: 'Theme Regular'),
@@ -94,7 +96,7 @@ final ThemeData lightTheme = ThemeData(
     headline3: TextStyle(color: Colors.black, fontFamily: 'Theme Black'),
     headline4: TextStyle(color: Colors.black, fontFamily: 'Theme Black'),
     headline5: TextStyle(color: Colors.black, fontFamily: 'Theme Black'),
-    headline6: TextStyle(color: Colors.black, fontFamily: 'Theme Regular'),
+    headline6: TextStyle(color: Colors.black, fontFamily: 'Theme Bold'),
     subtitle1: TextStyle(color: Colors.black, fontFamily: 'Theme Regular'),
     subtitle2: TextStyle(color: Colors.black, fontFamily: 'Theme Regular'),
     bodyText1: TextStyle(color: Colors.black, fontFamily: 'Theme Regular'),

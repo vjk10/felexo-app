@@ -38,7 +38,7 @@ class _CuratedState extends State<Curated> {
 
   Future<List> getTrendingWallpapers() async {
     var response = await http.get(
-        "https://api.pexels.com/v1/curated?per_page=$noOfImages",
+        Uri.parse("https://api.pexels.com/v1/curated?per_page=$noOfImages"),
         headers: {"Authorization": apiKey}); // print(response.body.toString());
 
     Map<String, dynamic> jsonData = jsonDecode(response.body);
@@ -57,7 +57,8 @@ class _CuratedState extends State<Curated> {
   }
 
   Future<List> getMoreWallpapers() async {
-    var response = await http.get(nextPage, headers: {"Authorization": apiKey});
+    var response =
+        await http.get(Uri.parse(nextPage), headers: {"Authorization": apiKey});
     Map<String, dynamic> jsonData = jsonDecode(response.body);
     jsonData["photos"].forEach((element) {
       WallpaperModel wallpaperModel = new WallpaperModel();

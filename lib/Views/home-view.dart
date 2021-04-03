@@ -6,7 +6,6 @@ import 'package:felexo/Color/colors.dart';
 import 'package:felexo/Data/data.dart';
 import 'package:felexo/Widget/widgets.dart';
 import 'package:felexo/model/wallpapers-model.dart';
-import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -48,8 +47,6 @@ class _HomeViewState extends State<HomeView>
 
   @override
   void initState() {
-    FirebaseAdMob.instance.initialize(appId: InterstitialAd.testAdUnitId);
-
     controller =
         AnimationController(duration: Duration(seconds: 5), vsync: this);
     getTrendingWallpapers();
@@ -115,7 +112,7 @@ class _HomeViewState extends State<HomeView>
 
   Future<List> getTrendingWallpapers() async {
     var response = await http.get(
-        "https://api.pexels.com/v1/curated?per_page=$noOfImages",
+        Uri.parse("https://api.pexels.com/v1/curated?per_page=$noOfImages"),
         headers: {"Authorization": apiKey}); // print(response.body.toString());
 
     Map<String, dynamic> jsonData = jsonDecode(response.body);
@@ -142,7 +139,8 @@ class _HomeViewState extends State<HomeView>
   }
 
   Future<List> getMoreWallpapers() async {
-    var response = await http.get(nextPage, headers: {"Authorization": apiKey});
+    var response =
+        await http.get(Uri.parse(nextPage), headers: {"Authorization": apiKey});
 
     Map<String, dynamic> jsonData = jsonDecode(response.body);
     jsonData["photos"].forEach((element) {
@@ -175,23 +173,21 @@ class _HomeViewState extends State<HomeView>
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation(
-                                Theme.of(context).accentColor),
-                          )
-                        ],
+                      LinearProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation(iconColor),
                       ),
                       SizedBox(
-                        height: 10,
+                        height: 20,
                       ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [Text("Loading")],
+                      Text(
+                        "Loading",
+                        style: Theme.of(context).textTheme.button,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      LinearProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation(iconColor),
                       )
                     ],
                   ),
@@ -201,80 +197,24 @@ class _HomeViewState extends State<HomeView>
                     physics: BouncingScrollPhysics(),
                     child: Column(
                       children: [
-                        // Padding(
-                        //   padding: const EdgeInsets.all(20.0),
-                        //   child: InkWell(
-                        //     onTap: () {
-                        //       Navigator.push(
-                        //           context,
-                        //           MaterialPageRoute(
-                        //               builder: (context) => WallPaperView(
-                        //                   avgColor: avgColor,
-                        //                   uid: user.uid,
-                        //                   imgUrl: imgUrl,
-                        //                   originalUrl: originalUrl,
-                        //                   photoID: photoID,
-                        //                   photographer: photographer,
-                        //                   photographerID: photographerID,
-                        //                   photographerUrl: photographerUrl)));
-                        //     },
-                        //     child: ClipRRect(
-                        //       borderRadius: BorderRadius.circular(10),
-                        //       child: Stack(children: [
-                        //         Container(
-                        //           width: MediaQuery.of(context).size.width,
-                        //           height: MediaQuery.of(context).size.width,
-                        //           child: Container(
-                        //             color: Hexcolor(avgColor),
-                        //             child: AnimatedBuilder(
-                        //               animation: controller,
-                        //               child: Image.network(
-                        //                 imgUrl,
-                        //                 fit: BoxFit.fill,
-                        //               ),
-                        //               builder: (context, Widget child) {
-                        //                 return Opacity(
-                        //                   opacity: animation.value,
-                        //                   child: child,
-                        //                 );
-                        //               },
-                        //             ),
-                        //           ),
-                        //         ),
-                        //         Container(
-                        //           width: MediaQuery.of(context).size.width,
-                        //           height: MediaQuery.of(context).size.width,
-                        //           color: Hexcolor(avgColor).withOpacity(0.3),
-                        //           alignment: Alignment.center,
-                        //           child: Stack(children: [
-                        //             Text(
-                        //               "Daily Special",
-                        //               style: TextStyle(
-                        //                 color: foregroundColor,
-                        //                 fontSize: 50,
-                        //                 shadows: <Shadow>[
-                        //                   Shadow(
-                        //                     offset: Offset(8.0, 10.0),
-                        //                     blurRadius: 50.0,
-                        //                     color: Colors.black,
-                        //                   ),
-                        //                 ],
-                        //               ),
-                        //             ),
-                        //           ]),
-                        //         ),
-                        //       ]),
-                        //     ),
-                        //   ),
-                        // ),
                         Padding(
                             padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                             child: imagesLoaded
                                 ? Curated()
                                 : Column(
                                     children: [
+                                      LinearProgressIndicator(
+                                        valueColor:
+                                            AlwaysStoppedAnimation(iconColor),
+                                      ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
                                       Text("Loading"),
-                                      CircularProgressIndicator(
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      LinearProgressIndicator(
                                         valueColor:
                                             AlwaysStoppedAnimation(iconColor),
                                       )

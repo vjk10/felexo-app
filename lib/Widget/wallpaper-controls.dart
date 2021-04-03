@@ -3,7 +3,6 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:felexo/Color/colors.dart';
-import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -53,27 +52,8 @@ class WallpaperControls extends StatefulWidget {
 }
 
 class _WallpaperControlsState extends State<WallpaperControls> {
-  static const MobileAdTargetingInfo mobileAdTargetingInfo =
-      MobileAdTargetingInfo(
-    testDevices: testDevices != null ? <String>[testDevices] : null,
-    keywords: <String>['Wallpapers'],
-  );
-  InterstitialAd interstitialAd;
-
-  InterstitialAd createInterstitialAd() {
-    return InterstitialAd(
-        adUnitId: 'ca-app-pub-1356887710608938/6475087475',
-        targetingInfo: mobileAdTargetingInfo,
-        listener: (MobileAdEvent event) {
-          print("Ad: $event");
-        });
-  }
-
   @override
   void initState() {
-    FirebaseAdMob.instance
-        .initialize(appId: 'ca-app-pub-1356887710608938~3220128931');
-
     downloading = false;
     setState(() {});
     initUser();
@@ -82,7 +62,6 @@ class _WallpaperControlsState extends State<WallpaperControls> {
 
   @override
   void dispose() {
-    interstitialAd.dispose();
     super.dispose();
   }
 
@@ -137,9 +116,6 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                                     color: widget.foregroundColor,
                                   ),
                                   onTap: () {
-                                    interstitialAd = createInterstitialAd()
-                                      ..load()
-                                      ..show();
                                     showDialog(
                                         context: context,
                                         builder: (context) => AlertDialog(
@@ -265,9 +241,6 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                             ],
                           ),
                           onTap: () {
-                            interstitialAd = createInterstitialAd()
-                              ..load()
-                              ..show();
                             showDialog(
                                 context: context,
                                 builder: (context) => AlertDialog(
@@ -418,9 +391,6 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                             ],
                           ),
                           onTap: () async {
-                            interstitialAd = createInterstitialAd()
-                              ..load()
-                              ..show();
                             if (widget.favExists == true) {
                               showDialog(
                                   context: context,

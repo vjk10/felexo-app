@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:bordered_text/bordered_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expandable_bottom_sheet/expandable_bottom_sheet.dart';
 import 'package:felexo/Color/colors.dart';
+import 'package:felexo/Services/authentication-service.dart';
 import 'package:felexo/theme/app-theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -94,301 +94,197 @@ class _SettingsViewState extends State<SettingsView> {
       key: globalKey,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        elevation: 0,
         centerTitle: true,
-        title: Text("Settings", style: Theme.of(context).textTheme.headline6),
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: Theme.of(context).colorScheme.primary,
+            )),
+        title: Text("PROFILE", style: Theme.of(context).textTheme.headline6),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(
-              height: 30,
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Felexo",
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
-                      fontFamily: 'Circular Black',
-                      fontSize: 40),
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: 20,
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 10, 4),
+                child: Material(
+                  elevation: 5,
+                  shadowColor: Theme.of(context).colorScheme.primary,
+                  type: MaterialType.circle,
+                  color: Theme.of(context).colorScheme.secondary,
+                  child: CircleAvatar(
+                    radius: 50,
+                    backgroundImage: NetworkImage(user.photoURL),
+                  ),
                 ),
-              ],
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Powered by Pexels",
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
-                      fontFamily: 'Circular Bold'),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 5, 10, 0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      user.displayName,
+                      style: Theme.of(context).textTheme.headline4,
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Icon(
+                      Icons.lock,
+                      color: Colors.redAccent,
+                    )
+                  ],
                 ),
-              ],
-            ),
-            // SizedBox(
-            //   height: 30,
-            // ),
-            // Padding(
-            //   padding: const EdgeInsets.only(left: 20.0),
-            //   child: Row(
-            //     crossAxisAlignment: CrossAxisAlignment.start,
-            //     children: [
-            //       BorderedText(
-            //         strokeColor: Theme.of(context).colorScheme.primary,
-            //         strokeWidth: 3,
-            //         child: Text(
-            //           "Appearance",
-            //           style: TextStyle(
-            //               color: Theme.of(context).colorScheme.secondary,
-            //               fontFamily: 'Circular Black',
-            //               fontSize: 16),
-            //         ),
-            //       ),
-            //     ],
-            //   ),
-            // ),
-            // // SizedBox(
-            // //   height: 20,
-            // // ),
-            // ListTile(
-            //   leading: Icon(Icons.palette_outlined, size: 30, color: iconColor),
-            //   title: Text("Select Theme"),
-            //   subtitle: Text(
-            //     "Choose your app theme here.",
-            //     style: TextStyle(fontSize: 12),
-            //   ),
-            //   onTap: () {
-            //     showDialog(
-            //         context: context,
-            //         builder: (context) => AlertDialog(
-            //               title: Text("Choose Theme"),
-            //               content: Container(
-            //                 width: 200,
-            //                 height: 145,
-            //                 child: Column(
-            //                   children: [
-            //                     Row(
-            //                       children: [
-            //                         Radio(
-            //                           activeColor:
-            //                               Theme.of(context).accentColor,
-            //                           value: 'ThemeMode.system',
-            //                           groupValue: _systemTheme,
-            //                           onChanged: (val) {
-            //                             HapticFeedback.mediumImpact();
-            //                             _systemTheme = val;
-            //                             onThemeChanged(val, themeModeNotifier);
-            //                             setState(() {});
-            //                           },
-            //                         ),
-            //                         SizedBox(width: 10),
-            //                         Text("System Default")
-            //                       ],
-            //                     ),
-            //                     Row(
-            //                       children: [
-            //                         Radio(
-            //                           activeColor:
-            //                               Theme.of(context).accentColor,
-            //                           value: 'ThemeMode.dark',
-            //                           groupValue: _systemTheme,
-            //                           onChanged: (val) {
-            //                             HapticFeedback.mediumImpact();
-
-            //                             _systemTheme = val;
-            //                             onThemeChanged(val, themeModeNotifier);
-            //                             setState(() {});
-            //                           },
-            //                         ),
-            //                         SizedBox(width: 10),
-            //                         Text("Dark")
-            //                       ],
-            //                     ),
-            //                     Row(
-            //                       children: [
-            //                         Radio(
-            //                           activeColor:
-            //                               Theme.of(context).accentColor,
-            //                           value: 'ThemeMode.light',
-            //                           groupValue: _systemTheme,
-            //                           onChanged: (val) {
-            //                             HapticFeedback.mediumImpact();
-
-            //                             _systemTheme = val;
-            //                             onThemeChanged(val, themeModeNotifier);
-            //                             setState(() {});
-            //                           },
-            //                         ),
-            //                         SizedBox(width: 10),
-            //                         Text("Light")
-            //                       ],
-            //                     ),
-            //                   ],
-            //                 ),
-            //               ),
-            //             ));
-            //   },
-            // ),
-            // SizedBox(
-            //   height: 20,
-            // ),
-            Padding(
-              padding: const EdgeInsets.only(left: 20.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  BorderedText(
-                    strokeColor: Theme.of(context).colorScheme.primary,
-                    strokeWidth: 3,
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 5, 10, 0),
+                child: Text(
+                  user.email,
+                  style: Theme.of(context).textTheme.subtitle1,
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Divider(),
+              ListTile(
+                minVerticalPadding: 10,
+                horizontalTitleGap: 20,
+                title: Text(
+                  "Clear Cache",
+                ),
+                leading: Icon(
+                  Icons.delete,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                onTap: () async {
+                  HapticFeedback.mediumImpact();
+                  var appDir = (await getTemporaryDirectory()).path +
+                      '/com.vlabs.felexo';
+                  new Directory(appDir).delete(recursive: true)
+                    ..whenComplete(() =>
+                        // ignore: deprecated_member_use
+                        globalKey.currentState.showSnackBar(SnackBar(
+                          content: Text(
+                            "Cache Deleted!",
+                          ),
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                        )));
+                  print(appDir);
+                  print("Clicked");
+                },
+              ),
+              ListTile(
+                minVerticalPadding: 10,
+                horizontalTitleGap: 20,
+                leading: Icon(
+                  Icons.feedback,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                title: Text("Feedback"),
+                onTap: () {
+                  HapticFeedback.mediumImpact();
+                  feedbackForm();
+                },
+              ),
+              ListTile(
+                minVerticalPadding: 10,
+                horizontalTitleGap: 20,
+                leading: Icon(
+                  Icons.build_circle,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                title: Text("Build Number"),
+                subtitle: Text(
+                  "v0.0.000BTA1",
+                  style: TextStyle(fontSize: 12),
+                ),
+              ),
+              ListTile(
+                minVerticalPadding: 10,
+                horizontalTitleGap: 20,
+                leading: Icon(
+                  Icons.perm_device_info,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                title: Text("Application ID"),
+                subtitle: Text(
+                  "com.vlabs.felexo",
+                  style: TextStyle(fontSize: 12),
+                ),
+              ),
+              ListTile(
+                minVerticalPadding: 10,
+                horizontalTitleGap: 20,
+                leading: Icon(
+                  Icons.info_outline,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                title: Text("About and Credits"),
+                subtitle: Text(
+                  "Licenses",
+                  style: TextStyle(fontSize: 12),
+                ),
+                onTap: () {
+                  HapticFeedback.mediumImpact();
+                  showAboutDialog(
+                      context: context,
+                      applicationName: "Felexo",
+                      applicationVersion: "v0.0.000BTA1",
+                      applicationLegalese:
+                          "Owned and developed by Vishnu Jayakumar",
+                      applicationIcon: Image.asset(
+                        "assets/images/ic_launcher-playstore.png",
+                        width: 50,
+                        height: 50,
+                      ));
+                },
+              ),
+              SizedBox(height: 5),
+              SizedBox(
+                height: 20,
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  width: MediaQuery.of(context).size.width - 20,
+                  height: 60,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      signOutGoogle(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                        elevation: 10,
+                        shadowColor: Theme.of(context).colorScheme.primary,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.zero)),
                     child: Text(
-                      "General",
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.secondary,
-                          fontFamily: 'Circular Black',
-                          fontSize: 16),
+                      "LOGOUT",
                     ),
                   ),
-                ],
-              ),
-            ),
-            // SizedBox(
-            //   height: 10,
-            // ),
-            // SizedBox(
-            //   height: 20,
-            // ),
-            ListTile(
-              title: Text("Clear Cache"),
-              leading: Icon(
-                Icons.delete_outline_outlined,
-                size: 30,
-                color: iconColor,
-              ),
-              subtitle: Text(
-                "Clear cache if you want slower load times ;)",
-                style: TextStyle(fontSize: 12),
-              ),
-              onTap: () async {
-                HapticFeedback.mediumImpact();
-                var appDir =
-                    (await getTemporaryDirectory()).path + '/com.vlabs.felexo';
-                new Directory(appDir).delete(recursive: true)
-                  ..whenComplete(() =>
-                      // ignore: deprecated_member_use
-                      globalKey.currentState.showSnackBar(SnackBar(
-                        content: Text(
-                          "Cache Deleted!",
-                        ),
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                      )));
-                print(appDir);
-                print("Clicked");
-              },
-            ),
-            // SizedBox(
-            //   height: 30,
-            // ),
-            ListTile(
-              leading: Icon(
-                Icons.feedback_outlined,
-                size: 30,
-                color: iconColor,
-              ),
-              title: Text("Feedback"),
-              subtitle: Text(
-                "Give us all the best feedback you can to improve the exprience",
-                style: TextStyle(fontSize: 12),
-              ),
-              onTap: () {
-                HapticFeedback.mediumImpact();
-                feedbackForm();
-              },
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 20.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  BorderedText(
-                    strokeColor: Theme.of(context).colorScheme.primary,
-                    strokeWidth: 3,
-                    child: Text(
-                      "App Info",
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.secondary,
-                          fontFamily: 'Circular Black',
-                          fontSize: 16),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            // SizedBox(
-            //   height: 20,
-            // ),
-            ListTile(
-              leading: Icon(
-                Icons.build_circle_outlined,
-                size: 30,
-                color: iconColor,
-              ),
-              title: Text("Build Number"),
-              subtitle: Text(
-                "1.0.0",
-                style: TextStyle(fontSize: 12),
-              ),
-            ),
-            // SizedBox(
-            //   height: 30,
-            // ),
-            ListTile(
-              leading: Icon(
-                Icons.code,
-                size: 30,
-                color: iconColor,
-              ),
-              title: Text("Application ID"),
-              subtitle: Text(
-                "com.vlabs.felexo",
-                style: TextStyle(fontSize: 12),
-              ),
-            ),
-            // SizedBox(
-            //   height: 20,
-            // ),
-            ListTile(
-              leading: Icon(
-                Icons.info_outline_rounded,
-                size: 30,
-                color: iconColor,
-              ),
-              title: Text("About and Credits"),
-              subtitle: Text(
-                "Licenses",
-                style: TextStyle(fontSize: 12),
-              ),
-              onTap: () {
-                HapticFeedback.mediumImpact();
-                showAboutDialog(
-                    context: context,
-                    applicationName: "Felexo",
-                    applicationVersion: "1.0.0",
-                    applicationLegalese:
-                        "Owned and developed by Vishnu Jayakumar",
-                    applicationIcon: Image.asset(
-                      "assets/images/ic_launcher-playstore.png",
-                      width: 50,
-                      height: 50,
-                    ));
-              },
-            ),
-          ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -406,16 +302,15 @@ class _SettingsViewState extends State<SettingsView> {
                 decoration: BoxDecoration(
                     color: Theme.of(context).scaffoldBackgroundColor,
                     borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(30),
-                        topRight: Radius.circular(30))),
+                        topLeft: Radius.circular(0),
+                        topRight: Radius.circular(0))),
                 child: Column(
                   children: [
                     SizedBox(
                       height: 10,
                     ),
                     Icon(
-                      Icons.maximize,
-                      size: 60,
+                      Icons.maximize_outlined,
                       color: Theme.of(context).colorScheme.primary,
                     ),
                     Form(
@@ -434,17 +329,22 @@ class _SettingsViewState extends State<SettingsView> {
                               fillColor:
                                   Theme.of(context).scaffoldBackgroundColor,
                               focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide:
-                                      BorderSide(color: iconColor, width: 1)),
+                                  borderRadius: BorderRadius.circular(0),
+                                  borderSide: BorderSide(
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                      width: 1)),
                               enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide:
-                                      BorderSide(color: iconColor, width: 1)),
-                              counterStyle: TextStyle(color: iconColor),
+                                  borderRadius: BorderRadius.circular(0),
+                                  borderSide: BorderSide(
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                      width: 2)),
+                              counterStyle: TextStyle(
+                                  color: Theme.of(context).colorScheme.primary),
                               labelStyle: TextStyle(
                                   color: Theme.of(context).colorScheme.primary,
-                                  fontFamily: 'Circular Black')),
+                                  fontFamily: 'Theme Bold')),
                         ),
                         child: Column(
                           children: [
@@ -460,13 +360,8 @@ class _SettingsViewState extends State<SettingsView> {
                                   keyboardType: TextInputType.text,
                                   maxLength: 20,
                                   decoration: InputDecoration(
-                                      labelText: "Subject",
-                                      prefixIcon: Icon(
-                                        Icons.subject,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                      )),
+                                    labelText: "Subject",
+                                  ),
                                 ),
                               ),
                             ),
@@ -485,28 +380,17 @@ class _SettingsViewState extends State<SettingsView> {
                                   minLines: null,
                                   maxLength: 100,
                                   decoration: InputDecoration(
-                                      labelText: "Feedback",
-                                      prefixIcon: Icon(
-                                        Icons.feedback,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                      )),
+                                    labelText: "Feedback",
+                                  ),
                                 ),
                               ),
                             ),
                             SizedBox(
                               height: 20,
                             ),
-                            Container(
-                              width: 100,
-                              height: 40,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(8))),
-                                onPressed: () async {
+                            Material(
+                              child: InkWell(
+                                onTap: () async {
                                   feedbackToken =
                                       "#" + randomAlphaNumeric(5).toString();
                                   await FirebaseFirestore.instance
@@ -548,27 +432,31 @@ class _SettingsViewState extends State<SettingsView> {
                                             ),
                                           ));
                                 },
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "Send",
-                                      style: TextStyle(
-                                          color: textColor,
-                                          fontFamily: 'Circular Bold'),
+                                child: Center(
+                                  child: Container(
+                                    width:
+                                        MediaQuery.of(context).size.width - 20,
+                                    height: 60,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text("SEND",
+                                            style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary,
+                                                fontFamily: 'Theme Bold')),
+                                      ],
                                     ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Icon(
-                                      Icons.send,
-                                      color: textColor,
-                                    )
-                                  ],
+                                  ),
                                 ),
                               ),
-                            )
+                            ),
                           ],
                         ),
                       ),
@@ -582,17 +470,17 @@ class _SettingsViewState extends State<SettingsView> {
             ));
   }
 
-  void onThemeChanged(String val, ThemeModeNotifier themeModeNotifier) async {
-    var themeModePrefs = await SharedPreferences.getInstance();
-    if (val == "ThemeMode.system") {
-      themeModeNotifier.setMode(ThemeMode.system);
-    }
-    if (val == "ThemeMode.dark") {
-      themeModeNotifier.setMode(ThemeMode.dark);
-    }
-    if (val == "ThemeMode.light") {
-      themeModeNotifier.setMode(ThemeMode.light);
-    }
-    themeModePrefs.setString("appTheme", val);
-  }
+  // void onThemeChanged(String val, ThemeModeNotifier themeModeNotifier) async {
+  //   var themeModePrefs = await SharedPreferences.getInstance();
+  //   if (val == "ThemeMode.system") {
+  //     themeModeNotifier.setMode(ThemeMode.system);
+  //   }
+  //   if (val == "ThemeMode.dark") {
+  //     themeModeNotifier.setMode(ThemeMode.dark);
+  //   }
+  //   if (val == "ThemeMode.light") {
+  //     themeModeNotifier.setMode(ThemeMode.light);
+  //   }
+  //   themeModePrefs.setString("appTheme", val);
+  // }
 }

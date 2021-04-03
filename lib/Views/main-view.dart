@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:felexo/Views/collections-view.dart';
 import 'package:felexo/Views/search-delegate.dart';
+import 'package:felexo/Widget/wallpaper-controls.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'views.dart';
@@ -14,8 +16,11 @@ class _MainViewState extends State<MainView>
     with SingleTickerProviderStateMixin {
   TabController _tabController;
   final suggestions = FirebaseFirestore.instance;
+  final history = FirebaseFirestore.instance;
 
   List defaultSuggestions = [];
+  List autoComplete = [];
+  List searchHistory = [];
 
   final pages = [
     HomeView(),
@@ -34,19 +39,55 @@ class _MainViewState extends State<MainView>
 
   @override
   void initState() {
+    initUser();
     fetchSuggestions();
+    fetchHistory();
     _tabController = new TabController(length: 4, vsync: this);
     super.initState();
   }
 
+  initUser() {
+    user = FirebaseAuth.instance.currentUser;
+    assert(user.email != null);
+    assert(user.uid != null);
+    assert(user.photoURL != null);
+    print("User: " + user.uid.toString());
+  }
+
   void fetchSuggestions() async {
-    suggestions.collection("Categories").get().then((QuerySnapshot snapshot) {
+    // suggestions.collection("Categories").get().then((QuerySnapshot snapshot) {
+    //   snapshot.docs.map((e) {
+    //     FirebaseFirestore.instance
+    //         .collection("SearchSuggestions")
+    //         .doc(e.data()["CategoryName"])
+    //         .set({"times": 1, "term": e.data()["CategoryName"]});
+    //     print(e.data()["CategoryName"]);
+    //   }).toList();
+    // });
+    suggestions
+        .collection("SearchSuggestions")
+        .get()
+        .then((QuerySnapshot snapshot) {
       snapshot.docs.map((e) {
-        // print(e.data()["CategoryName"]);
-        defaultSuggestions.add(e.data()["CategoryName"]);
+        print(e.data()["term"]);
+        defaultSuggestions.add(e.data()["term"]);
       }).toList();
     });
-    print(defaultSuggestions.toString());
+  }
+
+  void fetchHistory() async {
+    print(user.uid);
+    history
+        .collection("User")
+        .doc(user.uid.toString())
+        .collection("SearchHistory")
+        .get()
+        .then((QuerySnapshot snapshot) {
+      snapshot.docs.map((e) {
+        searchHistory.add(e.data()["searchHistory"].toString());
+      }).toList();
+    });
+    print(searchHistory.toString());
   }
 
   @override
@@ -66,7 +107,7 @@ class _MainViewState extends State<MainView>
                 (BuildContext context, bool innerBoxIsScrolled) {
               return <Widget>[
                 SliverAppBar(
-                  elevation: 15,
+                  // elevation: 15,
                   backgroundColor: Theme.of(context).colorScheme.secondary,
                   expandedHeight: 200.0,
                   floating: true,
@@ -92,12 +133,17 @@ class _MainViewState extends State<MainView>
                             builder: (context) => SettingsView()));
                       },
                       child: Padding(
-                        padding: const EdgeInsets.only(right: 10.0),
-                        child: Icon(
-                          Icons.settings_outlined,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      ),
+                          padding: const EdgeInsets.only(right: 10.0),
+                          child: CircleAvatar(
+                            radius: 16,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                            foregroundColor:
+                                Theme.of(context).colorScheme.primary,
+                            backgroundImage: NetworkImage(
+                              user.photoURL,
+                            ),
+                          )),
                     )
                   ],
                   forceElevated: true,
@@ -123,8 +169,11 @@ class _MainViewState extends State<MainView>
                             onTap: () {
                               showSearch(
                                   context: context,
-                                  delegate:
-                                      WallpaperSearch(defaultSuggestions));
+                                  delegate: WallpaperSearch(
+                                    defaultSuggestions,
+                                    searchHistory,
+                                    user.uid.toString(),
+                                  ));
                             },
                             child: Center(
                               child: Material(

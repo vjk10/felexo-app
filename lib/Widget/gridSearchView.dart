@@ -22,6 +22,10 @@ Widget wallpaperSearchGrid(
           mainAxisSpacing: 0.0,
           crossAxisSpacing: 0.0,
           children: wallpapers.map((wallpaper) {
+            var foreGroundColor =
+                Hexcolor(wallpaper.avgColor).computeLuminance() > 0.5
+                    ? Colors.black
+                    : Colors.white;
             return GridTile(
               child: Material(
                 type: MaterialType.card,
@@ -48,8 +52,8 @@ Widget wallpaperSearchGrid(
                             Text(
                               "Loading Images...",
                               style: TextStyle(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  fontFamily: 'Circular Black'),
+                                  color: foreGroundColor,
+                                  fontFamily: 'Theme Bold'),
                             )
                           ],
                         )
@@ -129,7 +133,7 @@ Widget wallpaperSearchGrid(
                       //                   wallpaper.photographer,
                       //                   style: TextStyle(
                       //                       color: textColor,
-                      //                       fontFamily: 'Circular Black',
+                      //                       fontFamily: 'Theme Bold',
                       //                       fontSize: 20),
                       //                   maxLines: 1,
                       //                   minFontSize: 5,
@@ -146,7 +150,7 @@ Widget wallpaperSearchGrid(
                       //                   wallpaper.photographerId.toString(),
                       //                   style: TextStyle(
                       //                       color: textColor,
-                      //                       fontFamily: 'Circular Black',
+                      //                       fontFamily: 'Theme Bold',
                       //                       fontSize: 15),
                       //                   maxLines: 1,
                       //                   minFontSize: 5,
