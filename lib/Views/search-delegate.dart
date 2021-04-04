@@ -18,10 +18,54 @@ class WallpaperSearch extends SearchDelegate<String> {
     final ThemeData theme = Theme.of(context);
     assert(theme != null);
     return theme.copyWith(
+        textTheme: TextTheme(
+            headline1: TextStyle(
+                fontSize: 20,
+                fontFamily: 'Theme Regular',
+                color: Theme.of(context).colorScheme.primary),
+            headline2: TextStyle(
+                fontSize: 20,
+                fontFamily: 'Theme Regular',
+                color: Theme.of(context).colorScheme.primary),
+            headline3: TextStyle(
+                fontSize: 20,
+                fontFamily: 'Theme Regular',
+                color: Theme.of(context).colorScheme.primary),
+            headline4: TextStyle(
+                fontSize: 20,
+                fontFamily: 'Theme Regular',
+                color: Theme.of(context).colorScheme.primary),
+            headline5: TextStyle(
+                fontSize: 20,
+                fontFamily: 'Theme Regular',
+                color: Theme.of(context).colorScheme.primary),
+            headline6: TextStyle(
+                fontSize: 18,
+                fontFamily: 'Theme Regular',
+                color: Theme.of(context).colorScheme.primary)),
         appBarTheme: AppBarTheme(
           elevation: 0,
           centerTitle: true,
           titleSpacing: 0,
+          textTheme: TextTheme(
+              headline1: TextStyle(
+                  fontFamily: 'Theme Regular',
+                  color: Theme.of(context).colorScheme.primary),
+              headline2: TextStyle(
+                  fontFamily: 'Theme Regular',
+                  color: Theme.of(context).colorScheme.primary),
+              headline3: TextStyle(
+                  fontFamily: 'Theme Regular',
+                  color: Theme.of(context).colorScheme.primary),
+              headline4: TextStyle(
+                  fontFamily: 'Theme Regular',
+                  color: Theme.of(context).colorScheme.primary),
+              headline5: TextStyle(
+                  fontFamily: 'Theme Regular',
+                  color: Theme.of(context).colorScheme.primary),
+              headline6: TextStyle(
+                  fontFamily: 'Theme Regular',
+                  color: Theme.of(context).colorScheme.primary)),
           toolbarTextStyle: TextStyle(
               color: Theme.of(context).colorScheme.primary,
               fontFamily: 'Theme Regular'),
@@ -43,14 +87,29 @@ class WallpaperSearch extends SearchDelegate<String> {
   List<Widget> buildActions(BuildContext context) {
     print(searchHistory);
     return [
-      IconButton(
-          icon: Icon(
-            Icons.close,
-            color: Theme.of(context).colorScheme.primary,
-          ),
-          onPressed: () {
-            query = "";
-          })
+      Padding(
+        padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+        child: Container(
+          width: 0,
+          height: 0,
+          // decoration: BoxDecoration(
+          //     shape: BoxShape.circle,
+          //     color: Theme.of(context).colorScheme.primary.withAlpha(50),
+          //     border:
+          //         Border.all(color: Colors.redAccent.withAlpha(50), width: 3)),
+          // child: Center(
+          //   child: IconButton(
+          //       icon: Icon(
+          //         Icons.mic_outlined,
+          //         size: 17,
+          //         color: Theme.of(context).colorScheme.primary,
+          //       ),
+          //       onPressed: () {
+          //         print("Recorder Function");
+          //       }),
+          // ),
+        ),
+      )
     ];
     // ignore: dead_code
     throw UnimplementedError();
@@ -149,8 +208,7 @@ class WallpaperSearch extends SearchDelegate<String> {
           text: TextSpan(
               text: suggestionList[index].substring(0, query.length),
               style: TextStyle(
-                  fontFamily: 'Theme Bold',
-                  color: Theme.of(context).colorScheme.primary),
+                  fontFamily: 'Theme Regular', color: Colors.redAccent),
               children: [
                 TextSpan(
                     text: suggestionList[index].substring(query.length),

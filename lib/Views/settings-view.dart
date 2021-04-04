@@ -2,16 +2,12 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expandable_bottom_sheet/expandable_bottom_sheet.dart';
-import 'package:felexo/Color/colors.dart';
 import 'package:felexo/Services/authentication-service.dart';
-import 'package:felexo/theme/app-theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:random_string/random_string.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsView extends StatefulWidget {
   @override
@@ -25,7 +21,6 @@ class _SettingsViewState extends State<SettingsView> {
   User user;
   String feedbackToken;
   final globalKey = GlobalKey<ScaffoldState>();
-  String _systemTheme;
   bool themeBoxOpen = false;
   bool isDark = true;
   String appName;
@@ -56,40 +51,6 @@ class _SettingsViewState extends State<SettingsView> {
 
   @override
   Widget build(BuildContext context) {
-    final themeModeNotifier = Provider.of<ThemeModeNotifier>(context);
-    if (MediaQuery.of(context).platformBrightness == Brightness.light) {
-      isDark = false;
-    }
-    _systemTheme = (themeModeNotifier.getMode().toString());
-    if (_systemTheme == "") {
-      SharedPreferences.getInstance().then((themePrefs) async {
-        String theme = themePrefs.getString("appTheme");
-        if (theme == "ThemeMode.system") {
-          _systemTheme = "ThemeMode.system";
-        }
-        if (theme == "ThemeMode.dark") {
-          _systemTheme = "ThemeMode.dark";
-        }
-        if (theme == "ThemeMode.light") {
-          _systemTheme = "ThemeMode.light";
-        }
-      });
-    }
-    if (_systemTheme != "") {
-      SharedPreferences.getInstance().then((themePrefs) async {
-        String theme = themePrefs.getString("appTheme");
-        if (theme == "ThemeMode.system") {
-          _systemTheme = "ThemeMode.system";
-        }
-        if (theme == "ThemeMode.dark") {
-          _systemTheme = "ThemeMode.dark";
-        }
-        if (theme == "ThemeMode.light") {
-          _systemTheme = "ThemeMode.light";
-        }
-      });
-    }
-    print(_systemTheme);
     return Scaffold(
       key: globalKey,
       resizeToAvoidBottomInset: false,

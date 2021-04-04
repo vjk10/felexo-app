@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:felexo/Views/collections-view.dart';
+import 'package:felexo/Views/illustration-view.dart';
 import 'package:felexo/Views/search-delegate.dart';
 import 'package:felexo/Widget/wallpaper-controls.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -21,14 +22,6 @@ class _MainViewState extends State<MainView>
   List defaultSuggestions = [];
   List autoComplete = [];
   List searchHistory = [];
-
-  final pages = [
-    HomeView(),
-    SearchView(),
-    CategoriesView(),
-    SettingsView(),
-    ProfileView()
-  ];
 
   final myTabs = [
     const Tab(text: "Curated"),
@@ -101,7 +94,7 @@ class _MainViewState extends State<MainView>
     return Scaffold(
       body: SafeArea(
         child: DefaultTabController(
-          length: myTabs.length,
+          length: 4,
           child: NestedScrollView(
             headerSliverBuilder:
                 (BuildContext context, bool innerBoxIsScrolled) {

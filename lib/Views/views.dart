@@ -7,3 +7,6 @@ export 'search-view.dart';
 export 'settings-view.dart';
 export 'wallpaper-view.dart';
 export 'profile-view.dart';
+export 'illustration-view.dart';
+export 'search-delegate.dart';
+export 'collections-view.dart';

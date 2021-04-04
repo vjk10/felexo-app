@@ -50,7 +50,7 @@ class _CuratedState extends State<Curated> {
       wallpaperModel = WallpaperModel.fromMap(element);
       wallpapers.add(wallpaperModel);
     });
-    print("TrendingState");
+    // print("TrendingState");
     imagesLoaded = true;
     setState(() {});
     return wallpapers;
@@ -65,7 +65,7 @@ class _CuratedState extends State<Curated> {
       wallpaperModel = WallpaperModel.fromMap(element);
       wallpapers.add(wallpaperModel);
     });
-    print("Next" + jsonData["next_page"].toString());
+    // print("Next" + jsonData["next_page"].toString());
     nextPage = jsonData["next_page"].toString();
     moreVisible = false;
     _buttonVisible = !_buttonVisible;
