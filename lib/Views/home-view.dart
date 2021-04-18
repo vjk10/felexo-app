@@ -28,11 +28,10 @@ class _HomeViewState extends State<HomeView>
   Timer timer;
   bool isLoading = true;
   Map data;
-
   @override
   void initState() {
     super.initState();
-
+    setState(() {});
     initUser();
   }
 
@@ -49,13 +48,20 @@ class _HomeViewState extends State<HomeView>
     assert(photographerID != null);
     assert(photographerUrl != null);
     assert(avgColor != null);
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
-        body: SafeArea(child: SingleChildScrollView(child: Curated())));
+        body: SafeArea(
+            child: SingleChildScrollView(
+                child: Column(
+          children: [
+            Curated(),
+          ],
+        ))));
   }
 
   @override

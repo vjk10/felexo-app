@@ -2,9 +2,9 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
-import 'package:felexo/Color/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:wallpaper_manager/wallpaper_manager.dart';
@@ -56,7 +56,6 @@ class _WallpaperControlsState extends State<WallpaperControls> {
   void initState() {
     downloading = false;
     setState(() {});
-    initUser();
     super.initState();
   }
 
@@ -83,8 +82,10 @@ class _WallpaperControlsState extends State<WallpaperControls> {
               width: 280,
               height: 5,
               child: LinearProgressIndicator(
-                backgroundColor: iconColor.withAlpha(80),
-                valueColor: AlwaysStoppedAnimation(iconColor),
+                backgroundColor:
+                    Theme.of(context).colorScheme.secondary.withAlpha(80),
+                valueColor: AlwaysStoppedAnimation(
+                    Theme.of(context).colorScheme.secondary),
               ),
             ),
           )
@@ -97,144 +98,144 @@ class _WallpaperControlsState extends State<WallpaperControls> {
               body: Padding(
                 padding: const EdgeInsets.only(bottom: 0.0),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: GestureDetector(
+                              child: GestureDetector(
+                                child: Container(
+                                  width: 50,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary),
                                   child: Icon(
                                     Icons.save,
-                                    size: 30,
-                                    color: widget.foregroundColor,
+                                    size: 25,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
                                   ),
-                                  onTap: () {
-                                    showDialog(
-                                        context: context,
-                                        builder: (context) => AlertDialog(
-                                            backgroundColor: Colors.transparent,
-                                            elevation: 0,
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10)),
-                                            content: Container(
-                                              height: 200,
-                                              child: ClipRRect(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  children: [
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: TextButton(
-                                                        child: Column(
-                                                          children: [
-                                                            Icon(
-                                                              Icons
-                                                                  .stay_current_portrait,
-                                                              size: 30,
-                                                              color:
-                                                                  Colors.white,
-                                                            ),
-                                                            Text(
-                                                              "Portrait",
-                                                              style: TextStyle(
-                                                                  fontFamily:
-                                                                      'Circular Black',
-                                                                  color: Colors
-                                                                      .white),
-                                                            )
-                                                          ],
-                                                        ),
-                                                        onPressed: () {
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                          downloading = true;
-
-                                                          setState(() {});
-                                                          Future.delayed(
-                                                              Duration(
-                                                                  seconds: 1),
-                                                              () {
-                                                            _save(
-                                                                widget.imgUrl);
-                                                          });
-                                                        },
-                                                      ),
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: TextButton(
-                                                        child: Column(
-                                                          children: [
-                                                            Icon(
-                                                                Icons
-                                                                    .photo_size_select_actual,
-                                                                size: 30,
+                                ),
+                                onTap: () {
+                                  HapticFeedback.heavyImpact();
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                          backgroundColor: Colors.transparent,
+                                          elevation: 0,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          content: Container(
+                                            height: 200,
+                                            child: ClipRRect(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: TextButton(
+                                                      child: Column(
+                                                        children: [
+                                                          Icon(
+                                                            Icons
+                                                                .stay_current_portrait,
+                                                            size: 30,
+                                                            color: Colors.white,
+                                                          ),
+                                                          Text(
+                                                            "Portrait",
+                                                            style: TextStyle(
+                                                                fontFamily:
+                                                                    'Theme Bold',
                                                                 color: Colors
                                                                     .white),
-                                                            Text(
-                                                              "Original",
-                                                              style: TextStyle(
-                                                                  fontFamily:
-                                                                      'Circular Black',
-                                                                  color: Colors
-                                                                      .white),
-                                                            )
-                                                          ],
-                                                        ),
-                                                        onPressed: () {
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                          downloading = true;
-
-                                                          setState(() {});
-                                                          Future.delayed(
-                                                              Duration(
-                                                                  seconds: 1),
-                                                              () {
-                                                            _save(widget
-                                                                .originalUrl);
-                                                          });
-                                                        },
+                                                          )
+                                                        ],
                                                       ),
+                                                      onPressed: () async {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                        _save(widget.imgUrl);
+                                                      },
                                                     ),
-                                                  ],
-                                                ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: TextButton(
+                                                      child: Column(
+                                                        children: [
+                                                          Icon(
+                                                              Icons
+                                                                  .photo_size_select_actual,
+                                                              size: 30,
+                                                              color:
+                                                                  Colors.white),
+                                                          Text(
+                                                            "Original",
+                                                            style: TextStyle(
+                                                                fontFamily:
+                                                                    'Theme Bold',
+                                                                color: Colors
+                                                                    .white),
+                                                          )
+                                                        ],
+                                                      ),
+                                                      onPressed: () async {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                        _save(
+                                                            widget.originalUrl);
+                                                      },
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
-                                            )));
-                                  },
-                                ),
+                                            ),
+                                          )));
+                                },
                               ),
                             )
                           ],
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 20),
+                        SizedBox(
+                          width: 30,
                         ),
                         GestureDetector(
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Container(
+                                width: 50,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Icon(
                                     Icons.wallpaper,
-                                    size: 30,
-                                    color: widget.foregroundColor,
+                                    size: 25,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
                                   ),
                                 ),
                               )
@@ -363,28 +364,32 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                                     )));
                           },
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 10),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 10),
+                        SizedBox(
+                          width: 30,
                         ),
                         GestureDetector(
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Container(
+                                width: 50,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Icon(
                                     widget.favExists
                                         ? Icons.favorite
                                         : Icons.favorite_border,
-                                    size: 30,
+                                    size: 25,
                                     color: widget.favExists
                                         ? Colors.redAccent
-                                        : widget.foregroundColor,
+                                        : Theme.of(context).colorScheme.primary,
                                   ),
                                 ),
                               )
@@ -430,48 +435,7 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                             }
                           },
                         ),
-                        if (user.email == "felexotestemail@gmail.com")
-                          Padding(
-                            padding: const EdgeInsets.only(left: 20.0),
-                            child: GestureDetector(
-                                onTap: () {
-                                  print("Daily Special Added");
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) => AlertDialog(
-                                            backgroundColor: Theme.of(context)
-                                                .backgroundColor,
-                                            title: Text("Felexo"),
-                                            content:
-                                                Text("Daily Special Added!"),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                                child: Text("OK"),
-                                              )
-                                            ],
-                                          ));
-                                  FirebaseFirestore.instance
-                                      .collection("DailySpecial")
-                                      .doc("DailySpecial")
-                                      .set({
-                                    "imgUrl": widget.imgUrl,
-                                    "photographer": widget.photographer,
-                                    "photographerUrl": widget.photographerUrl,
-                                    "photoID": widget.photoID.toString(),
-                                    "photographerID":
-                                        widget.photographerID.toString(),
-                                    "originalUrl": widget.originalUrl,
-                                    "avgColor": widget.avgColor,
-                                  });
-                                },
-                                child: Icon(
-                                  Icons.calendar_today_outlined,
-                                  color: widget.foregroundColor,
-                                )),
-                          )
+                        //
                       ],
                     ),
                   ],
@@ -482,45 +446,13 @@ class _WallpaperControlsState extends State<WallpaperControls> {
   }
 
   _save(String url) async {
-    try {
-      var response = await Dio()
-          .get(url, options: Options(responseType: ResponseType.bytes),
-              onReceiveProgress: (actualBytes, totalBytes) {
-        setState(() {});
-      }).whenComplete(() => () {});
-
-      final location =
-          await ImageGallerySaver.saveImage(Uint8List.fromList(response.data))
-              .whenComplete(() {
-        downloading = false;
-        setState(() {});
-        showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-                  backgroundColor: Theme.of(context).colorScheme.secondary,
-                  title: Text("Felexo",
-                      style: Theme.of(context).textTheme.subtitle1),
-                  content: Text("Wallpaper Saved to Device!",
-                      style: Theme.of(context).textTheme.subtitle1),
-                  actions: [
-                    TextButton(
-                      child: Text(
-                        "OK",
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.primary,
-                            fontFamily: 'Circular Black'),
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    )
-                  ],
-                ));
-      });
-      wallpaperLocation = location;
-    } catch (e) {
-      print(e);
-    }
+    var response = await Dio()
+        .get(url, options: Options(responseType: ResponseType.bytes));
+    final result = await ImageGallerySaver.saveImage(
+        Uint8List.fromList(response.data),
+        quality: 100,
+        name: widget.photographer + widget.photoID.toString());
+    print(result);
   }
 
   saveWallpaper(int location) async {

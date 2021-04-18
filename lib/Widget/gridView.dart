@@ -36,6 +36,14 @@ class _CuratedState extends State<Curated> {
   User user;
   var foregroundColor;
 
+  @override
+  void initState() {
+    initUser();
+    getTrendingWallpapers();
+    _buttonVisible = true;
+    super.initState();
+  }
+
   Future<List> getTrendingWallpapers() async {
     var response = await http.get(
         Uri.parse("https://api.pexels.com/v1/curated?per_page=$noOfImages"),
@@ -80,13 +88,6 @@ class _CuratedState extends State<Curated> {
     assert(user.photoURL != null);
     print("User: " + user.uid.toString());
     uid = user.uid.toString();
-  }
-
-  @override
-  void initState() {
-    getTrendingWallpapers();
-    _buttonVisible = true;
-    super.initState();
   }
 
   @override
@@ -161,7 +162,7 @@ class _CuratedState extends State<Curated> {
                                     ScaleRoute(context,
                                         page: WallPaperView(
                                           avgColor: wallpaper.avgColor,
-                                          uid: uid,
+                                          uid: user.uid,
                                           photographerUrl:
                                               wallpaper.photographerUrl,
                                           imgUrl: wallpaper.src.portrait,

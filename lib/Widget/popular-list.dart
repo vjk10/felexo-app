@@ -1,15 +1,15 @@
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:felexo/Color/colors.dart';
-import 'package:felexo/Data/data.dart';
 import 'package:felexo/Model/pixabay-model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:http/http.dart' as http;
 
+// ignore: must_be_immutable
 class IllustrationList extends StatefulWidget {
+  String list;
+  IllustrationList({this.list});
   @override
   _IllustrationListState createState() => _IllustrationListState();
 }
@@ -21,14 +21,12 @@ class _IllustrationListState extends State<IllustrationList> {
 
   @override
   void initState() {
-    getIllustration();
+    getIllustration(Uri.parse(widget.list));
     super.initState();
   }
 
-  Future<List> getIllustration() async {
-    var response = await http.get(Uri.parse("https://pixabay.com/api/?key=" +
-        pbapiKey +
-        "&category=backgrounds&order=latest&editors_choice=true&image_type=illustration&per_page=100"));
+  Future<List> getIllustration(Uri list) async {
+    var response = await http.get(list);
     Map<String, dynamic> jsonData = jsonDecode(response.body);
     print(response.body);
     jsonData["hits"].forEach((item) {

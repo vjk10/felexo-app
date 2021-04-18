@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:felexo/Views/collections-view.dart';
-import 'package:felexo/Views/illustration-view.dart';
 import 'package:felexo/Views/search-delegate.dart';
 import 'package:felexo/Widget/wallpaper-controls.dart';
 import 'package:firebase_auth/firebase_auth.dart';
