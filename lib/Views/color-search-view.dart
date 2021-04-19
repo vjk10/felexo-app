@@ -10,16 +10,16 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
 // ignore: must_be_immutable
-class SearchView extends StatefulWidget {
-  String searchQuery;
+class ColorSearchView extends StatefulWidget {
+  String color;
 
-  SearchView({this.searchQuery});
+  ColorSearchView({this.color});
 
   @override
-  _SearchViewState createState() => _SearchViewState();
+  _ColorSearchViewState createState() => _ColorSearchViewState();
 }
 
-class _SearchViewState extends State<SearchView> {
+class _ColorSearchViewState extends State<ColorSearchView> {
   TextEditingController searchController = new TextEditingController();
   bool searchComplete = false;
   int noOfImages = 30;
@@ -35,8 +35,8 @@ class _SearchViewState extends State<SearchView> {
 
   @override
   void initState() {
-    searchQery = widget.searchQuery;
-    getSearchResults(widget.searchQuery);
+    searchQery = widget.color;
+    getSearchResults(widget.color);
     super.initState();
 
     initUser();
@@ -51,10 +51,10 @@ class _SearchViewState extends State<SearchView> {
     setState(() {});
   }
 
-  Future<List> getSearchResults(searchQuery) async {
+  Future<List> getSearchResults(color) async {
     var response = await http.get(
         Uri.parse(
-            "https://api.pexels.com/v1/search?query=$searchQuery&per_page=$noOfImages"),
+            "https://api.pexels.com/v1/search?query=photos&per_page=$noOfImages&color=$color"),
         headers: {"Authorization": apiKey});
     Map<String, dynamic> jsonData = jsonDecode(response.body);
     print(jsonData["next_page"].toString());
@@ -99,6 +99,17 @@ class _SearchViewState extends State<SearchView> {
       DeviceOrientation.portraitUp,
     ]);
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "#" + widget.color,
+          style: Theme.of(context).textTheme.headline6,
+        ),
+        leading: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Icon(Icons.arrow_back_ios)),
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -166,7 +177,7 @@ class _SearchViewState extends State<SearchView> {
                       _buttonVisible = !_buttonVisible;
                       pageNumber = pageNumber + 1;
                       setState(() {});
-                      getMoreSearchResults(widget.searchQuery);
+                      getMoreSearchResults(widget.color);
                     },
                     style: ElevatedButton.styleFrom(
                       primary: Theme.of(context).colorScheme.primary,

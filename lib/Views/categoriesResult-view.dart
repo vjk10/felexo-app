@@ -24,8 +24,7 @@ class _CategoriesResultState extends State<CategoriesResult> {
   bool imagesLoaded = false;
   bool _buttonVisible = true;
   int pageNumber = 1;
-  // ignore: deprecated_member_use
-  List<WallpaperModel> wallpapers = new List();
+  List<WallpaperModel> wallpapers = [];
 
   getCateogryWallpapers(String categoryName) async {
     var response = await http.get(

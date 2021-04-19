@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:felexo/Color/colors.dart';
+import 'package:felexo/Views/views.dart';
 import 'package:felexo/Widget/wallpaper-controls.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/link.dart';
 
 class WallPaperView extends StatefulWidget {
   final String avgColor,
@@ -46,17 +48,32 @@ class _WallPaperViewState extends State<WallPaperView> {
   final globalKey = GlobalKey<ScaffoldState>();
   var result = "Waiting to set wallpapers";
   var foregroundColor;
+  var linkTarget;
+  double elevationValue = 0;
+
   @override
   void initState() {
     print(widget.uid);
     transparent = false;
-    foregroundColor = Hexcolor(widget.avgColor).computeLuminance() > 0.5
-        ? Colors.black
-        : Colors.white;
+
     print("AVG:" + widget.avgColor.toString());
     print(foregroundColor);
     findIfFav();
     super.initState();
+  }
+
+  @mustCallSuper
+  didChangeDependencies() async {
+    if (widget.avgColor.length < 6) {
+      foregroundColor = Theme.of(context).colorScheme.secondary;
+      elevationValue = 1;
+    } else {
+      foregroundColor = Hexcolor(widget.avgColor).computeLuminance() > 0.5
+          ? Colors.black
+          : Colors.white;
+      elevationValue = 0;
+    }
+    super.didChangeDependencies();
   }
 
   initUser() async {
@@ -169,8 +186,10 @@ class _WallPaperViewState extends State<WallPaperView> {
                     child: Container(
                       width: MediaQuery.of(context).size.width - 30,
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.zero,
-                          color: Theme.of(context).colorScheme.primary),
+                        borderRadius: BorderRadius.zero,
+                        color: Theme.of(context).colorScheme.primary,
+                        // color: Colors.transparent,
+                      ),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
@@ -203,34 +222,56 @@ class _WallPaperViewState extends State<WallPaperView> {
                               children: [
                                 Column(
                                   children: [
-                                    Row(
-                                      children: [
-                                        Container(
-                                          width: 35,
-                                          height: 35,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
+                                    GestureDetector(
+                                      onTap: () {
+                                        var color = widget.avgColor.substring(
+                                            1, widget.avgColor.length);
+                                        print(color);
+                                        Navigator.of(context).push(
+                                            CupertinoPageRoute(
+                                                builder: (context) =>
+                                                    ColorSearchView(
+                                                      color: color,
+                                                    )));
+                                      },
+                                      child: Row(
+                                        children: [
+                                          Material(
+                                            type: MaterialType.circle,
                                             color: Hexcolor(widget.avgColor),
+                                            elevation: elevationValue,
+                                            shadowColor: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                            child: Container(
+                                              width: 35,
+                                              height: 35,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color:
+                                                    Hexcolor(widget.avgColor),
+                                              ),
+                                              child: Icon(
+                                                Icons.palette_outlined,
+                                                size: 20,
+                                                color: foregroundColor,
+                                              ),
+                                            ),
                                           ),
-                                          child: Icon(
-                                            Icons.palette_outlined,
-                                            size: 20,
-                                            color: foregroundColor,
+                                          SizedBox(
+                                            width: 10,
                                           ),
-                                        ),
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        Text(
-                                          widget.avgColor,
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontFamily: 'Theme Bold',
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary),
-                                        ),
-                                      ],
+                                          Text(
+                                            widget.avgColor,
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontFamily: 'Theme Bold',
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -276,101 +317,175 @@ class _WallPaperViewState extends State<WallPaperView> {
                               height: 20,
                             ),
                             Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Container(
-                                          width: 35,
-                                          height: 35,
-                                          decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary),
-                                          child: Icon(
-                                            Icons.badge,
-                                            size: 20,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Link(
+                                      target: LinkTarget.self,
+                                      uri: Uri.parse(widget.photographerUrl),
+                                      builder: (context, followPhotographer) {
+                                        return GestureDetector(
+                                          onTap: followPhotographer,
+                                          child: Column(
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Container(
+                                                    width: 35,
+                                                    height: 35,
+                                                    decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .secondary),
+                                                    child: Icon(
+                                                      Icons.badge,
+                                                      size: 20,
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .primary,
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  Text(
+                                                    widget.photographer,
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontFamily:
+                                                            'Theme Bold',
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .secondary),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
                                           ),
-                                        ),
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        Text(
-                                          widget.photographer,
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontFamily: 'Theme Bold',
+                                        );
+                                      }),
+                                  Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Container(
+                                            width: 35,
+                                            height: 35,
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary),
+                                            child: Icon(
+                                              Icons.share_outlined,
+                                              size: 20,
                                               color: Theme.of(context)
                                                   .colorScheme
-                                                  .secondary),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Container(
-                                          width: 35,
-                                          height: 35,
-                                          decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary),
-                                          child: Icon(
-                                            Icons.share_outlined,
-                                            size: 20,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary,
+                                                  .primary,
+                                            ),
                                           ),
-                                        ),
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        Text(
-                                          "Share",
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontFamily: 'Theme Bold',
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            "Share",
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontFamily: 'Theme Bold',
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ]),
                             SizedBox(
-                              height: 30,
+                              height: 40,
                             ),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "WALLPAPER FROM PEXELS",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontFamily: 'Theme Regular',
+                            GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: Text("Visit Pexels"),
+                                        content: Text("Open Pexels in"),
+                                        actions: [
+                                          Row(
+                                            children: [
+                                              Link(
+                                                  target: LinkTarget.blank,
+                                                  uri: Uri.parse(
+                                                      "https://www.pexels.com/"),
+                                                  builder:
+                                                      (context, followBlank) {
+                                                    return TextButton(
+                                                        onPressed: followBlank,
+                                                        child: Text(
+                                                            "Open in Browser"));
+                                                  }),
+                                              SizedBox(
+                                                width: 10,
+                                              ),
+                                              Link(
+                                                  target: LinkTarget.self,
+                                                  uri: Uri.parse(
+                                                      "https://www.pexels.com/"),
+                                                  builder:
+                                                      (context, followSelf) {
+                                                    return TextButton(
+                                                        onPressed: followSelf,
+                                                        child: Text(
+                                                            "Open in App"));
+                                                  }),
+                                            ],
+                                          )
+                                        ],
+                                      );
+                                    });
+                              },
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    width: 35,
+                                    height: 35,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
                                       color: Theme.of(context)
                                           .colorScheme
-                                          .secondary),
-                                )
-                              ],
-                            )
+                                          .secondary,
+                                    ),
+                                    child: Icon(
+                                      Icons.public_outlined,
+                                      size: 20,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    "Visit Pexels",
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontFamily: 'Theme Bold',
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary),
+                                  )
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
                           ],
                         ),
                       ),
