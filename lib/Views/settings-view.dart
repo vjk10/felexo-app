@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expandable_bottom_sheet/expandable_bottom_sheet.dart';
 import 'package:felexo/Data/data.dart';
@@ -7,7 +5,6 @@ import 'package:felexo/Services/authentication-service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:random_string/random_string.dart';
 
 // ignore: must_be_immutable
@@ -34,17 +31,21 @@ class _SettingsViewState extends State<SettingsView> {
   String version;
   String buildNumber;
   bool _storeHistory;
-  bool historyAvail;
+  bool historyAvail = false;
   TextEditingController subject = new TextEditingController();
   TextEditingController feedback = new TextEditingController();
+
   @override
   void initState() {
     _storeHistory = widget.storeHistory;
-    if (searchHistory.isEmpty) {
+    print(searchHistory.length);
+    if (searchHistory.length == 0) {
       historyAvail = false;
+      setState(() {});
     }
-    if (searchHistory.isNotEmpty) {
+    if (searchHistory.length > 0) {
       historyAvail = true;
+      setState(() {});
     }
     print(_storeHistory);
     super.initState();
@@ -194,42 +195,69 @@ class _SettingsViewState extends State<SettingsView> {
                 title: Text(
                   "Clear Search History",
                 ),
+                subtitle: historyAvail
+                    ? Text("Clear all your existing search history")
+                    : Text("You Have no search history"),
                 leading: Icon(
-                  Icons.search_off_outlined,
+                  historyAvail ? Icons.search : Icons.search_off_outlined,
                   color: historyAvail ? Colors.greenAccent : Colors.redAccent,
                 ),
                 onTap: () async {
+                  if (searchHistory.length > 0) {
+                    searchHistory.clear();
+                    historyAvail = false;
+                    setState(() {});
+                    FirebaseFirestore.instance
+                        .collection("User")
+                        .doc(user.uid)
+                        .collection("SearchHistory")
+                        .get()
+                        .then((value) {
+                      for (DocumentSnapshot ds in value.docs) {
+                        ds.reference.delete();
+                      }
+                    }).whenComplete(() =>
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Row(
+                                children: [
+                                  Icon(
+                                    Icons.check,
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    "Search History Deleted!",
+                                  ),
+                                ],
+                              ),
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.primary,
+                            )));
+                  }
+                  if (searchHistory.length == 0) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Row(
+                        children: [
+                          Icon(
+                            Icons.warning_amber_rounded,
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            "You have no history to delete",
+                          ),
+                        ],
+                      ),
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                    ));
+                  }
                   HapticFeedback.mediumImpact();
-                  searchHistory.clear();
-                  FirebaseFirestore.instance
-                      .collection("User")
-                      .doc(user.uid)
-                      .collection("SearchHistory")
-                      .get()
-                      .then((value) {
-                    for (DocumentSnapshot ds in value.docs) {
-                      ds.reference.delete();
-                    }
-                  }).whenComplete(() =>
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Row(
-                              children: [
-                                Icon(
-                                  Icons.check,
-                                  color:
-                                      Theme.of(context).colorScheme.secondary,
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text(
-                                  "Search History Deleted!",
-                                ),
-                              ],
-                            ),
-                            backgroundColor:
-                                Theme.of(context).colorScheme.primary,
-                          )));
+
                   print("Clicked");
                 },
               ),
@@ -317,7 +345,7 @@ class _SettingsViewState extends State<SettingsView> {
                   showAboutDialog(
                       context: context,
                       applicationName: "Felexo",
-                      applicationVersion: "v0.0.000BTA1",
+                      applicationVersion: "v0.0.0002",
                       applicationLegalese:
                           "Owned and developed by Vishnu Jayakumar",
                       applicationIcon: Image.asset(

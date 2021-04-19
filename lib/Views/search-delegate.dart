@@ -181,8 +181,8 @@ class WallpaperSearch extends SearchDelegate<String> {
           .collection("SearchHistory")
           .doc(query.toString())
           .set({"searchHistory": suggestionString});
-
       searchHistory.insert(0, suggestionString);
+      defaultSuggestions.insert(0, suggestionString);
     }
 
     super.showResults(context);

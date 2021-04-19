@@ -49,7 +49,7 @@ class _MainViewState extends State<MainView>
         .forEach((element) {
       storeHistory = element.data()["storeHistory"];
     });
-    print("User: " + user.uid.toString());
+    // print("User: " + user.uid.toString());
   }
 
   void fetchSuggestions() async {
@@ -58,7 +58,7 @@ class _MainViewState extends State<MainView>
         .get()
         .then((QuerySnapshot snapshot) {
       snapshot.docs.map((e) {
-        print(e.data()["term"]);
+        // print(e.data()["term"]);
         defaultSuggestions.add(e.data()["term"]);
       }).toList();
     });
@@ -77,7 +77,7 @@ class _MainViewState extends State<MainView>
         searchHistory.add(e.data()["searchHistory"].toString());
       }).toList();
     });
-    print(searchHistory.toString());
+    // print(searchHistory.toString());
   }
 
   @override
