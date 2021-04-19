@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expandable_bottom_sheet/expandable_bottom_sheet.dart';
+import 'package:felexo/Data/data.dart';
 import 'package:felexo/Services/authentication-service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,12 @@ import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:random_string/random_string.dart';
 
+// ignore: must_be_immutable
 class SettingsView extends StatefulWidget {
+  bool storeHistory;
+
+  SettingsView({this.storeHistory});
+
   @override
   _SettingsViewState createState() => _SettingsViewState();
 }
@@ -27,10 +33,20 @@ class _SettingsViewState extends State<SettingsView> {
   String packageName;
   String version;
   String buildNumber;
+  bool _storeHistory;
+  bool historyAvail;
   TextEditingController subject = new TextEditingController();
   TextEditingController feedback = new TextEditingController();
   @override
   void initState() {
+    _storeHistory = widget.storeHistory;
+    if (searchHistory.isEmpty) {
+      historyAvail = false;
+    }
+    if (searchHistory.isNotEmpty) {
+      historyAvail = true;
+    }
+    print(_storeHistory);
     super.initState();
     initUser();
   }
@@ -40,8 +56,17 @@ class _SettingsViewState extends State<SettingsView> {
     assert(user.email != null);
     assert(user.uid != null);
     assert(user.photoURL != null);
-
     setState(() {});
+  }
+
+  void historyPref(bool value) {
+    setState(() {
+      _storeHistory = !_storeHistory;
+    });
+    FirebaseFirestore.instance
+        .collection("User")
+        .doc(user.uid.toString())
+        .update({'storeHistory': _storeHistory});
   }
 
   @override
@@ -74,9 +99,6 @@ class _SettingsViewState extends State<SettingsView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(
-                height: 20,
-              ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 0, 10, 4),
                 child: Material(
@@ -85,7 +107,7 @@ class _SettingsViewState extends State<SettingsView> {
                   type: MaterialType.circle,
                   color: Theme.of(context).colorScheme.secondary,
                   child: CircleAvatar(
-                    radius: 50,
+                    radius: 45,
                     backgroundImage: NetworkImage(user.photoURL),
                   ),
                 ),
@@ -126,34 +148,116 @@ class _SettingsViewState extends State<SettingsView> {
                 height: 10,
               ),
               Divider(),
+              // ListTile(
+              //   minVerticalPadding: 10,
+              //   horizontalTitleGap: 20,
+              //   title: Text(
+              //     "Clear Cache",
+              //   ),
+              //   leading: Icon(
+              //     Icons.delete,
+              //     color: Theme.of(context).colorScheme.primary,
+              //   ),
+              //   onTap: () async {
+              //     HapticFeedback.mediumImpact();
+              //     var appDir = (await getTemporaryDirectory()).path +
+              //         '/com.vlabs.felexo';
+              //     new Directory(appDir).delete(recursive: true)
+              //       ..whenComplete(() =>
+              //           // ignore: deprecated_member_use
+              //           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              //             content: Row(
+              //               children: [
+              //                 Icon(
+              //                   Icons.check,
+              //                   color: Theme.of(context).colorScheme.secondary,
+              //                 ),
+              //                 SizedBox(
+              //                   width: 10,
+              //                 ),
+              //                 Text(
+              //                   "Cache Deleted!",
+              //                 ),
+              //               ],
+              //             ),
+              //             backgroundColor:
+              //                 Theme.of(context).colorScheme.primary,
+              //           )));
+              //     print(appDir);
+              //     print("Clicked");
+              //   },
+              // ),
+              // Divider(),
               ListTile(
                 minVerticalPadding: 10,
                 horizontalTitleGap: 20,
                 title: Text(
-                  "Clear Cache",
+                  "Clear Search History",
                 ),
                 leading: Icon(
-                  Icons.delete,
-                  color: Theme.of(context).colorScheme.primary,
+                  Icons.search_off_outlined,
+                  color: historyAvail ? Colors.greenAccent : Colors.redAccent,
                 ),
                 onTap: () async {
                   HapticFeedback.mediumImpact();
-                  var appDir = (await getTemporaryDirectory()).path +
-                      '/com.vlabs.felexo';
-                  new Directory(appDir).delete(recursive: true)
-                    ..whenComplete(() =>
-                        // ignore: deprecated_member_use
-                        globalKey.currentState.showSnackBar(SnackBar(
-                          content: Text(
-                            "Cache Deleted!",
-                          ),
-                          backgroundColor:
-                              Theme.of(context).colorScheme.primary,
-                        )));
-                  print(appDir);
+                  searchHistory.clear();
+                  FirebaseFirestore.instance
+                      .collection("User")
+                      .doc(user.uid)
+                      .collection("SearchHistory")
+                      .get()
+                      .then((value) {
+                    for (DocumentSnapshot ds in value.docs) {
+                      ds.reference.delete();
+                    }
+                  }).whenComplete(() =>
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Row(
+                              children: [
+                                Icon(
+                                  Icons.check,
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  "Search History Deleted!",
+                                ),
+                              ],
+                            ),
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                          )));
                   print("Clicked");
                 },
               ),
+              Divider(),
+              ListTile(
+                minVerticalPadding: 10,
+                horizontalTitleGap: 20,
+                leading: Icon(
+                  _storeHistory ? Icons.history : Icons.history_toggle_off,
+                  color: _storeHistory ? Colors.greenAccent : Colors.redAccent,
+                ),
+                title: Text("Share my Search History"),
+                subtitle: Text(
+                  "This will help us improve your search recommendations",
+                  style: TextStyle(fontSize: 10),
+                ),
+                trailing: Switch(
+                    activeColor: Colors.greenAccent,
+                    inactiveThumbColor: Colors.redAccent,
+                    activeTrackColor: Colors.greenAccent.withOpacity(0.5),
+                    inactiveTrackColor: Colors.redAccent.withOpacity(0.5),
+                    value: _storeHistory,
+                    onChanged: historyPref),
+                onTap: () {
+                  HapticFeedback.mediumImpact();
+                },
+              ),
+              Divider(),
               ListTile(
                 minVerticalPadding: 10,
                 horizontalTitleGap: 20,
@@ -167,6 +271,7 @@ class _SettingsViewState extends State<SettingsView> {
                   feedbackForm();
                 },
               ),
+              Divider(),
               ListTile(
                 minVerticalPadding: 10,
                 horizontalTitleGap: 20,
@@ -180,6 +285,7 @@ class _SettingsViewState extends State<SettingsView> {
                   style: TextStyle(fontSize: 12),
                 ),
               ),
+              Divider(),
               ListTile(
                 minVerticalPadding: 10,
                 horizontalTitleGap: 20,
@@ -193,6 +299,7 @@ class _SettingsViewState extends State<SettingsView> {
                   style: TextStyle(fontSize: 12),
                 ),
               ),
+              Divider(),
               ListTile(
                 minVerticalPadding: 10,
                 horizontalTitleGap: 20,
@@ -220,9 +327,9 @@ class _SettingsViewState extends State<SettingsView> {
                       ));
                 },
               ),
-              SizedBox(height: 5),
+              Divider(),
               SizedBox(
-                height: 20,
+                height: 10,
               ),
               Align(
                 alignment: Alignment.bottomCenter,
@@ -243,7 +350,10 @@ class _SettingsViewState extends State<SettingsView> {
                     ),
                   ),
                 ),
-              )
+              ),
+              SizedBox(
+                height: 30,
+              ),
             ],
           ),
         ),

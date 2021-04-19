@@ -1,9 +1,9 @@
 import 'package:bordered_text/bordered_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:felexo/Color/colors.dart';
-import 'package:felexo/Services/animation-route.dart';
 import 'package:felexo/Services/categories-list.dart';
 import 'package:felexo/Views/categoriesResult-view.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_parallax/flutter_parallax.dart';
 
@@ -76,10 +76,10 @@ class CategoriesTile extends StatelessWidget {
       onTap: () {
         Navigator.push(
             context,
-            FadeRoute(context,
-                page: CategoriesResult(
-                  categoryName: categories.categoryName,
-                )));
+            CupertinoPageRoute(
+                builder: (context) => CategoriesResult(
+                      categoryName: categories.categoryName,
+                    )));
       },
     );
   }

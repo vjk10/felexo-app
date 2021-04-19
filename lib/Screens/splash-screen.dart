@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:felexo/Services/animation-route.dart';
 import 'package:felexo/Services/authentication-service.dart';
 import 'package:felexo/Views/main-view.dart';
 import 'package:felexo/theme/app-theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission/permission.dart';
@@ -36,7 +36,9 @@ class _SplashScreenState extends State<SplashScreen>
     Timer(Duration(seconds: 3), () async {
       if (_auth.currentUser != null) {
         Navigator.pushAndRemoveUntil(
-            context, FadeRoute(context, page: MainView()), (route) => false);
+            context,
+            CupertinoPageRoute(builder: (context) => MainView()),
+            (route) => false);
       } else {
         visibility = true;
         height = MediaQuery.of(context).size.height;

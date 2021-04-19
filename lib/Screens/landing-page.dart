@@ -18,7 +18,6 @@ class _LandingPageState extends State<LandingPage>
   void initState() {
     askPermission();
     controller = AnimationController(vsync: this);
-
     super.initState();
   }
 

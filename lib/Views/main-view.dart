@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:felexo/Data/data.dart';
 import 'package:felexo/Views/collections-view.dart';
 import 'package:felexo/Views/search-delegate.dart';
 import 'package:felexo/Widget/wallpaper-controls.dart';
@@ -17,16 +18,13 @@ class _MainViewState extends State<MainView>
   TabController _tabController;
   final suggestions = FirebaseFirestore.instance;
   final history = FirebaseFirestore.instance;
-
-  List defaultSuggestions = [];
-  List autoComplete = [];
-  List searchHistory = [];
+  bool storeHistory;
 
   final myTabs = [
-    const Tab(text: "Curated"),
-    const Tab(text: "Collections"),
-    const Tab(text: "Favorites"),
-    const Tab(text: "Categories"),
+    const Tab(text: "CURATED"),
+    const Tab(text: "COLLECTIONS"),
+    const Tab(text: "FAVORITES"),
+    const Tab(text: "CATEGORIES"),
   ];
 
   @override
@@ -34,6 +32,7 @@ class _MainViewState extends State<MainView>
     initUser();
     fetchSuggestions();
     fetchHistory();
+
     _tabController = new TabController(length: 4, vsync: this);
     super.initState();
   }
@@ -43,19 +42,17 @@ class _MainViewState extends State<MainView>
     assert(user.email != null);
     assert(user.uid != null);
     assert(user.photoURL != null);
+    FirebaseFirestore.instance
+        .collection("User")
+        .doc(user.uid.toString())
+        .snapshots()
+        .forEach((element) {
+      storeHistory = element.data()["storeHistory"];
+    });
     print("User: " + user.uid.toString());
   }
 
   void fetchSuggestions() async {
-    // suggestions.collection("Categories").get().then((QuerySnapshot snapshot) {
-    //   snapshot.docs.map((e) {
-    //     FirebaseFirestore.instance
-    //         .collection("SearchSuggestions")
-    //         .doc(e.data()["CategoryName"])
-    //         .set({"times": 1, "term": e.data()["CategoryName"]});
-    //     print(e.data()["CategoryName"]);
-    //   }).toList();
-    // });
     suggestions
         .collection("SearchSuggestions")
         .get()
@@ -69,6 +66,7 @@ class _MainViewState extends State<MainView>
 
   void fetchHistory() async {
     print(user.uid);
+
     history
         .collection("User")
         .doc(user.uid.toString())
@@ -101,7 +99,7 @@ class _MainViewState extends State<MainView>
                 SliverAppBar(
                   // elevation: 15,
                   backgroundColor: Theme.of(context).colorScheme.secondary,
-                  expandedHeight: 200.0,
+                  expandedHeight: 220.0,
                   floating: true,
                   pinned: true,
                   centerTitle: true,
@@ -114,7 +112,7 @@ class _MainViewState extends State<MainView>
                       ),
                       Text(
                         "FELEXO",
-                        style: Theme.of(context).textTheme.headline3,
+                        style: Theme.of(context).textTheme.headline2,
                       ),
                     ],
                   ),
@@ -122,18 +120,24 @@ class _MainViewState extends State<MainView>
                     InkWell(
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => SettingsView()));
+                            builder: (context) => SettingsView(
+                                  storeHistory: storeHistory,
+                                )));
                       },
                       child: Padding(
                           padding: const EdgeInsets.only(right: 10.0),
                           child: CircleAvatar(
-                            radius: 16,
-                            backgroundColor:
-                                Theme.of(context).colorScheme.primary,
-                            foregroundColor:
-                                Theme.of(context).colorScheme.primary,
-                            backgroundImage: NetworkImage(
-                              user.photoURL,
+                            radius: 17,
+                            backgroundColor: Colors.redAccent,
+                            child: CircleAvatar(
+                              radius: 16,
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.primary,
+                              foregroundColor:
+                                  Theme.of(context).colorScheme.primary,
+                              backgroundImage: NetworkImage(
+                                user.photoURL,
+                              ),
                             ),
                           )),
                     )
@@ -148,14 +152,17 @@ class _MainViewState extends State<MainView>
                     centerTitle: true,
                     background: Padding(
                       padding:
-                          const EdgeInsets.only(top: 40.0, left: 10, right: 10),
+                          const EdgeInsets.only(top: 45.0, left: 10, right: 10),
                       child: Stack(
                         children: [
                           Align(
                               alignment: Alignment.topCenter,
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 18.0),
-                                child: Text("A library of amazing wallpapers!"),
+                                child: Text(
+                                  "A library of amazing wallpapers!",
+                                  style: TextStyle(fontSize: 16),
+                                ),
                               )),
                           InkWell(
                             onTap: () {
@@ -165,6 +172,7 @@ class _MainViewState extends State<MainView>
                                     defaultSuggestions,
                                     searchHistory,
                                     user.uid.toString(),
+                                    storeHistory,
                                   ));
                             },
                             child: Center(
@@ -209,7 +217,8 @@ class _MainViewState extends State<MainView>
                       labelColor: Theme.of(context).colorScheme.primary,
                       unselectedLabelColor:
                           Theme.of(context).colorScheme.primary,
-                      labelStyle: Theme.of(context).textTheme.button,
+                      labelStyle:
+                          TextStyle(fontSize: 12, fontFamily: 'Theme Bold'),
                       indicatorSize: TabBarIndicatorSize.label,
                       tabs: myTabs),
                 ),

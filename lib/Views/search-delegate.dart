@@ -8,9 +8,9 @@ class WallpaperSearch extends SearchDelegate<String> {
   List defaultSuggestions;
   List searchHistory;
   String uid;
-  WallpaperSearch(this.defaultSuggestions, this.searchHistory, this.uid);
-
-  get http => null;
+  bool storeHistory;
+  WallpaperSearch(
+      this.defaultSuggestions, this.searchHistory, this.uid, this.storeHistory);
 
   @override
   ThemeData appBarTheme(BuildContext context) {
@@ -86,6 +86,7 @@ class WallpaperSearch extends SearchDelegate<String> {
   @override
   List<Widget> buildActions(BuildContext context) {
     print(searchHistory);
+    print(defaultSuggestions);
     return [
       Padding(
         padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
@@ -119,7 +120,7 @@ class WallpaperSearch extends SearchDelegate<String> {
   Widget buildLeading(BuildContext context) {
     return IconButton(
         icon: Icon(
-          CupertinoIcons.back,
+          Icons.arrow_back_ios,
           color: Theme.of(context).colorScheme.primary,
         ),
         onPressed: () {
@@ -155,6 +156,9 @@ class WallpaperSearch extends SearchDelegate<String> {
 
   @override
   void showResults(BuildContext context) {
+    String suggestionString;
+    suggestionString = query[0].toUpperCase() + query.substring(1);
+    print(suggestionString);
     searchHistory.toList();
     if (searchHistory.isEmpty) {
       FirebaseFirestore.instance
@@ -162,20 +166,23 @@ class WallpaperSearch extends SearchDelegate<String> {
           .doc(uid)
           .collection("SearchHistory")
           .doc(query.toString())
-          .set({"searchHistory": query.toString()});
+          .set({"searchHistory": suggestionString});
     }
     if (!searchHistory.contains(query)) {
+      if (storeHistory) {
+        FirebaseFirestore.instance
+            .collection("SearchSuggestions")
+            .doc(query.toString())
+            .set({"term": suggestionString});
+      }
       FirebaseFirestore.instance
           .collection("User")
           .doc(uid)
           .collection("SearchHistory")
           .doc(query.toString())
-          .set({"searchHistory": query.toString()});
-      FirebaseFirestore.instance
-          .collection("SearchSuggestions")
-          .doc(query.toString())
-          .set({"term": query.toString()});
-      searchHistory.insert(0, query);
+          .set({"searchHistory": suggestionString});
+
+      searchHistory.insert(0, suggestionString);
     }
 
     super.showResults(context);

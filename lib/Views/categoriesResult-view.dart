@@ -86,8 +86,14 @@ class _CategoriesResultState extends State<CategoriesResult> {
     if (imagesLoaded == true) {
       return Scaffold(
           appBar: AppBar(
+            leading: InkWell(
+              child: Icon(Icons.arrow_back_ios),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
             title: Text(
-              widget.categoryName,
+              widget.categoryName.toUpperCase(),
               style: Theme.of(context).textTheme.headline6,
             ),
           ),
@@ -102,17 +108,6 @@ class _CategoriesResultState extends State<CategoriesResult> {
                     Padding(
                       padding: EdgeInsets.only(top: 0),
                     ),
-                    // Align(
-                    //   alignment: Alignment.topLeft,
-                    //   child: Padding(
-                    //     padding: EdgeInsets.only(top: 0, bottom: 2, left: 10),
-                    //     child: Text(
-                    //       widget.categoryName,
-                    //       style: TextStyle(
-                    //           fontFamily: 'Theme Black', fontSize: 25),
-                    //     ),
-                    //   ),
-                    // ),
                     Padding(
                       padding: const EdgeInsets.only(top: 10.0),
                       child: wallpaperSearchGrid(
@@ -212,7 +207,7 @@ class _CategoriesResultState extends State<CategoriesResult> {
           centerTitle: true,
           iconTheme: IconThemeData(color: Colors.black),
           title:
-              Text("Categories", style: Theme.of(context).textTheme.headline6),
+              Text("CATEGORIES", style: Theme.of(context).textTheme.headline6),
           elevation: 5,
         ),
         body: Center(

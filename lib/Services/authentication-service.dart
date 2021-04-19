@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:felexo/Color/colors.dart';
 import 'package:felexo/Screens/landing-page.dart';
-import 'package:felexo/Services/animation-route.dart';
 import 'package:felexo/Views/main-view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -41,13 +40,14 @@ Future<String> signInWithGoogle(BuildContext context) async {
           "uid": user.uid,
           "displayName": user.displayName,
           "email": user.email,
-          "verified": "false"
+          "verified": "false",
+          "storeHistory": true,
         });
       }
     });
 
-    Navigator.pushAndRemoveUntil(
-        context, FadeRoute(context, page: MainView()), (route) => false);
+    Navigator.pushAndRemoveUntil(context,
+        CupertinoPageRoute(builder: (context) => MainView()), (route) => false);
   } catch (e) {
     String message = e.message;
     if (e is PlatformException) {
@@ -117,5 +117,7 @@ void signOutGoogle(BuildContext context) async {
   await _auth.signOut();
   await _googleSignIn.signOut();
   Navigator.pushAndRemoveUntil(
-      context, FadeRoute(context, page: LandingPage()), (route) => false);
+      context,
+      CupertinoPageRoute(builder: (context) => LandingPage()),
+      (route) => false);
 }
