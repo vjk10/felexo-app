@@ -16,7 +16,8 @@ class _LandingPageState extends State<LandingPage>
 
   @override
   void initState() {
-    askPermission();
+    askStoragePermission();
+    askMicrophonePermission();
     controller = AnimationController(vsync: this);
     super.initState();
   }
@@ -40,10 +41,21 @@ class _LandingPageState extends State<LandingPage>
     }
   }
 
-  askPermission() async {
-    // ignore: unused_local_variable
-    List<Permissions> permissionNames = await Permission.requestPermissions(
-        [PermissionName.Storage, PermissionName.Microphone]);
+  askMicrophonePermission() async {
+    List<Permissions> permissionMicrophone =
+        await Permission.requestPermissions([PermissionName.Microphone]);
+    print(permissionMicrophone.map((e) {
+      print(e.permissionStatus);
+    }));
+  }
+
+  askStoragePermission() async {
+    List<Permissions> permissionStorage =
+        await Permission.requestPermissions([PermissionName.Storage]);
+
+    print(permissionStorage.map((e) {
+      print(e.permissionStatus);
+    }));
   }
 
   @override

@@ -309,7 +309,7 @@ class _SettingsViewState extends State<SettingsView> {
                 ),
                 title: Text("Build Number"),
                 subtitle: Text(
-                  "v0.0.000BTA1",
+                  "v0.0.0002",
                   style: TextStyle(fontSize: 12),
                 ),
               ),
