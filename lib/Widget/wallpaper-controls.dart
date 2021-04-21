@@ -5,8 +5,9 @@ import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission/permission.dart';
 import 'package:wallpaper_manager/wallpaper_manager.dart';
 
 const String testDevices = "10541B246DA05AC314ED0A170DA2B594";
@@ -18,7 +19,6 @@ String system = "System";
 String res;
 String pexelsText = "Wallpapers Provided by Pexels";
 bool deletingFav = false;
-Stream<String> progressString;
 bool downloading = false;
 bool setWall = false;
 User user;
@@ -52,9 +52,14 @@ class WallpaperControls extends StatefulWidget {
 }
 
 class _WallpaperControlsState extends State<WallpaperControls> {
+  bool _permissionStatus;
+  double progressValue;
+  String progressString = "0%";
+
   @override
   void initState() {
     downloading = false;
+    checkPermissionStatus();
     setState(() {});
     super.initState();
   }
@@ -73,20 +78,79 @@ class _WallpaperControlsState extends State<WallpaperControls> {
     setState(() {});
   }
 
+  checkPermissionStatus() async {
+    List<Permissions> permissions =
+        await Permission.getPermissionsStatus([PermissionName.Storage]);
+    print("PERMISSION STATUS");
+    print(permissions.map((e) {
+      print(e.permissionStatus);
+      if (e.permissionStatus == PermissionStatus.allow) {
+        _permissionStatus = true;
+        setState(() {});
+      }
+      if (e.permissionStatus == PermissionStatus.deny) {
+        _permissionStatus = false;
+        setState(() {});
+      }
+      if (e.permissionStatus == PermissionStatus.notAgain) {
+        _permissionStatus = false;
+        setState(() {});
+      }
+    }));
+    print(_permissionStatus);
+  }
+
+  askPermission() async {
+    // ignore: unused_local_variable
+    List<Permissions> permissionNames =
+        await Permission.requestPermissions([PermissionName.Storage]);
+    checkPermissionStatus();
+  }
+
   @override
   Widget build(BuildContext context) {
     return downloading
         ? Padding(
             padding: const EdgeInsets.only(top: 54.0, bottom: 20),
-            child: SizedBox(
-              width: 280,
-              height: 5,
-              child: LinearProgressIndicator(
-                backgroundColor:
-                    Theme.of(context).colorScheme.secondary.withAlpha(80),
-                valueColor: AlwaysStoppedAnimation(
-                    Theme.of(context).colorScheme.secondary),
-              ),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 280,
+                      height: 5,
+                      child: LinearProgressIndicator(
+                        value: progressValue,
+                        backgroundColor: Theme.of(context)
+                            .colorScheme
+                            .secondary
+                            .withAlpha(80),
+                        valueColor: AlwaysStoppedAnimation(
+                            Theme.of(context).colorScheme.secondary),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      progressString,
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                          fontSize: 10),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text(
+                      "Downloading...",
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                          fontSize: 10),
+                    ),
+                  ],
+                ),
+              ],
             ),
           )
         : Container(
@@ -169,7 +233,8 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                                                       onPressed: () async {
                                                         Navigator.of(context)
                                                             .pop();
-                                                        _save(widget.imgUrl);
+                                                        _save(widget.imgUrl,
+                                                            _permissionStatus);
                                                       },
                                                     ),
                                                   ),
@@ -200,7 +265,8 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                                                         Navigator.of(context)
                                                             .pop();
                                                         _save(
-                                                            widget.originalUrl);
+                                                            widget.originalUrl,
+                                                            _permissionStatus);
                                                       },
                                                     ),
                                                   ),
@@ -445,14 +511,54 @@ class _WallpaperControlsState extends State<WallpaperControls> {
           );
   }
 
-  _save(String url) async {
-    var response = await Dio()
-        .get(url, options: Options(responseType: ResponseType.bytes));
-    final result = await ImageGallerySaver.saveImage(
-        Uint8List.fromList(response.data),
-        quality: 100,
-        name: widget.photographer + widget.photoID.toString());
-    print(result);
+  _save(String url, bool _permissionReceived) async {
+    downloading = true;
+    setState(() {});
+    if (_permissionStatus) {
+      var response = await Dio()
+          .get(url, options: Options(responseType: ResponseType.bytes),
+              onReceiveProgress: (received, total) {
+        if (total != -1) {
+          progressValue = received / total;
+          progressString = (received / total * 100).toStringAsFixed(0) + "%";
+          setState(() {});
+          print((received / total * 100).toStringAsFixed(0) + "%");
+        }
+      });
+      final result = await ImageGallerySaver.saveImage(
+          Uint8List.fromList(response.data),
+          quality: 100,
+          name: widget.photographer + widget.photoID.toString());
+      print(result);
+      downloading = false;
+      setState(() {});
+    }
+    if (!_permissionStatus) {
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                backgroundColor: Theme.of(context).colorScheme.secondary,
+                title:
+                    Text("Oops!", style: Theme.of(context).textTheme.subtitle1),
+                content: Text("File Permissions are denied!",
+                    style: Theme.of(context).textTheme.subtitle1),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        askPermission();
+                        Navigator.pop(context);
+                      },
+                      child: Text("ASK PERMISSION")),
+                  TextButton(
+                    child: Text("OK",
+                        style: Theme.of(context).textTheme.subtitle1),
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              ));
+    }
   }
 
   saveWallpaper(int location) async {
@@ -470,7 +576,7 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                     style: Theme.of(context).textTheme.subtitle1),
                 actions: [
                   TextButton(
-                    child: Text("Compressed",
+                    child: Text("COMPRESSED",
                         style: Theme.of(context).textTheme.subtitle1),
                     onPressed: () async {
                       Navigator.of(context).pop();
@@ -480,7 +586,7 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                     },
                   ),
                   TextButton(
-                    child: Text("Original",
+                    child: Text("ORIGINAL",
                         style: Theme.of(context).textTheme.subtitle1),
                     onPressed: () async {
                       Navigator.of(context).pop();
@@ -499,12 +605,38 @@ class _WallpaperControlsState extends State<WallpaperControls> {
 
   Future<Null> setWallpaper(var file, String url, int location) async {
     try {
-      final file = await DefaultCacheManager().getSingleFile(url);
+      // final file = await DefaultCacheManager().getSingleFile(url);
+      // var response = await http.get(Uri.parse(url));
+      // var filePath =
+      //     await ImagePickerSaver.saveFile(fileData: response.bodyBytes);
+      var filePath = await getTemporaryDirectory();
+      print(filePath);
+      var response = await Dio().get(url,
+          options: Options(
+            responseType: ResponseType.bytes,
+          ), onReceiveProgress: (received, total) {
+        if (total != -1) {
+          progressValue = received / total;
+          progressString = (received / total * 100).toStringAsFixed(0) + "%";
+          setState(() {});
+          print((received / total * 100).toStringAsFixed(0) + "%");
+        }
+      });
+      print(response);
+      final result = await ImageGallerySaver.saveImage(
+          Uint8List.fromList(response.data),
+          quality: 100,
+          name: widget.photographer + widget.photoID.toString());
+      print(result);
 
       try {
-        final String result =
-            await WallpaperManager.setWallpaperFromFile(file.path, location)
-                .whenComplete(() {
+        final String result = await WallpaperManager.setWallpaperFromFile(
+          "storage/emulated/0/Pictures/" +
+              widget.photographer +
+              widget.photoID.toString() +
+              ".jpg",
+          location,
+        ).whenComplete(() {
           downloading = false;
           setState(() {});
           showDialog(

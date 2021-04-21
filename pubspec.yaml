@@ -44,7 +44,9 @@ dependencies:
   wallpaper_manager: ^1.0.10
   bordered_text: ^1.0.1
   lottie: ^1.0.1
-
+  speech_recognition: ^0.3.0+1
+  image_picker_saver: ^0.3.0
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

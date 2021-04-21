@@ -42,8 +42,8 @@ class _LandingPageState extends State<LandingPage>
 
   askPermission() async {
     // ignore: unused_local_variable
-    List<Permissions> permissionNames =
-        await Permission.requestPermissions([PermissionName.Storage]);
+    List<Permissions> permissionNames = await Permission.requestPermissions(
+        [PermissionName.Storage, PermissionName.Microphone]);
   }
 
   @override

@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:felexo/Color/colors.dart';
+import 'package:felexo/model/wallpapers-model.dart';
 import 'package:felexo/Widget/widgets.dart';
 import 'package:felexo/data/data.dart';
-import 'package:felexo/model/wallpapers-model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -111,92 +111,8 @@ class _ColorSearchViewState extends State<ColorSearchView> {
             child: Icon(Icons.arrow_back_ios)),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Align(
-              alignment: Alignment.topCenter,
-              child: wallpaperSearchGrid(
-                  wallpapers: wallpapers, context: context, uid: user.uid),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Visibility(
-                  visible: !_buttonVisible,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      color: Theme.of(context).backgroundColor,
-                    ),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          width: 550,
-                          height: 5,
-                          child: LinearProgressIndicator(
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.secondary,
-                              valueColor: AlwaysStoppedAnimation(
-                                Theme.of(context).colorScheme.primary,
-                              )),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10.0),
-                          child: Text(
-                            "LOADING...",
-                            style: Theme.of(context).textTheme.button,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        SizedBox(
-                          width: 550,
-                          height: 5,
-                          child: LinearProgressIndicator(
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.secondary,
-                              valueColor: AlwaysStoppedAnimation(
-                                Theme.of(context).colorScheme.primary,
-                              )),
-                        ),
-                      ],
-                    ),
-                  )),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Visibility(
-                visible: _buttonVisible,
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      _buttonVisible = !_buttonVisible;
-                      pageNumber = pageNumber + 1;
-                      setState(() {});
-                      getMoreSearchResults(widget.color);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      primary: Theme.of(context).colorScheme.primary,
-                      onPrimary: textColor,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(0)),
-                    ),
-                    child: Text(
-                      "LOAD MORE",
-                      style: TextStyle(
-                          fontFamily: 'Theme Bold',
-                          color: Theme.of(context).colorScheme.secondary),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+        child: wallpaperSearchGrid(
+            wallpapers: wallpapers, context: context, uid: user.uid),
       ),
     );
   }

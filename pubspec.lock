@@ -289,6 +289,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.6.9"
+  image_picker_saver:
+    dependency: "direct main"
+    description:
+      name: image_picker_saver
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.0"
   intl:
     dependency: transitive
     description:
@@ -520,6 +527,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.0"
+  speech_recognition:
+    dependency: "direct main"
+    description:
+      name: speech_recognition
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.0+1"
   sqflite:
     dependency: transitive
     description:
