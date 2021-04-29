@@ -1,3 +1,4 @@
+import 'package:felexo/Widget/collectionsGridView.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -8,30 +9,18 @@ class CollectionsView extends StatefulWidget {
 
 class _CollectionsViewState extends State<CollectionsView> {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 180,
-            height: 50,
-            child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                    elevation: 10,
-                    shape:
-                        RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-                    shadowColor: Theme.of(context).colorScheme.primary),
-                child: Text("ADD A COLLECTION")),
-          )
-        ],
+    return Scaffold(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CollectionsGrid(),
+            ],
+          ),
+        ),
       ),
     );
   }

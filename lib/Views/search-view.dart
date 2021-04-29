@@ -32,6 +32,7 @@ class _SearchViewState extends State<SearchView> {
   Color chip = iconColor.withAlpha(60);
   List<WallpaperModel> wallpapers = [];
   bool _buttonVisible = true;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -57,7 +58,7 @@ class _SearchViewState extends State<SearchView> {
             "https://api.pexels.com/v1/search?query=$searchQuery&per_page=$noOfImages"),
         headers: {"Authorization": apiKey});
     Map<String, dynamic> jsonData = jsonDecode(response.body);
-    print(jsonData["next_page"].toString());
+    // print(jsonData["next_page"].toString());
     nextPage = jsonData["next_page"].toString();
     jsonData["photos"].forEach((element) {
       // print(element);
@@ -66,6 +67,7 @@ class _SearchViewState extends State<SearchView> {
       wallpapers.add(wallpaperModel);
     });
     searchComplete = true;
+    _isLoading = false;
     setState(() {});
     return wallpapers;
   }
@@ -74,7 +76,7 @@ class _SearchViewState extends State<SearchView> {
     var response =
         await http.get(Uri.parse(nextPage), headers: {"Authorization": apiKey});
     Map<String, dynamic> jsonData = jsonDecode(response.body);
-    print(jsonData["next_page"].toString());
+    // print(jsonData["next_page"].toString());
     nextPage = jsonData["next_page"].toString();
     jsonData["photos"].forEach((element) {
       // print(element);
@@ -99,94 +101,140 @@ class _SearchViewState extends State<SearchView> {
       DeviceOrientation.portraitUp,
     ]);
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Align(
-              alignment: Alignment.topCenter,
-              child: wallpaperSearchGrid(
-                  wallpapers: wallpapers, context: context, uid: user.uid),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Visibility(
-                  visible: !_buttonVisible,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      color: Theme.of(context).backgroundColor,
-                    ),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          width: 550,
-                          height: 5,
-                          child: LinearProgressIndicator(
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.secondary,
-                              valueColor: AlwaysStoppedAnimation(
-                                Theme.of(context).colorScheme.primary,
-                              )),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10.0),
-                          child: Text(
-                            "LOADING...",
-                            style: Theme.of(context).textTheme.button,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        SizedBox(
-                          width: 550,
-                          height: 5,
-                          child: LinearProgressIndicator(
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.secondary,
-                              valueColor: AlwaysStoppedAnimation(
-                                Theme.of(context).colorScheme.primary,
-                              )),
-                        ),
-                      ],
-                    ),
-                  )),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Visibility(
-                visible: _buttonVisible,
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      _buttonVisible = !_buttonVisible;
-                      pageNumber = pageNumber + 1;
-                      setState(() {});
-                      getMoreSearchResults(widget.searchQuery);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      primary: Theme.of(context).colorScheme.primary,
-                      onPrimary: textColor,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(0)),
-                    ),
+      body: _isLoading
+          ? Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 550,
+                    height: 5,
+                    child: LinearProgressIndicator(
+                        backgroundColor:
+                            Theme.of(context).colorScheme.secondary,
+                        valueColor: AlwaysStoppedAnimation(
+                          Theme.of(context).colorScheme.primary,
+                        )),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10.0),
                     child: Text(
-                      "LOAD MORE",
+                      loadingText,
                       style: TextStyle(
-                          fontFamily: 'Theme Bold',
-                          color: Theme.of(context).colorScheme.secondary),
+                          color: Theme.of(context).colorScheme.primary,
+                          fontFamily: 'Theme Bold'),
                     ),
                   ),
-                ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  SizedBox(
+                    width: 550,
+                    height: 5,
+                    child: LinearProgressIndicator(
+                        backgroundColor:
+                            Theme.of(context).colorScheme.secondary,
+                        valueColor: AlwaysStoppedAnimation(
+                          Theme.of(context).colorScheme.primary,
+                        )),
+                  ),
+                ],
+              ),
+            )
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child: wallpaperSearchGrid(
+                        wallpapers: wallpapers,
+                        context: context,
+                        uid: user.uid),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Visibility(
+                        visible: !_buttonVisible,
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.rectangle,
+                            color: Theme.of(context).backgroundColor,
+                          ),
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                width: 550,
+                                height: 5,
+                                child: LinearProgressIndicator(
+                                    backgroundColor:
+                                        Theme.of(context).colorScheme.secondary,
+                                    valueColor: AlwaysStoppedAnimation(
+                                      Theme.of(context).colorScheme.primary,
+                                    )),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 10.0),
+                                child: Text(
+                                  loadingText,
+                                  style: Theme.of(context).textTheme.button,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              SizedBox(
+                                width: 550,
+                                height: 5,
+                                child: LinearProgressIndicator(
+                                    backgroundColor:
+                                        Theme.of(context).colorScheme.secondary,
+                                    valueColor: AlwaysStoppedAnimation(
+                                      Theme.of(context).colorScheme.primary,
+                                    )),
+                              ),
+                            ],
+                          ),
+                        )),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Visibility(
+                      visible: _buttonVisible,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 50,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            _buttonVisible = !_buttonVisible;
+                            pageNumber = pageNumber + 1;
+                            setState(() {});
+                            getMoreSearchResults(widget.searchQuery);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: Theme.of(context).colorScheme.primary,
+                            onPrimary: textColor,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(0)),
+                          ),
+                          child: Text(
+                            loadMoreMessage,
+                            style: TextStyle(
+                                fontFamily: 'Theme Bold',
+                                color: Theme.of(context).colorScheme.secondary),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 }

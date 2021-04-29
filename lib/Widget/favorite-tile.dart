@@ -1,3 +1,4 @@
+import 'package:felexo/Data/data.dart';
 import 'package:felexo/Services/favorites-list.dart';
 import 'package:felexo/Views/wallpaper-view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -55,7 +56,7 @@ class _FavoriteTileState extends State<FavoriteTile> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Loading Images...",
+                      loadingMessage,
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,
                           fontFamily: 'Thene Bold'),

@@ -56,8 +56,8 @@ class _WallPaperViewState extends State<WallPaperView> {
     print(widget.uid);
     transparent = false;
 
-    print("AVG:" + widget.avgColor.toString());
-    print(foregroundColor);
+    // print("AVG:" + widget.avgColor.toString());
+    // print(foregroundColor);
     findIfFav();
     super.initState();
   }
@@ -81,12 +81,12 @@ class _WallPaperViewState extends State<WallPaperView> {
     assert(user.email != null);
     assert(user.uid != null);
     assert(user.photoURL != null);
-    print("User: " + user.uid.toString());
+    // print("User: " + user.uid.toString());
     setState(() {});
   }
 
   findIfFav() async {
-    print("finding fav");
+    // print("finding fav");
     final snapShot = await FirebaseFirestore.instance
         .collection("User")
         .doc(widget.uid)
@@ -95,10 +95,10 @@ class _WallPaperViewState extends State<WallPaperView> {
         .get();
     if (snapShot.exists) {
       favExists = true;
-      print("Fav Exists");
+      // print("Fav Exists");
       setState(() {});
     } else {
-      print("Fav Not Exists");
+      // print("Fav Not Exists");
       favExists = false;
     }
     setState(() {});

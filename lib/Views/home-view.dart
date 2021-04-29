@@ -40,14 +40,14 @@ class _HomeViewState extends State<HomeView>
     assert(user.email != null);
     assert(user.uid != null);
     assert(user.photoURL != null);
-    print("User: " + user.uid.toString());
-    assert(imgUrl != null);
-    assert(originalUrl != null);
-    assert(photoID != null);
-    assert(photographer != null);
-    assert(photographerID != null);
-    assert(photographerUrl != null);
-    assert(avgColor != null);
+    // print("User: " + user.uid.toString());
+    // assert(imgUrl != null);
+    // assert(originalUrl != null);
+    // assert(photoID != null);
+    // assert(photographer != null);
+    // assert(photographerID != null);
+    // assert(photographerUrl != null);
+    // assert(avgColor != null);
     setState(() {});
   }
 

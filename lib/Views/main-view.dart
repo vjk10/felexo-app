@@ -32,7 +32,6 @@ class _MainViewState extends State<MainView>
     initUser();
     fetchSuggestions();
     fetchHistory();
-
     _tabController = new TabController(length: 4, vsync: this);
     super.initState();
   }
@@ -52,21 +51,19 @@ class _MainViewState extends State<MainView>
     // print("User: " + user.uid.toString());
   }
 
-  void fetchSuggestions() async {
+  Future<List> fetchSuggestions() async {
     suggestions
         .collection("SearchSuggestions")
         .get()
         .then((QuerySnapshot snapshot) {
       snapshot.docs.map((e) {
-        // print(e.data()["term"]);
         defaultSuggestions.add(e.data()["term"]);
       }).toList();
     });
+    return defaultSuggestions;
   }
 
-  void fetchHistory() async {
-    print(user.uid);
-
+  Future<List> fetchHistory() async {
     history
         .collection("User")
         .doc(user.uid.toString())
@@ -77,7 +74,7 @@ class _MainViewState extends State<MainView>
         searchHistory.add(e.data()["searchHistory"].toString());
       }).toList();
     });
-    // print(searchHistory.toString());
+    return searchHistory;
   }
 
   @override
@@ -165,15 +162,19 @@ class _MainViewState extends State<MainView>
                                 ),
                               )),
                           InkWell(
-                            onTap: () {
-                              showSearch(
-                                  context: context,
-                                  delegate: WallpaperSearch(
-                                    defaultSuggestions,
-                                    searchHistory,
-                                    user.uid.toString(),
-                                    storeHistory,
-                                  ));
+                            onTap: () async {
+                              await fetchHistory().whenComplete(() {
+                                fetchSuggestions().whenComplete(() {
+                                  showSearch(
+                                      context: context,
+                                      delegate: WallpaperSearch(
+                                        defaultSuggestions,
+                                        searchHistory,
+                                        user.uid.toString(),
+                                        storeHistory,
+                                      ));
+                                });
+                              });
                             },
                             child: Center(
                               child: Material(

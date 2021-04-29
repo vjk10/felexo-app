@@ -142,7 +142,7 @@ class _CategoriesResultState extends State<CategoriesResult> {
                                 Padding(
                                   padding: const EdgeInsets.only(top: 10.0),
                                   child: Text(
-                                    "LOADING...",
+                                    loadingText,
                                     style: Theme.of(context).textTheme.button,
                                   ),
                                 ),
@@ -185,7 +185,7 @@ class _CategoriesResultState extends State<CategoriesResult> {
                                   borderRadius: BorderRadius.circular(0)),
                             ),
                             child: Text(
-                              "LOAD MORE",
+                              loadMoreMessage,
                               style: TextStyle(
                                   fontFamily: 'Theme Bold',
                                   color:

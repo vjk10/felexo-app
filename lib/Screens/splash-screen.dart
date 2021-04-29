@@ -7,7 +7,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:permission/permission.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,7 +29,6 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-    askPermission();
 
     controller = AnimationController(vsync: this);
     Timer(Duration(seconds: 3), () async {
@@ -66,11 +64,11 @@ class _SplashScreenState extends State<SplashScreen>
     }
   }
 
-  askPermission() async {
-    // ignore: unused_local_variable
-    List<Permissions> permissionNames =
-        await Permission.requestPermissions([PermissionName.Storage]);
-  }
+  // askPermission() async {
+  //   // ignore: unused_local_variable
+  //   List<Permissions> permissionNames =
+  //       await Permission.requestPermissions([PermissionName.Storage]);
+  // }
 
   @override
   Widget build(BuildContext context) {

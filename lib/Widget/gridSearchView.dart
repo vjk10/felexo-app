@@ -1,4 +1,5 @@
 import 'package:felexo/Color/colors.dart';
+import 'package:felexo/Data/data.dart';
 import 'package:felexo/Services/animation-route.dart';
 import 'package:felexo/Views/wallpaper-view.dart';
 import 'package:felexo/model/wallpapers-model.dart';
@@ -50,7 +51,7 @@ Widget wallpaperSearchGrid(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "Loading Images...",
+                              loadingMessage,
                               style: TextStyle(
                                   color: foreGroundColor,
                                   fontFamily: 'Theme Bold'),

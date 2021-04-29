@@ -50,7 +50,7 @@ class _CuratedState extends State<Curated> {
         headers: {"Authorization": apiKey}); // print(response.body.toString());
 
     Map<String, dynamic> jsonData = jsonDecode(response.body);
-    print(jsonData["next_page"].toString());
+    // print(jsonData["next_page"].toString());
     nextPage = jsonData["next_page"].toString();
     jsonData["photos"].forEach((element) {
       // print(element);
@@ -86,7 +86,7 @@ class _CuratedState extends State<Curated> {
     assert(user.email != null);
     assert(user.uid != null);
     assert(user.photoURL != null);
-    print("User: " + user.uid.toString());
+    // print("User: " + user.uid.toString());
     uid = user.uid.toString();
   }
 
@@ -139,7 +139,7 @@ class _CuratedState extends State<Curated> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      "Loading Images...",
+                                      loadingMessage,
                                       style: TextStyle(
                                           color: foregroundColor,
                                           fontFamily: 'Theme Bold'),
@@ -195,70 +195,6 @@ class _CuratedState extends State<Curated> {
                                               .toString(),
                                         )));
                               },
-                              // child: Padding(
-                              //   padding: const EdgeInsets.only(top: 200.0),
-                              //   child: Container(
-                              //     height: 200,
-                              //     decoration: BoxDecoration(
-                              //         borderRadius: BorderRadius.circular(0),
-                              //         gradient: LinearGradient(
-                              //             colors: [
-                              //               Colors.transparent,
-                              //               Colors.black12,
-                              //               Colors.black38,
-                              //               Colors.black45
-                              //             ],
-                              //             begin: Alignment.center,
-                              //             end: Alignment.bottomCenter)),
-                              //     child: Padding(
-                              //       padding: const EdgeInsets.all(8.0),
-                              //       child: Column(
-                              //         crossAxisAlignment:
-                              //             CrossAxisAlignment.end,
-                              //         mainAxisAlignment: MainAxisAlignment.end,
-                              //         children: [
-                              //           Row(
-                              //             children: [
-                              //               Align(
-                              //                 alignment: Alignment.bottomLeft,
-                              //                 child: AutoSizeText(
-                              //                   wallpaper.photographer,
-                              //                   style: TextStyle(
-                              //                       color: textColor,
-                              //                       fontFamily:
-                              //                           'Circular Black',
-                              //                       fontSize: 20),
-                              //                   maxLines: 1,
-                              //                   minFontSize: 5,
-                              //                   maxFontSize: 8,
-                              //                 ),
-                              //               ),
-                              //             ],
-                              //           ),
-                              //           Row(
-                              //             children: [
-                              //               Align(
-                              //                 alignment: Alignment.bottomLeft,
-                              //                 child: AutoSizeText(
-                              //                   wallpaper.photographerId
-                              //                       .toString(),
-                              //                   style: TextStyle(
-                              //                       color: textColor,
-                              //                       fontFamily:
-                              //                           'Circular Black',
-                              //                       fontSize: 15),
-                              //                   maxLines: 1,
-                              //                   minFontSize: 5,
-                              //                   maxFontSize: 10,
-                              //                 ),
-                              //               ),
-                              //             ],
-                              //           )
-                              //         ],
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
                             )
                           ]),
                         ),
@@ -299,7 +235,7 @@ class _CuratedState extends State<Curated> {
                     Padding(
                       padding: const EdgeInsets.only(top: 10.0),
                       child: Text(
-                        "LOADING...",
+                        loadingText,
                         style: Theme.of(context).textTheme.button,
                       ),
                     ),
@@ -340,7 +276,7 @@ class _CuratedState extends State<Curated> {
                       borderRadius: BorderRadius.circular(0)),
                 ),
                 child: Text(
-                  "LOAD MORE",
+                  loadMoreMessage,
                   style: TextStyle(
                       fontFamily: 'Theme Bold',
                       color: Theme.of(context).colorScheme.secondary),

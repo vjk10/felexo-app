@@ -74,9 +74,17 @@ class WallpaperSearch extends SearchDelegate<String> {
               fontFamily: 'Theme Regular'),
         ),
         inputDecorationTheme: InputDecorationTheme(
-            border: InputBorder.none,
+            contentPadding: const EdgeInsets.all(10),
+            focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(0),
+                borderSide: BorderSide(
+                    color: Theme.of(context).colorScheme.primary, width: 3)),
+            enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(0),
+                borderSide: BorderSide(
+                    color: Theme.of(context).colorScheme.primary, width: 3)),
             isDense: true,
-            fillColor: Theme.of(context).colorScheme.primary.withAlpha(20),
+            fillColor: Theme.of(context).colorScheme.secondary,
             filled: true,
             hintStyle: TextStyle(
                 color: Theme.of(context).colorScheme.primary,
@@ -89,26 +97,51 @@ class WallpaperSearch extends SearchDelegate<String> {
     print(defaultSuggestions);
     return [
       Padding(
-        padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-        child: Container(
-          width: 0,
-          height: 0,
-          // decoration: BoxDecoration(
-          //     shape: BoxShape.circle,
-          //     color: Theme.of(context).colorScheme.primary.withAlpha(50),
-          //     border:
-          //         Border.all(color: Colors.redAccent.withAlpha(50), width: 3)),
-          // child: Center(
-          //   child: IconButton(
-          //       icon: Icon(
-          //         Icons.mic_outlined,
-          //         size: 17,
-          //         color: Theme.of(context).colorScheme.primary,
-          //       ),
-          //       onPressed: () {
-          //         print("Recorder Function");
-          //       }),
-          // ),
+        padding: const EdgeInsets.fromLTRB(10, 0, 20, 0),
+        child: Row(
+          children: [
+            Container(
+              width: 35,
+              height: 35,
+              decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                  shape: BoxShape.circle),
+              child: Center(
+                child: InkWell(
+                  onTap: () {
+                    query = '';
+                  },
+                  child: Icon(
+                    Icons.clear,
+                    size: 24,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+              ),
+            ),
+            // SizedBox(
+            //   width: 5,
+            // ),
+            // Container(
+            //   width: 35,
+            //   height: 35,
+            //   decoration: BoxDecoration(
+            //       color: Colors.redAccent.withOpacity(0.5),
+            //       shape: BoxShape.circle),
+            //   child: Center(
+            //     child: InkWell(
+            //       onTap: () {
+            //         print("Speech Recognition");
+            //       },
+            //       child: Icon(
+            //         Icons.mic_outlined,
+            //         size: 24,
+            //         color: Theme.of(context).colorScheme.primary,
+            //       ),
+            //     ),
+            //   ),
+            // ),
+          ],
         ),
       )
     ];
@@ -135,16 +168,6 @@ class WallpaperSearch extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    // return Center(
-    //   child: Container(
-    //     width: 100,
-    //     height: 100,
-    //     child: Text(
-    //       query,
-    //       style: Theme.of(context).textTheme.bodyText1,
-    //     ),
-    //   ),
-    // );
     return SafeArea(
       child: SearchView(
         searchQuery: query,
@@ -168,12 +191,15 @@ class WallpaperSearch extends SearchDelegate<String> {
           .doc(query.toString())
           .set({"searchHistory": suggestionString});
     }
-    if (!searchHistory.contains(query)) {
+    if (!searchHistory.contains(suggestionString)) {
       if (storeHistory) {
         FirebaseFirestore.instance
             .collection("SearchSuggestions")
-            .doc(query.toString())
+            .doc(suggestionString.toString())
             .set({"term": suggestionString});
+        if (!defaultSuggestions.contains(suggestionString)) {
+          defaultSuggestions.insert(0, suggestionString);
+        }
       }
       FirebaseFirestore.instance
           .collection("User")
@@ -181,8 +207,9 @@ class WallpaperSearch extends SearchDelegate<String> {
           .collection("SearchHistory")
           .doc(query.toString())
           .set({"searchHistory": suggestionString});
-      searchHistory.insert(0, suggestionString);
-      defaultSuggestions.insert(0, suggestionString);
+      if (!searchHistory.contains(suggestionString)) {
+        searchHistory.insert(0, suggestionString);
+      }
     }
 
     super.showResults(context);
@@ -207,22 +234,32 @@ class WallpaperSearch extends SearchDelegate<String> {
     return ListView.builder(
       itemCount: suggestionList.length,
       itemBuilder: (context, index) => ListTile(
+        // onTap: () {
+        //   query = suggestionList[index].toString();
+        //   showResults(context);
+        // },
         leading: Icon(
           icon,
           color: Theme.of(context).colorScheme.primary,
         ),
-        title: RichText(
-          text: TextSpan(
-              text: suggestionList[index].substring(0, query.length),
-              style: TextStyle(
-                  fontFamily: 'Theme Regular', color: Colors.redAccent),
-              children: [
-                TextSpan(
-                    text: suggestionList[index].substring(query.length),
-                    style: TextStyle(
-                        fontFamily: 'Theme Regular',
-                        color: Theme.of(context).colorScheme.primary)),
-              ]),
+        title: InkWell(
+          onTap: () {
+            query = suggestionList[index].toString();
+            showResults(context);
+          },
+          child: RichText(
+            text: TextSpan(
+                text: suggestionList[index].substring(0, query.length),
+                style: TextStyle(
+                    fontFamily: 'Theme Regular', color: Colors.redAccent),
+                children: [
+                  TextSpan(
+                      text: suggestionList[index].substring(query.length),
+                      style: TextStyle(
+                          fontFamily: 'Theme Regular',
+                          color: Theme.of(context).colorScheme.primary)),
+                ]),
+          ),
         ),
         trailing: InkWell(
           onTap: () {

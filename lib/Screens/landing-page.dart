@@ -17,8 +17,6 @@ class _LandingPageState extends State<LandingPage>
   @override
   void initState() {
     askStoragePermission();
-    askMicrophonePermission();
-    controller = AnimationController(vsync: this);
     super.initState();
   }
 
@@ -41,20 +39,12 @@ class _LandingPageState extends State<LandingPage>
     }
   }
 
-  askMicrophonePermission() async {
-    List<Permissions> permissionMicrophone =
-        await Permission.requestPermissions([PermissionName.Microphone]);
-    print(permissionMicrophone.map((e) {
-      print(e.permissionStatus);
-    }));
-  }
-
   askStoragePermission() async {
     List<Permissions> permissionStorage =
         await Permission.requestPermissions([PermissionName.Storage]);
 
     print(permissionStorage.map((e) {
-      print(e.permissionStatus);
+      print("StoragePermission " + e.permissionStatus.toString());
     }));
   }
 
@@ -66,23 +56,6 @@ class _LandingPageState extends State<LandingPage>
     return Scaffold(
         body: SafeArea(
       child: Stack(children: [
-        // Align(
-        //   alignment: Alignment.topLeft,
-        //   child: Padding(
-        //     padding: const EdgeInsets.all(15.0),
-        //     child: InkWell(
-        //         onTap: () {
-        //           HapticFeedback.mediumImpact();
-        //           if (isDark == true) {
-        //             onThemeChanged("ThemeMode.dark", themeModeNotifier);
-        //           } else if (isDark == false) {
-        //             onThemeChanged("ThemeMode.light", themeModeNotifier);
-        //           }
-        //           setState(() {});
-        //         },
-        //         child: Icon(Icons.brightness_4_outlined)),
-        //   ),
-        // ),
         Align(
             alignment: Alignment.center,
             child: Column(

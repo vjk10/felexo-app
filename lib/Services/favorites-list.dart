@@ -52,7 +52,7 @@ class _FavoritesListState extends State<FavoritesList> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("No Favorites Added Yet!",
+                Text("NO FAVORITES ADDED YET!",
                     style: Theme.of(context).textTheme.headline6),
               ],
             )
@@ -61,22 +61,6 @@ class _FavoritesListState extends State<FavoritesList> {
       );
     }
     if (favorites.length != null) {
-      // return ListView.builder(
-      //   scrollDirection: Axis.horizontal,
-      //   itemCount: favorites.length,
-      //   itemBuilder: (context, index) {
-      //     return FavoriteTile(favorites: favorites[index]);
-      //   },
-      // );
-      // return GridView.builder(
-      //     gridDelegate:
-      //         SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: ),
-      //     itemCount: favorites.length,
-      //     itemBuilder: (context, index) {
-      //       return FavoriteTile(
-      //         favorites: favorites[index],
-      //       );
-      //     });
       return GridView.count(
         shrinkWrap: true,
         crossAxisCount: 2,
@@ -114,7 +98,7 @@ class _FavoritesListState extends State<FavoritesList> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "Loading Images...",
+                            "LOADING IMAGES",
                             style: TextStyle(
                                 color: foregroundColor,
                                 fontFamily: 'Theme Black'),
@@ -161,70 +145,6 @@ class _FavoritesListState extends State<FavoritesList> {
                                   photographerID: favorite.photographerID,
                                   photographerUrl: favorite.photographerUrl)));
                     },
-                    // child: Padding(
-                    //   padding: const EdgeInsets.only(top: 200.0),
-                    //   child: Container(
-                    //     height: 200,
-                    //     decoration: BoxDecoration(
-                    //         borderRadius: BorderRadius.circular(0),
-                    //         gradient: LinearGradient(
-                    //             colors: [
-                    //               Colors.transparent,
-                    //               Colors.black12,
-                    //               Colors.black38,
-                    //               Colors.black45
-                    //             ],
-                    //             begin: Alignment.center,
-                    //             end: Alignment.bottomCenter)),
-                    //     child: Padding(
-                    //       padding: const EdgeInsets.all(8.0),
-                    //       child: Column(
-                    //         crossAxisAlignment:
-                    //             CrossAxisAlignment.end,
-                    //         mainAxisAlignment: MainAxisAlignment.end,
-                    //         children: [
-                    //           Row(
-                    //             children: [
-                    //               Align(
-                    //                 alignment: Alignment.bottomLeft,
-                    //                 child: AutoSizeText(
-                    //                   wallpaper.photographer,
-                    //                   style: TextStyle(
-                    //                       color: textColor,
-                    //                       fontFamily:
-                    //                           'Circular Black',
-                    //                       fontSize: 20),
-                    //                   maxLines: 1,
-                    //                   minFontSize: 5,
-                    //                   maxFontSize: 8,
-                    //                 ),
-                    //               ),
-                    //             ],
-                    //           ),
-                    //           Row(
-                    //             children: [
-                    //               Align(
-                    //                 alignment: Alignment.bottomLeft,
-                    //                 child: AutoSizeText(
-                    //                   wallpaper.photographerId
-                    //                       .toString(),
-                    //                   style: TextStyle(
-                    //                       color: textColor,
-                    //                       fontFamily:
-                    //                           'Circular Black',
-                    //                       fontSize: 15),
-                    //                   maxLines: 1,
-                    //                   minFontSize: 5,
-                    //                   maxFontSize: 10,
-                    //                 ),
-                    //               ),
-                    //             ],
-                    //           )
-                    //         ],
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
                   )
                 ]),
               ),
@@ -243,7 +163,7 @@ class _FavoritesListState extends State<FavoritesList> {
                 AlwaysStoppedAnimation(Theme.of(context).colorScheme.primary),
           ),
           Text(
-            "Finding Favorites...",
+            "FINDING FAVORITES...",
             style: TextStyle(fontFamily: 'Theme Bold'),
           )
         ],

@@ -57,7 +57,7 @@ class _ColorSearchViewState extends State<ColorSearchView> {
             "https://api.pexels.com/v1/search?query=photos&per_page=$noOfImages&color=$color"),
         headers: {"Authorization": apiKey});
     Map<String, dynamic> jsonData = jsonDecode(response.body);
-    print(jsonData["next_page"].toString());
+    // print(jsonData["next_page"].toString());
     nextPage = jsonData["next_page"].toString();
     jsonData["photos"].forEach((element) {
       // print(element);
@@ -74,7 +74,7 @@ class _ColorSearchViewState extends State<ColorSearchView> {
     var response =
         await http.get(Uri.parse(nextPage), headers: {"Authorization": apiKey});
     Map<String, dynamic> jsonData = jsonDecode(response.body);
-    print(jsonData["next_page"].toString());
+    // print(jsonData["next_page"].toString());
     nextPage = jsonData["next_page"].toString();
     jsonData["photos"].forEach((element) {
       // print(element);

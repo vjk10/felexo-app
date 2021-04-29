@@ -28,7 +28,6 @@ dependencies:
   firebase_core: ^1.0.2
   firebase_core_web: ^1.0.2
   flutter_cache_manager: ^3.0.1
-  flutter_group_sliver: ^0.0.2
   flutter_parallax: ^0.1.2
   google_sign_in: ^5.0.1
   http: ^0.13.1
@@ -42,7 +41,7 @@ dependencies:
   wallpaper_manager: ^1.0.10
   bordered_text: ^1.0.1
   lottie: ^1.0.1
-  speech_recognition: ^0.3.0+1
+  package_info: ^2.0.0
   
 dev_dependencies:
   flutter_test:

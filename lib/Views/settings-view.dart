@@ -5,6 +5,7 @@ import 'package:felexo/Services/authentication-service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:package_info/package_info.dart';
 import 'package:random_string/random_string.dart';
 
 // ignore: must_be_immutable
@@ -16,8 +17,6 @@ class SettingsView extends StatefulWidget {
   @override
   _SettingsViewState createState() => _SettingsViewState();
 }
-
-enum ThemeValues { dark, light, system }
 
 class _SettingsViewState extends State<SettingsView> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -35,10 +34,18 @@ class _SettingsViewState extends State<SettingsView> {
   TextEditingController subject = new TextEditingController();
   TextEditingController feedback = new TextEditingController();
 
+  PackageInfo _packageInfo = PackageInfo(
+    appName: 'Unknown',
+    packageName: 'Unknown',
+    version: 'Unknown',
+    buildNumber: 'Unknown',
+  );
+
   @override
   void initState() {
+    _initPackageInfo();
     _storeHistory = widget.storeHistory;
-    print(searchHistory.length);
+    // print(searchHistory.length);
     if (searchHistory.length == 0) {
       historyAvail = false;
       setState(() {});
@@ -47,7 +54,7 @@ class _SettingsViewState extends State<SettingsView> {
       historyAvail = true;
       setState(() {});
     }
-    print(_storeHistory);
+    // print(_storeHistory);
     super.initState();
     initUser();
   }
@@ -58,6 +65,13 @@ class _SettingsViewState extends State<SettingsView> {
     assert(user.uid != null);
     assert(user.photoURL != null);
     setState(() {});
+  }
+
+  Future<void> _initPackageInfo() async {
+    final PackageInfo info = await PackageInfo.fromPlatform();
+    setState(() {
+      _packageInfo = info;
+    });
   }
 
   void historyPref(bool value) {
@@ -304,12 +318,14 @@ class _SettingsViewState extends State<SettingsView> {
                 minVerticalPadding: 10,
                 horizontalTitleGap: 20,
                 leading: Icon(
-                  Icons.build_circle,
+                  Icons.perm_device_info_outlined,
                   color: Theme.of(context).colorScheme.primary,
                 ),
-                title: Text("Build Number"),
+                title: Text("Version Number"),
                 subtitle: Text(
-                  "v0.0.0002",
+                  _packageInfo.version +
+                      ".BUILD.FBA." +
+                      _packageInfo.buildNumber,
                   style: TextStyle(fontSize: 12),
                 ),
               ),
@@ -318,12 +334,12 @@ class _SettingsViewState extends State<SettingsView> {
                 minVerticalPadding: 10,
                 horizontalTitleGap: 20,
                 leading: Icon(
-                  Icons.perm_device_info,
+                  Icons.tag,
                   color: Theme.of(context).colorScheme.primary,
                 ),
                 title: Text("Application ID"),
                 subtitle: Text(
-                  "com.vlabs.felexo",
+                  _packageInfo.packageName,
                   style: TextStyle(fontSize: 12),
                 ),
               ),
@@ -344,10 +360,12 @@ class _SettingsViewState extends State<SettingsView> {
                   HapticFeedback.mediumImpact();
                   showAboutDialog(
                       context: context,
-                      applicationName: "Felexo",
-                      applicationVersion: "v0.0.0002",
+                      applicationName: _packageInfo.appName,
+                      applicationVersion: _packageInfo.version +
+                          ".BUILD.FBA." +
+                          _packageInfo.buildNumber,
                       applicationLegalese:
-                          "Owned and developed by Vishnu Jayakumar",
+                          "Apache License\nVersion 2.0, January 2004",
                       applicationIcon: Image.asset(
                         "assets/images/ic_launcher-playstore.png",
                         width: 50,
