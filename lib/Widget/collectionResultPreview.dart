@@ -65,7 +65,7 @@ class _CRPreviewState extends State<CRPreview> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Image.network(
-          p1 ?? logoPlayStore,
+          p1 ?? loadingAnimation,
           width: 250,
           height: 250,
           fit: BoxFit.cover,
@@ -81,7 +81,7 @@ class _CRPreviewState extends State<CRPreview> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Image.network(
-              p2 ?? logoPlayStore,
+              p2 ?? loadingAnimation,
               width: 160,
               height: 160,
               errorBuilder:
@@ -99,7 +99,7 @@ class _CRPreviewState extends State<CRPreview> {
                         width: 160,
                         height: 90,
                         child: Image.network(
-                          p3 ?? logoPlayStore,
+                          p3 ?? loadingAnimation,
                           fit: BoxFit.cover,
                           errorBuilder: (BuildContext context, Object exception,
                               StackTrace trace) {
@@ -116,7 +116,7 @@ class _CRPreviewState extends State<CRPreview> {
                               Theme.of(context).scaffoldBackgroundColor,
                           child: Center(
                             child: Text(
-                              "+" + totalResults.toString() + "\nMORE",
+                              "VIEW MORE",
                               style: TextStyle(
                                   color: foregroundColor,
                                   fontFamily: 'Theme Bold',
@@ -131,7 +131,7 @@ class _CRPreviewState extends State<CRPreview> {
                     // color:
                     //     Theme.of(context).colorScheme.primary.withOpacity(0.5),
                     child: Center(
-                      child: Text("+" + totalResults.toString() + "\nMORE"),
+                      child: Text("VIEW MORE"),
                     ))
           ],
         )

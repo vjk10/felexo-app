@@ -44,7 +44,8 @@ class WallpaperSearch extends SearchDelegate<String> {
                 fontFamily: 'Theme Regular',
                 color: Theme.of(context).colorScheme.primary)),
         appBarTheme: AppBarTheme(
-          elevation: 0,
+          elevation: 15,
+          shadowColor: Theme.of(context).colorScheme.primary,
           centerTitle: true,
           titleSpacing: 0,
           textTheme: TextTheme(

@@ -53,7 +53,7 @@ class _CRGridState extends State<CRGrid> {
         headers: {"Authorization": apiKey}); // print(response.body.toString());
 
     Map<String, dynamic> jsonData = jsonDecode(response.body);
-    // print("NEXT: " + jsonData["next_page"].toString());
+    print("NEXT: " + jsonData["next_page"].toString());
     nextPage = jsonData["next_page"].toString();
     if (nextPage == "null") {
       setState(() {
@@ -111,8 +111,7 @@ class _CRGridState extends State<CRGrid> {
   @override
   Widget build(BuildContext context) {
     return imagesLoaded
-        ? Padding(
-            padding: const EdgeInsets.only(bottom: 20.0),
+        ? SafeArea(
             child: Column(
               children: [
                 SingleChildScrollView(
@@ -217,9 +216,6 @@ class _CRGridState extends State<CRGrid> {
                     );
                   }).toList(),
                 )),
-                SizedBox(
-                  height: 0,
-                ),
                 loading
                     ? Align(
                         alignment: Alignment.bottomCenter,
@@ -307,39 +303,41 @@ class _CRGridState extends State<CRGrid> {
               ],
             ),
           )
-        : Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 550,
-                height: 5,
-                child: LinearProgressIndicator(
-                    backgroundColor: Theme.of(context).colorScheme.secondary,
-                    valueColor: AlwaysStoppedAnimation(
-                      Theme.of(context).colorScheme.primary,
-                    )),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: Text(
-                  loadingText,
-                  style: Theme.of(context).textTheme.button,
+        : Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 550,
+                  height: 5,
+                  child: LinearProgressIndicator(
+                      backgroundColor: Theme.of(context).colorScheme.secondary,
+                      valueColor: AlwaysStoppedAnimation(
+                        Theme.of(context).colorScheme.primary,
+                      )),
                 ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              SizedBox(
-                width: 550,
-                height: 5,
-                child: LinearProgressIndicator(
-                    backgroundColor: Theme.of(context).colorScheme.secondary,
-                    valueColor: AlwaysStoppedAnimation(
-                      Theme.of(context).colorScheme.primary,
-                    )),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: Text(
+                    loadingText,
+                    style: Theme.of(context).textTheme.button,
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  width: 550,
+                  height: 5,
+                  child: LinearProgressIndicator(
+                      backgroundColor: Theme.of(context).colorScheme.secondary,
+                      valueColor: AlwaysStoppedAnimation(
+                        Theme.of(context).colorScheme.primary,
+                      )),
+                ),
+              ],
+            ),
           );
   }
 }

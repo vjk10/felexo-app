@@ -1,3 +1,4 @@
+import 'package:felexo/Data/data.dart';
 import 'package:felexo/Services/authentication-service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -104,8 +105,8 @@ class _LandingPageState extends State<LandingPage>
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Image.asset(
-                            "assets/images/googleIcon.png",
+                          Image.network(
+                            googleIcon,
                             scale: 4,
                           ),
                           SizedBox(

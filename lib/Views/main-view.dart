@@ -4,7 +4,9 @@ import 'package:felexo/Views/collections-view.dart';
 import 'package:felexo/Views/search-delegate.dart';
 import 'package:felexo/Widget/wallpaper-controls.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:md2_tab_indicator/md2_tab_indicator.dart';
 
 import 'views.dart';
 
@@ -83,6 +85,23 @@ class _MainViewState extends State<MainView>
     super.dispose();
   }
 
+  TabBar get _tabBar => TabBar(
+      isScrollable: true,
+      enableFeedback: true,
+      controller: _tabController,
+      dragStartBehavior: DragStartBehavior.down,
+      labelColor: Theme.of(context).colorScheme.primary,
+      unselectedLabelColor: Theme.of(context).accentColor,
+      labelStyle: TextStyle(fontSize: 12, fontFamily: 'Theme Bold'),
+      indicatorSize: TabBarIndicatorSize.label,
+      indicatorWeight: 4,
+      indicatorColor: Theme.of(context).colorScheme.primary,
+      indicator: MD2Indicator(
+          indicatorHeight: 5,
+          indicatorColor: Theme.of(context).colorScheme.primary,
+          indicatorSize: MD2IndicatorSize.full),
+      tabs: myTabs);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,7 +113,7 @@ class _MainViewState extends State<MainView>
                 (BuildContext context, bool innerBoxIsScrolled) {
               return <Widget>[
                 SliverAppBar(
-                  // elevation: 15,
+                  elevation: 15,
                   backgroundColor: Theme.of(context).colorScheme.secondary,
                   expandedHeight: 220.0,
                   floating: true,
@@ -140,7 +159,7 @@ class _MainViewState extends State<MainView>
                     )
                   ],
                   forceElevated: true,
-                  shadowColor: Theme.of(context).colorScheme.primary,
+                  shadowColor: Theme.of(context).colorScheme.secondary,
                   flexibleSpace: FlexibleSpaceBar(
                     stretchModes: [
                       StretchMode.fadeTitle,
@@ -148,8 +167,8 @@ class _MainViewState extends State<MainView>
                     ],
                     centerTitle: true,
                     background: Padding(
-                      padding:
-                          const EdgeInsets.only(top: 45.0, left: 10, right: 10),
+                      padding: const EdgeInsets.only(
+                          top: 50.0, left: 10, right: 10, bottom: 20),
                       child: Stack(
                         children: [
                           Align(
@@ -163,18 +182,14 @@ class _MainViewState extends State<MainView>
                               )),
                           InkWell(
                             onTap: () async {
-                              await fetchHistory().whenComplete(() {
-                                fetchSuggestions().whenComplete(() {
-                                  showSearch(
-                                      context: context,
-                                      delegate: WallpaperSearch(
-                                        defaultSuggestions,
-                                        searchHistory,
-                                        user.uid.toString(),
-                                        storeHistory,
-                                      ));
-                                });
-                              });
+                              showSearch(
+                                  context: context,
+                                  delegate: WallpaperSearch(
+                                    defaultSuggestions,
+                                    searchHistory,
+                                    user.uid.toString(),
+                                    storeHistory,
+                                  ));
                             },
                             child: Center(
                               child: Material(
@@ -211,17 +226,16 @@ class _MainViewState extends State<MainView>
                   ),
                   backwardsCompatibility: true,
                   collapsedHeight: 80,
-                  bottom: TabBar(
-                      isScrollable: true,
-                      enableFeedback: true,
-                      controller: _tabController,
-                      labelColor: Theme.of(context).colorScheme.primary,
-                      unselectedLabelColor:
-                          Theme.of(context).colorScheme.primary,
-                      labelStyle:
-                          TextStyle(fontSize: 12, fontFamily: 'Theme Bold'),
-                      indicatorSize: TabBarIndicatorSize.label,
-                      tabs: myTabs),
+                  bottom: PreferredSize(
+                      preferredSize: _tabBar.preferredSize,
+                      child: Column(
+                        children: [
+                          _tabBar,
+                          SizedBox(
+                            height: 10,
+                          ),
+                        ],
+                      )),
                 ),
               ];
             },

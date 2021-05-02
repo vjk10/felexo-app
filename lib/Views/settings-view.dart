@@ -8,11 +8,10 @@ import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
 import 'package:random_string/random_string.dart';
 
-// ignore: must_be_immutable
 class SettingsView extends StatefulWidget {
-  bool storeHistory;
+  final bool storeHistory;
 
-  SettingsView({this.storeHistory});
+  SettingsView({@required this.storeHistory});
 
   @override
   _SettingsViewState createState() => _SettingsViewState();
@@ -85,6 +84,19 @@ class _SettingsViewState extends State<SettingsView> {
   }
 
   @override
+  void didChangeDependencies() {
+    if (MediaQuery.of(context).platformBrightness == Brightness.dark) {
+      isDark = true;
+      setState(() {});
+    }
+    if (MediaQuery.of(context).platformBrightness == Brightness.light) {
+      isDark = false;
+      setState(() {});
+    }
+    super.didChangeDependencies();
+  }
+
+  @override
   void dispose() {
     super.dispose();
   }
@@ -107,300 +119,314 @@ class _SettingsViewState extends State<SettingsView> {
             )),
         title: Text("PROFILE", style: Theme.of(context).textTheme.headline6),
       ),
-      body: SingleChildScrollView(
-        child: Align(
-          alignment: Alignment.bottomCenter,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 10, 4),
-                child: Material(
-                  elevation: 5,
-                  shadowColor: Theme.of(context).colorScheme.primary,
-                  type: MaterialType.circle,
-                  color: Theme.of(context).colorScheme.secondary,
-                  child: CircleAvatar(
-                    radius: 45,
-                    backgroundImage: NetworkImage(user.photoURL),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 10, 4),
+                  child: Material(
+                    elevation: 5,
+                    shadowColor: Theme.of(context).colorScheme.primary,
+                    type: MaterialType.circle,
+                    color: Theme.of(context).colorScheme.secondary,
+                    child: CircleAvatar(
+                      radius: 45,
+                      backgroundImage: NetworkImage(user.photoURL),
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 5, 10, 0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      user.displayName,
-                      style: Theme.of(context).textTheme.headline4,
-                    ),
-                    SizedBox(
-                      width: 5,
-                    ),
-                    Icon(
-                      Icons.lock,
-                      color: Colors.redAccent,
-                    )
-                  ],
+                SizedBox(
+                  height: 10,
                 ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 5, 10, 0),
-                child: Text(
-                  user.email,
-                  style: Theme.of(context).textTheme.subtitle1,
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Divider(),
-              // ListTile(
-              //   minVerticalPadding: 10,
-              //   horizontalTitleGap: 20,
-              //   title: Text(
-              //     "Clear Cache",
-              //   ),
-              //   leading: Icon(
-              //     Icons.delete,
-              //     color: Theme.of(context).colorScheme.primary,
-              //   ),
-              //   onTap: () async {
-              //     HapticFeedback.mediumImpact();
-              //     var appDir = (await getTemporaryDirectory()).path +
-              //         '/com.vlabs.felexo';
-              //     new Directory(appDir).delete(recursive: true)
-              //       ..whenComplete(() =>
-              //           // ignore: deprecated_member_use
-              //           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              //             content: Row(
-              //               children: [
-              //                 Icon(
-              //                   Icons.check,
-              //                   color: Theme.of(context).colorScheme.secondary,
-              //                 ),
-              //                 SizedBox(
-              //                   width: 10,
-              //                 ),
-              //                 Text(
-              //                   "Cache Deleted!",
-              //                 ),
-              //               ],
-              //             ),
-              //             backgroundColor:
-              //                 Theme.of(context).colorScheme.primary,
-              //           )));
-              //     print(appDir);
-              //     print("Clicked");
-              //   },
-              // ),
-              // Divider(),
-              ListTile(
-                minVerticalPadding: 10,
-                horizontalTitleGap: 20,
-                title: Text(
-                  "Clear Search History",
-                ),
-                subtitle: historyAvail
-                    ? Text("Clear all your existing search history")
-                    : Text("You Have no search history"),
-                leading: Icon(
-                  historyAvail ? Icons.search : Icons.search_off_outlined,
-                  color: historyAvail ? Colors.greenAccent : Colors.redAccent,
-                ),
-                onTap: () async {
-                  if (searchHistory.length > 0) {
-                    searchHistory.clear();
-                    historyAvail = false;
-                    setState(() {});
-                    FirebaseFirestore.instance
-                        .collection("User")
-                        .doc(user.uid)
-                        .collection("SearchHistory")
-                        .get()
-                        .then((value) {
-                      for (DocumentSnapshot ds in value.docs) {
-                        ds.reference.delete();
-                      }
-                    }).whenComplete(() =>
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Row(
-                                children: [
-                                  Icon(
-                                    Icons.check,
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    "Search History Deleted!",
-                                  ),
-                                ],
-                              ),
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.primary,
-                            )));
-                  }
-                  if (searchHistory.length == 0) {
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Row(
-                        children: [
-                          Icon(
-                            Icons.warning_amber_rounded,
-                            color: Theme.of(context).colorScheme.secondary,
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            "You have no history to delete",
-                          ),
-                        ],
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 5, 10, 0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        user.displayName,
+                        style: Theme.of(context).textTheme.headline4,
                       ),
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                    ));
-                  }
-                  HapticFeedback.mediumImpact();
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Icon(
+                        Icons.lock,
+                        color: Colors.redAccent,
+                      )
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 5, 10, 0),
+                  child: Text(
+                    user.email,
+                    style: Theme.of(context).textTheme.subtitle1,
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Divider(),
+                // ListTile(
+                //   minVerticalPadding: 10,
+                //   horizontalTitleGap: 20,
+                //   title: Text(
+                //     "Clear Cache",
+                //   ),
+                //   leading: Icon(
+                //     Icons.delete,
+                //     color: Theme.of(context).colorScheme.primary,
+                //   ),
+                //   onTap: () async {
+                //     HapticFeedback.mediumImpact();
+                //     var appDir = (await getTemporaryDirectory()).path +
+                //         '/com.vlabs.felexo';
+                //     new Directory(appDir).delete(recursive: true)
+                //       ..whenComplete(() =>
+                //           // ignore: deprecated_member_use
+                //           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                //             content: Row(
+                //               children: [
+                //                 Icon(
+                //                   Icons.check,
+                //                   color: Theme.of(context).colorScheme.secondary,
+                //                 ),
+                //                 SizedBox(
+                //                   width: 10,
+                //                 ),
+                //                 Text(
+                //                   "Cache Deleted!",
+                //                 ),
+                //               ],
+                //             ),
+                //             backgroundColor:
+                //                 Theme.of(context).colorScheme.primary,
+                //           )));
+                //     print(appDir);
+                //     print("Clicked");
+                //   },
+                // ),
+                // Divider(),
+                ListTile(
+                  minVerticalPadding: 10,
+                  horizontalTitleGap: 20,
+                  title: Text(
+                    "Clear Search History",
+                  ),
+                  subtitle: historyAvail
+                      ? Text("Clear all your existing search history")
+                      : Text("You Have no search history"),
+                  leading: Icon(
+                    historyAvail ? Icons.search : Icons.search_off_outlined,
+                    color: historyAvail
+                        ? isDark
+                            ? Colors.greenAccent
+                            : Colors.green
+                        : Colors.redAccent,
+                  ),
+                  onTap: () async {
+                    if (searchHistory.length > 0) {
+                      searchHistory.clear();
+                      historyAvail = false;
+                      setState(() {});
+                      FirebaseFirestore.instance
+                          .collection("User")
+                          .doc(user.uid)
+                          .collection("SearchHistory")
+                          .get()
+                          .then((value) {
+                        for (DocumentSnapshot ds in value.docs) {
+                          ds.reference.delete();
+                        }
+                      }).whenComplete(
+                              () => ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.check,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .secondary,
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            "Search History Deleted!",
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ));
+                    }
+                    if (searchHistory.length == 0) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Row(
+                            children: [
+                              Icon(
+                                Icons.error,
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                "You have no history to delete!",
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+                    HapticFeedback.mediumImpact();
 
-                  print("Clicked");
-                },
-              ),
-              Divider(),
-              ListTile(
-                minVerticalPadding: 10,
-                horizontalTitleGap: 20,
-                leading: Icon(
-                  _storeHistory ? Icons.history : Icons.history_toggle_off,
-                  color: _storeHistory ? Colors.greenAccent : Colors.redAccent,
+                    // print("Clicked");
+                  },
                 ),
-                title: Text("Share my Search History"),
-                subtitle: Text(
-                  "This will help us improve your search recommendations",
-                  style: TextStyle(fontSize: 10),
+                Divider(),
+                ListTile(
+                  minVerticalPadding: 10,
+                  horizontalTitleGap: 20,
+                  leading: Icon(
+                    _storeHistory ? Icons.history : Icons.history_toggle_off,
+                    color: _storeHistory
+                        ? isDark
+                            ? Colors.greenAccent
+                            : Colors.green
+                        : Colors.redAccent,
+                  ),
+                  title: Text("Share my Search History"),
+                  subtitle: Text(
+                    "This will help us improve your search recommendations",
+                    style: TextStyle(fontSize: 10),
+                  ),
+                  trailing: Switch(
+                      activeColor: isDark ? Colors.greenAccent : Colors.green,
+                      inactiveThumbColor: Colors.redAccent,
+                      activeTrackColor: isDark
+                          ? Colors.greenAccent.withOpacity(0.5)
+                          : Colors.green.withOpacity(0.5),
+                      inactiveTrackColor: Colors.redAccent.withOpacity(0.5),
+                      value: _storeHistory,
+                      onChanged: historyPref),
+                  onTap: () {
+                    HapticFeedback.mediumImpact();
+                  },
                 ),
-                trailing: Switch(
-                    activeColor: Colors.greenAccent,
-                    inactiveThumbColor: Colors.redAccent,
-                    activeTrackColor: Colors.greenAccent.withOpacity(0.5),
-                    inactiveTrackColor: Colors.redAccent.withOpacity(0.5),
-                    value: _storeHistory,
-                    onChanged: historyPref),
-                onTap: () {
-                  HapticFeedback.mediumImpact();
-                },
-              ),
-              Divider(),
-              ListTile(
-                minVerticalPadding: 10,
-                horizontalTitleGap: 20,
-                leading: Icon(
-                  Icons.feedback,
-                  color: Theme.of(context).colorScheme.primary,
+                Divider(),
+                ListTile(
+                  minVerticalPadding: 10,
+                  horizontalTitleGap: 20,
+                  leading: Icon(
+                    Icons.rate_review_outlined,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  title: Text("Feedback"),
+                  onTap: () {
+                    HapticFeedback.mediumImpact();
+                    feedbackForm();
+                  },
                 ),
-                title: Text("Feedback"),
-                onTap: () {
-                  HapticFeedback.mediumImpact();
-                  feedbackForm();
-                },
-              ),
-              Divider(),
-              ListTile(
-                minVerticalPadding: 10,
-                horizontalTitleGap: 20,
-                leading: Icon(
-                  Icons.perm_device_info_outlined,
-                  color: Theme.of(context).colorScheme.primary,
+                Divider(),
+                ListTile(
+                  minVerticalPadding: 10,
+                  horizontalTitleGap: 20,
+                  leading: Icon(
+                    Icons.build_circle_outlined,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  title: Text("Version Number"),
+                  subtitle: Text(
+                    _packageInfo.version +
+                        ".BUILD.FBA." +
+                        _packageInfo.buildNumber,
+                    style: TextStyle(fontSize: 12),
+                  ),
                 ),
-                title: Text("Version Number"),
-                subtitle: Text(
-                  _packageInfo.version +
-                      ".BUILD.FBA." +
-                      _packageInfo.buildNumber,
-                  style: TextStyle(fontSize: 12),
+                Divider(),
+                ListTile(
+                  minVerticalPadding: 10,
+                  horizontalTitleGap: 20,
+                  leading: Icon(
+                    Icons.tag,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  title: Text("Application ID"),
+                  subtitle: Text(
+                    _packageInfo.packageName,
+                    style: TextStyle(fontSize: 12),
+                  ),
                 ),
-              ),
-              Divider(),
-              ListTile(
-                minVerticalPadding: 10,
-                horizontalTitleGap: 20,
-                leading: Icon(
-                  Icons.tag,
-                  color: Theme.of(context).colorScheme.primary,
+                Divider(),
+                ListTile(
+                  minVerticalPadding: 10,
+                  horizontalTitleGap: 20,
+                  leading: Icon(
+                    Icons.lightbulb_outlined,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  title: Text("About and Credits"),
+                  subtitle: Text(
+                    "Licenses",
+                    style: TextStyle(fontSize: 12),
+                  ),
+                  onTap: () {
+                    HapticFeedback.mediumImpact();
+                    showAboutDialog(
+                        context: context,
+                        applicationName: _packageInfo.appName,
+                        applicationVersion: _packageInfo.version +
+                            ".BUILD.FBA." +
+                            _packageInfo.buildNumber,
+                        applicationLegalese:
+                            "Apache License\nVersion 2.0, January 2004",
+                        applicationIcon: Image.network(
+                          logoPlayStore,
+                          width: 50,
+                          height: 50,
+                        ));
+                  },
                 ),
-                title: Text("Application ID"),
-                subtitle: Text(
-                  _packageInfo.packageName,
-                  style: TextStyle(fontSize: 12),
+                Divider(),
+                SizedBox(
+                  height: 10,
                 ),
-              ),
-              Divider(),
-              ListTile(
-                minVerticalPadding: 10,
-                horizontalTitleGap: 20,
-                leading: Icon(
-                  Icons.info_outline,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                title: Text("About and Credits"),
-                subtitle: Text(
-                  "Licenses",
-                  style: TextStyle(fontSize: 12),
-                ),
-                onTap: () {
-                  HapticFeedback.mediumImpact();
-                  showAboutDialog(
-                      context: context,
-                      applicationName: _packageInfo.appName,
-                      applicationVersion: _packageInfo.version +
-                          ".BUILD.FBA." +
-                          _packageInfo.buildNumber,
-                      applicationLegalese:
-                          "Apache License\nVersion 2.0, January 2004",
-                      applicationIcon: Image.asset(
-                        "assets/images/ic_launcher-playstore.png",
-                        width: 50,
-                        height: 50,
-                      ));
-                },
-              ),
-              Divider(),
-              SizedBox(
-                height: 10,
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  width: MediaQuery.of(context).size.width - 20,
-                  height: 60,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      signOutGoogle(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                        elevation: 10,
-                        shadowColor: Theme.of(context).colorScheme.primary,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.zero)),
-                    child: Text(
-                      "LOGOUT",
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width - 20,
+                    height: 60,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        signOutGoogle(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                          elevation: 10,
+                          shadowColor: Theme.of(context).colorScheme.primary,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.zero)),
+                      child: Text(
+                        "LOGOUT",
+                      ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-            ],
+                SizedBox(
+                  height: 30,
+                ),
+              ],
+            ),
           ),
         ),
       ),

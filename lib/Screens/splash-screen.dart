@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:permission/permission.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,15 +23,14 @@ class _SplashScreenState extends State<SplashScreen>
   bool darkMode = false;
   bool visibility = false;
   User user;
-  double height = 500;
   String _systemTheme;
   bool isDark = true;
 
   @override
   void initState() {
     super.initState();
+    askPermission();
 
-    controller = AnimationController(vsync: this);
     Timer(Duration(seconds: 3), () async {
       if (_auth.currentUser != null) {
         Navigator.pushAndRemoveUntil(
@@ -39,7 +39,6 @@ class _SplashScreenState extends State<SplashScreen>
             (route) => false);
       } else {
         visibility = true;
-        height = MediaQuery.of(context).size.height;
         setState(() {});
       }
     });
@@ -51,24 +50,11 @@ class _SplashScreenState extends State<SplashScreen>
     super.dispose();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (MediaQuery.platformBrightnessOf(context) == Brightness.dark) {
-      darkMode = true;
-      setState(() {});
-    }
-    if (MediaQuery.platformBrightnessOf(context) == Brightness.light) {
-      darkMode = false;
-      setState(() {});
-    }
+  askPermission() async {
+    List<Permissions> permissionNames = await Permission.requestPermissions(
+        [PermissionName.Storage, PermissionName.Microphone]);
+    return permissionNames;
   }
-
-  // askPermission() async {
-  //   // ignore: unused_local_variable
-  //   List<Permissions> permissionNames =
-  //       await Permission.requestPermissions([PermissionName.Storage]);
-  // }
 
   @override
   Widget build(BuildContext context) {

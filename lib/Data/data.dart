@@ -8,8 +8,14 @@ List defaultSuggestions = [];
 List autoComplete = [];
 List searchHistory = [];
 
+String googleIcon =
+    'https://firebasestorage.googleapis.com/v0/b/felexo-wallpaperapp.appspot.com/o/assets%2FgoogleIcon.png?alt=media&token=87da278b-48fe-44c3-81a8-f4fbf26a6fe8';
+
 String logoPlayStore =
-    'https://firebasestorage.googleapis.com/v0/b/felexo-wallpaperapp.appspot.com/o/ic_launcher-playstore.png?alt=media&token=6f207fa1-d521-46ab-bf96-a61d80b34c87';
+    'https://firebasestorage.googleapis.com/v0/b/felexo-wallpaperapp.appspot.com/o/assets%2Fic_launcher-playstore.png?alt=media&token=651b67b2-cabc-488b-ad28-17ae0556e7b1';
+
+String loadingAnimation =
+    'https://firebasestorage.googleapis.com/v0/b/felexo-wallpaperapp.appspot.com/o/assets%2FloadingAnimation.gif?alt=media&token=888a66d1-eb04-44fb-81c4-4a082a5c3cdf';
 
 String loadingMessage = "LOADING IMAGES";
 String loadMoreMessage = "LOAD MORE";

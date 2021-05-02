@@ -97,109 +97,112 @@ class _CategoriesResultState extends State<CategoriesResult> {
               style: Theme.of(context).textTheme.headline6,
             ),
           ),
-          body: SingleChildScrollView(
-              child: Padding(
-            padding: const EdgeInsets.only(top: 1.0),
-            child: Container(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 00, vertical: 00),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(top: 0),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10.0),
-                      child: wallpaperSearchGrid(
-                          wallpapers: wallpapers,
-                          context: context,
-                          uid: user.uid),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Visibility(
-                          visible: !_buttonVisible,
+          body: SafeArea(
+            child: SingleChildScrollView(
+                child: Padding(
+              padding: const EdgeInsets.only(top: 1.0),
+              child: Container(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 00, vertical: 00),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(top: 0),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: wallpaperSearchGrid(
+                            wallpapers: wallpapers,
+                            context: context,
+                            uid: user.uid),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Visibility(
+                            visible: !_buttonVisible,
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.rectangle,
+                                color: Theme.of(context).backgroundColor,
+                              ),
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    width: 550,
+                                    height: 5,
+                                    child: LinearProgressIndicator(
+                                        backgroundColor: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                        valueColor: AlwaysStoppedAnimation(
+                                          Theme.of(context).colorScheme.primary,
+                                        )),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 10.0),
+                                    child: Text(
+                                      loadingText,
+                                      style: Theme.of(context).textTheme.button,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  SizedBox(
+                                    width: 550,
+                                    height: 5,
+                                    child: LinearProgressIndicator(
+                                        backgroundColor: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                        valueColor: AlwaysStoppedAnimation(
+                                          Theme.of(context).colorScheme.primary,
+                                        )),
+                                  ),
+                                ],
+                              ),
+                            )),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Visibility(
+                          visible: _buttonVisible,
                           child: Container(
                             width: MediaQuery.of(context).size.width,
                             height: 50,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.rectangle,
-                              color: Theme.of(context).backgroundColor,
-                            ),
-                            child: Column(
-                              children: [
-                                SizedBox(
-                                  width: 550,
-                                  height: 5,
-                                  child: LinearProgressIndicator(
-                                      backgroundColor: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
-                                      valueColor: AlwaysStoppedAnimation(
-                                        Theme.of(context).colorScheme.primary,
-                                      )),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 10.0),
-                                  child: Text(
-                                    loadingText,
-                                    style: Theme.of(context).textTheme.button,
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                SizedBox(
-                                  width: 550,
-                                  height: 5,
-                                  child: LinearProgressIndicator(
-                                      backgroundColor: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
-                                      valueColor: AlwaysStoppedAnimation(
-                                        Theme.of(context).colorScheme.primary,
-                                      )),
-                                ),
-                              ],
-                            ),
-                          )),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Visibility(
-                        visible: _buttonVisible,
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: 50,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              _buttonVisible = !_buttonVisible;
-                              setState(() {});
-                              pageNumber = pageNumber + 1;
-                              getMoreWallpapers(widget.categoryName);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              primary: Theme.of(context).colorScheme.primary,
-                              onPrimary: textColor,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(0)),
-                            ),
-                            child: Text(
-                              loadMoreMessage,
-                              style: TextStyle(
-                                  fontFamily: 'Theme Bold',
-                                  color:
-                                      Theme.of(context).colorScheme.secondary),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                _buttonVisible = !_buttonVisible;
+                                setState(() {});
+                                pageNumber = pageNumber + 1;
+                                getMoreWallpapers(widget.categoryName);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                primary: Theme.of(context).colorScheme.primary,
+                                onPrimary: textColor,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(0)),
+                              ),
+                              child: Text(
+                                loadMoreMessage,
+                                style: TextStyle(
+                                    fontFamily: 'Theme Bold',
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-          )));
+            )),
+          ));
     }
     if (imagesLoaded == false) {
       return Scaffold(
