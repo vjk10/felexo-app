@@ -8,6 +8,7 @@ import 'package:felexo/Views/views.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 class CRGrid extends StatefulWidget {
   final String collectionsID;
@@ -303,41 +304,10 @@ class _CRGridState extends State<CRGrid> {
               ],
             ),
           )
-        : Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: 550,
-                  height: 5,
-                  child: LinearProgressIndicator(
-                      backgroundColor: Theme.of(context).colorScheme.secondary,
-                      valueColor: AlwaysStoppedAnimation(
-                        Theme.of(context).colorScheme.primary,
-                      )),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: Text(
-                    loadingText,
-                    style: Theme.of(context).textTheme.button,
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  width: 550,
-                  height: 5,
-                  child: LinearProgressIndicator(
-                      backgroundColor: Theme.of(context).colorScheme.secondary,
-                      valueColor: AlwaysStoppedAnimation(
-                        Theme.of(context).colorScheme.primary,
-                      )),
-                ),
-              ],
-            ),
-          );
+        : Shimmer(
+            child: Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+          ));
   }
 }

@@ -1,8 +1,11 @@
+import 'package:avatar_glow/avatar_glow.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expandable_bottom_sheet/expandable_bottom_sheet.dart';
 import 'package:felexo/Data/data.dart';
 import 'package:felexo/Services/authentication-service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
@@ -148,17 +151,50 @@ class _SettingsViewState extends State<SettingsView> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(
-                        user.displayName,
-                        style: Theme.of(context).textTheme.headline4,
+                      InkWell(
+                        onLongPress: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.primary,
+                              duration: const Duration(seconds: 1),
+                              content: Row(
+                                children: [
+                                  Icon(
+                                    Icons.account_circle_outlined,
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    user.displayName.toUpperCase(),
+                                    style: TextStyle(
+                                        color: Theme.of(context)
+                                            .scaffoldBackgroundColor,
+                                        fontFamily: 'Theme Bold'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                        child: SizedBox(
+                          width: 300,
+                          child: Row(
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  user.displayName.toUpperCase(),
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(context).textTheme.headline5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Icon(
-                        Icons.lock,
-                        color: Colors.redAccent,
-                      )
                     ],
                   ),
                 ),
@@ -220,11 +256,14 @@ class _SettingsViewState extends State<SettingsView> {
                   minVerticalPadding: 10,
                   horizontalTitleGap: 20,
                   title: Text(
-                    "Clear Search History",
+                    "CLEAR SEARCH HISTORY",
+                    style: Theme.of(context).textTheme.button,
                   ),
                   subtitle: historyAvail
-                      ? Text("Clear all your existing search history")
-                      : Text("You Have no search history"),
+                      ? Text("CLEAR ALL YOUR SEARCH HISTORY",
+                          style: TextStyle(fontSize: 10))
+                      : Text("YOU HAVE NO SEARCH HISTORY",
+                          style: TextStyle(fontSize: 10)),
                   leading: Icon(
                     historyAvail ? Icons.search : Icons.search_off_outlined,
                     color: historyAvail
@@ -250,6 +289,9 @@ class _SettingsViewState extends State<SettingsView> {
                       }).whenComplete(
                               () => ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
+                                      backgroundColor:
+                                          Theme.of(context).colorScheme.primary,
+                                      duration: const Duration(seconds: 1),
                                       content: Row(
                                         children: [
                                           Icon(
@@ -262,32 +304,16 @@ class _SettingsViewState extends State<SettingsView> {
                                             width: 10,
                                           ),
                                           Text(
-                                            "Search History Deleted!",
+                                            "SEARCH HISTORY DELETED!",
+                                            style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .scaffoldBackgroundColor,
+                                                fontFamily: 'Theme Bold'),
                                           ),
                                         ],
                                       ),
                                     ),
                                   ));
-                    }
-                    if (searchHistory.length == 0) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Row(
-                            children: [
-                              Icon(
-                                Icons.error,
-                                color: Theme.of(context).colorScheme.secondary,
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                "You have no history to delete!",
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
                     }
                     HapticFeedback.mediumImpact();
 
@@ -306,9 +332,10 @@ class _SettingsViewState extends State<SettingsView> {
                             : Colors.green
                         : Colors.redAccent,
                   ),
-                  title: Text("Share my Search History"),
+                  title: Text("SHARE MY SEARCH HISTORY",
+                      style: Theme.of(context).textTheme.button),
                   subtitle: Text(
-                    "This will help us improve your search recommendations",
+                    "THIS WILL HELP US IMPROVE YOUR SEARCH RECOMMENDATIONS",
                     style: TextStyle(fontSize: 10),
                   ),
                   trailing: Switch(
@@ -332,7 +359,10 @@ class _SettingsViewState extends State<SettingsView> {
                     Icons.rate_review_outlined,
                     color: Theme.of(context).colorScheme.primary,
                   ),
-                  title: Text("Feedback"),
+                  title: Text("FEEDBACK",
+                      style: Theme.of(context).textTheme.button),
+                  subtitle: Text("YOUR FEEDBACKS AND SUGGESTIONS GOES HERE",
+                      style: TextStyle(fontSize: 10)),
                   onTap: () {
                     HapticFeedback.mediumImpact();
                     feedbackForm();
@@ -346,12 +376,15 @@ class _SettingsViewState extends State<SettingsView> {
                     Icons.build_circle_outlined,
                     color: Theme.of(context).colorScheme.primary,
                   ),
-                  title: Text("Version Number"),
+                  title: Text("VERSION AND BUILD NUMBER",
+                      style: Theme.of(context).textTheme.button),
                   subtitle: Text(
-                    _packageInfo.version +
-                        ".BUILD.FBA." +
-                        _packageInfo.buildNumber,
-                    style: TextStyle(fontSize: 12),
+                    "v" +
+                        _packageInfo.version +
+                        " (build v" +
+                        _packageInfo.buildNumber +
+                        ")",
+                    style: TextStyle(fontSize: 10),
                   ),
                 ),
                 Divider(),
@@ -362,10 +395,11 @@ class _SettingsViewState extends State<SettingsView> {
                     Icons.tag,
                     color: Theme.of(context).colorScheme.primary,
                   ),
-                  title: Text("Application ID"),
+                  title: Text("APPLICATION ID",
+                      style: Theme.of(context).textTheme.button),
                   subtitle: Text(
                     _packageInfo.packageName,
-                    style: TextStyle(fontSize: 12),
+                    style: TextStyle(fontSize: 10),
                   ),
                 ),
                 Divider(),
@@ -376,26 +410,63 @@ class _SettingsViewState extends State<SettingsView> {
                     Icons.lightbulb_outlined,
                     color: Theme.of(context).colorScheme.primary,
                   ),
-                  title: Text("About and Credits"),
+                  title: Text(
+                    "ABOUT FELEXO",
+                    style: Theme.of(context).textTheme.button,
+                  ),
                   subtitle: Text(
-                    "Licenses",
-                    style: TextStyle(fontSize: 12),
+                    "LICENSES & CERTIFICATES",
+                    style: TextStyle(fontSize: 10),
                   ),
                   onTap: () {
                     HapticFeedback.mediumImpact();
-                    showAboutDialog(
-                        context: context,
-                        applicationName: _packageInfo.appName,
-                        applicationVersion: _packageInfo.version +
-                            ".BUILD.FBA." +
-                            _packageInfo.buildNumber,
-                        applicationLegalese:
-                            "Apache License\nVersion 2.0, January 2004",
-                        applicationIcon: Image.network(
-                          logoPlayStore,
-                          width: 50,
-                          height: 50,
-                        ));
+                    // showAboutDialog(
+                    //     context: context,
+                    //     applicationName: _packageInfo.appName,
+                    //     applicationVersion: _packageInfo.version +
+                    //         ".BUILD.FBA." +
+                    //         _packageInfo.buildNumber,
+                    //     applicationLegalese:
+                    //         "Apache License\nVersion 2.0, January 2004",
+                    //     applicationIcon: CachedNetworkImage(
+                    //       imageUrl: logoPlayStore,
+                    //       height: 50,
+                    //       width: 50,
+                    //       fadeInCurve: Curves.easeIn,
+                    //       fadeInDuration: const Duration(milliseconds: 500),
+                    //     ));
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => LicensePage(
+                                  applicationIcon: Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: AvatarGlow(
+                                      glowColor:
+                                          Theme.of(context).colorScheme.primary,
+                                      endRadius: 90,
+                                      showTwoGlows: true,
+                                      duration: const Duration(seconds: 3),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(50),
+                                        child: CachedNetworkImage(
+                                          imageUrl: logoPlayStore,
+                                          fadeInCurve: Curves.easeIn,
+                                          fadeInDuration:
+                                              const Duration(milliseconds: 500),
+                                          width: 80,
+                                          height: 80,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  applicationLegalese:
+                                      "Apache License\nVersion 2.0, January 2004",
+                                  applicationName: _packageInfo.appName,
+                                  applicationVersion: _packageInfo.version +
+                                      ".BUILD.FBA." +
+                                      _packageInfo.buildNumber,
+                                )));
                   },
                 ),
                 Divider(),

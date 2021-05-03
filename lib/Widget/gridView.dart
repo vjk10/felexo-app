@@ -8,6 +8,7 @@ import 'package:felexo/model/wallpapers-model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 import '../Color/colors.dart';
 
@@ -97,196 +98,194 @@ class _CuratedState extends State<Curated> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SingleChildScrollView(
-          child: imagesLoaded
-              ? GridView.count(
-                  shrinkWrap: true,
-                  crossAxisCount: 2,
-                  physics: BouncingScrollPhysics(),
-                  childAspectRatio: 0.6,
-                  padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-                  mainAxisSpacing: 0.0,
-                  crossAxisSpacing: 0.0,
-                  children: wallpapers.map((wallpaper) {
-                    foregroundColor =
-                        Hexcolor(wallpaper.avgColor).computeLuminance() > 0.5
-                            ? Colors.black
-                            : Colors.white;
-                    setState(() {});
-                    return GridTile(
-                      child: Material(
-                        type: MaterialType.card,
-                        shadowColor: Theme.of(context).backgroundColor,
-                        elevation: 5,
-                        borderRadius: BorderRadius.circular(0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: Hexcolor(wallpaper.avgColor),
-                              borderRadius: BorderRadius.circular(0),
-                              shape: BoxShape.rectangle),
-                          child: Stack(children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(bottom: 0),
-                                ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      loadingMessage,
-                                      style: TextStyle(
-                                          color: foregroundColor,
-                                          fontFamily: 'Theme Bold'),
-                                    )
-                                  ],
-                                )
-                              ],
-                            ),
-                            GestureDetector(
-                              child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(0),
-                                  child: Image.network(
-                                    wallpaper.src.portrait,
-                                    height: 800,
-                                    fit: BoxFit.fill,
-                                  )),
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    ScaleRoute(context,
-                                        page: WallPaperView(
-                                          avgColor: wallpaper.avgColor,
-                                          uid: user.uid,
-                                          photographerUrl:
-                                              wallpaper.photographerUrl,
-                                          imgUrl: wallpaper.src.portrait,
-                                          originalUrl: wallpaper.src.original,
-                                          photoID: wallpaper.photoID.toString(),
-                                          photographer: wallpaper.photographer,
-                                          photographerID: wallpaper
-                                              .photographerId
-                                              .toString(),
-                                        )));
-                              },
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    ScaleRoute(context,
-                                        page: WallPaperView(
-                                          avgColor:
-                                              wallpaper.avgColor.toString(),
-                                          uid: uid,
-                                          photographerUrl:
-                                              wallpaper.photographerUrl,
-                                          imgUrl: wallpaper.src.portrait,
-                                          originalUrl: wallpaper.src.original,
-                                          photoID: wallpaper.photoID.toString(),
-                                          photographer: wallpaper.photographer,
-                                          photographerID: wallpaper
-                                              .photographerId
-                                              .toString(),
-                                        )));
-                              },
-                            )
-                          ]),
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                )
-              : Container(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                ),
-        ),
-        SizedBox(
-          height: 0,
-        ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Visibility(
-              visible: !_buttonVisible,
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: 50,
-                decoration: BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  color: Theme.of(context).backgroundColor,
-                ),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      width: 550,
-                      height: 5,
-                      child: LinearProgressIndicator(
-                          backgroundColor:
-                              Theme.of(context).colorScheme.secondary,
-                          valueColor: AlwaysStoppedAnimation(
-                            Theme.of(context).colorScheme.primary,
-                          )),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10.0),
-                      child: Text(
-                        loadingText,
-                        style: Theme.of(context).textTheme.button,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    SizedBox(
-                      width: 550,
-                      height: 5,
-                      child: LinearProgressIndicator(
-                          backgroundColor:
-                              Theme.of(context).colorScheme.secondary,
-                          valueColor: AlwaysStoppedAnimation(
-                            Theme.of(context).colorScheme.primary,
-                          )),
-                    ),
-                  ],
-                ),
-              )),
-        ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Visibility(
-            visible: _buttonVisible,
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: () {
-                  _buttonVisible = !_buttonVisible;
+    return imagesLoaded
+        ? Column(
+            children: [
+              SingleChildScrollView(
+                  child: GridView.count(
+                shrinkWrap: true,
+                crossAxisCount: 2,
+                physics: BouncingScrollPhysics(),
+                childAspectRatio: 0.6,
+                padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                mainAxisSpacing: 0.0,
+                crossAxisSpacing: 0.0,
+                children: wallpapers.map((wallpaper) {
+                  foregroundColor =
+                      Hexcolor(wallpaper.avgColor).computeLuminance() > 0.5
+                          ? Colors.black
+                          : Colors.white;
                   setState(() {});
-                  getMoreWallpapers();
-                },
-                style: ElevatedButton.styleFrom(
-                  primary: Theme.of(context).colorScheme.primary,
-                  onPrimary: textColor,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(0)),
-                ),
-                child: Text(
-                  loadMoreMessage,
-                  style: TextStyle(
-                      fontFamily: 'Theme Bold',
-                      color: Theme.of(context).colorScheme.secondary),
+                  return GridTile(
+                    child: Material(
+                      type: MaterialType.card,
+                      shadowColor: Theme.of(context).backgroundColor,
+                      elevation: 5,
+                      borderRadius: BorderRadius.circular(0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Hexcolor(wallpaper.avgColor),
+                            borderRadius: BorderRadius.circular(0),
+                            shape: BoxShape.rectangle),
+                        child: Stack(children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(bottom: 0),
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    loadingMessage,
+                                    style: TextStyle(
+                                        color: foregroundColor,
+                                        fontFamily: 'Theme Bold'),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                          GestureDetector(
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(0),
+                                child: Image.network(
+                                  wallpaper.src.portrait,
+                                  height: 800,
+                                  fit: BoxFit.fill,
+                                )),
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  ScaleRoute(context,
+                                      page: WallPaperView(
+                                        avgColor: wallpaper.avgColor,
+                                        uid: user.uid,
+                                        photographerUrl:
+                                            wallpaper.photographerUrl,
+                                        imgUrl: wallpaper.src.portrait,
+                                        originalUrl: wallpaper.src.original,
+                                        photoID: wallpaper.photoID.toString(),
+                                        photographer: wallpaper.photographer,
+                                        photographerID:
+                                            wallpaper.photographerId.toString(),
+                                      )));
+                            },
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  ScaleRoute(context,
+                                      page: WallPaperView(
+                                        avgColor: wallpaper.avgColor.toString(),
+                                        uid: uid,
+                                        photographerUrl:
+                                            wallpaper.photographerUrl,
+                                        imgUrl: wallpaper.src.portrait,
+                                        originalUrl: wallpaper.src.original,
+                                        photoID: wallpaper.photoID.toString(),
+                                        photographer: wallpaper.photographer,
+                                        photographerID:
+                                            wallpaper.photographerId.toString(),
+                                      )));
+                            },
+                          )
+                        ]),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              )),
+              SizedBox(
+                height: 0,
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Visibility(
+                    visible: !_buttonVisible,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        color: Theme.of(context).backgroundColor,
+                      ),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            width: 550,
+                            height: 5,
+                            child: LinearProgressIndicator(
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.secondary,
+                                valueColor: AlwaysStoppedAnimation(
+                                  Theme.of(context).colorScheme.primary,
+                                )),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10.0),
+                            child: Text(
+                              loadingText,
+                              style: Theme.of(context).textTheme.button,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          SizedBox(
+                            width: 550,
+                            height: 5,
+                            child: LinearProgressIndicator(
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.secondary,
+                                valueColor: AlwaysStoppedAnimation(
+                                  Theme.of(context).colorScheme.primary,
+                                )),
+                          ),
+                        ],
+                      ),
+                    )),
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Visibility(
+                  visible: _buttonVisible,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        _buttonVisible = !_buttonVisible;
+                        setState(() {});
+                        getMoreWallpapers();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: Theme.of(context).colorScheme.primary,
+                        onPrimary: textColor,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(0)),
+                      ),
+                      child: Text(
+                        loadMoreMessage,
+                        style: TextStyle(
+                            fontFamily: 'Theme Bold',
+                            color: Theme.of(context).colorScheme.secondary),
+                      ),
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-        ),
-      ],
-    );
+            ],
+          )
+        : Shimmer(
+            child: Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+          ));
   }
 }
 

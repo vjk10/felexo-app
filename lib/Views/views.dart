@@ -1,4 +1,3 @@
-export 'about-view.dart';
 export 'categories-view.dart';
 export 'categoriesResult-view.dart';
 export 'favorites-view.dart';

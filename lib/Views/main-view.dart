@@ -50,6 +50,7 @@ class _MainViewState extends State<MainView>
         .forEach((element) {
       storeHistory = element.data()["storeHistory"];
     });
+    setState(() {});
     // print("User: " + user.uid.toString());
   }
 
@@ -124,7 +125,7 @@ class _MainViewState extends State<MainView>
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SizedBox(
-                        height: 20,
+                        height: 15,
                       ),
                       Text(
                         "FELEXO",
@@ -176,8 +177,8 @@ class _MainViewState extends State<MainView>
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 18.0),
                                 child: Text(
-                                  "A library of amazing wallpapers!",
-                                  style: TextStyle(fontSize: 16),
+                                  "A LIBRARY OF AMAZING WALLPAPERS!",
+                                  style: TextStyle(fontSize: 12),
                                 ),
                               )),
                           InkWell(
@@ -211,10 +212,12 @@ class _MainViewState extends State<MainView>
                                         ),
                                         Icon(Icons.search),
                                         SizedBox(
-                                          width: 20,
+                                          width: 10,
                                         ),
                                         Text(
-                                            "Search across the library of Pexels")
+                                          "SEARCH ACROSS THE LIBRARY OF PEXELS",
+                                          style: TextStyle(fontSize: 12),
+                                        )
                                       ],
                                     ),
                                   )),

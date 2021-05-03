@@ -1,6 +1,4 @@
-import 'package:bordered_text/bordered_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:felexo/Color/colors.dart';
 import 'package:felexo/Services/categories-list.dart';
 import 'package:felexo/Views/categoriesResult-view.dart';
 import 'package:flutter/cupertino.dart';
@@ -46,25 +44,39 @@ class CategoriesTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ClipRRect(
-                    child: Container(
-                      width: width,
-                      height: 200,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 80),
-                      alignment: Alignment.bottomRight,
-                      child: BorderedText(
-                        strokeColor: Colors.black,
-                        strokeWidth: 8,
-                        child: Text(
-                          categories.categoryName.toUpperCase(),
-                          style: TextStyle(
-                              letterSpacing: 5,
-                              fontSize: 30,
-                              fontFamily: 'Theme Bold',
-                              color: textColor),
-                        ),
-                      ),
+                  Container(
+                    width: width,
+                    height: 200,
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            colors: [
+                          Colors.black.withOpacity(0.0),
+                          Colors.black.withOpacity(0.1),
+                          Colors.black.withOpacity(0.2),
+                          Colors.black.withOpacity(0.4),
+                          Colors.black.withOpacity(0.5),
+                          Colors.black.withOpacity(0.6),
+                          Colors.black.withOpacity(0.7),
+                          Colors.black.withOpacity(0.8),
+                          Colors.black.withOpacity(0.9),
+                        ],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter)),
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 75),
+                    alignment: Alignment.bottomRight,
+                    child: Text(
+                      categories.categoryName.toUpperCase(),
+                      style: TextStyle(
+                          shadows: [
+                            BoxShadow(
+                                color: Colors.black,
+                                blurRadius: 20,
+                                spreadRadius: 10)
+                          ],
+                          letterSpacing: 5,
+                          fontSize: 35,
+                          fontFamily: 'Theme Bold',
+                          color: Colors.white),
                     ),
                   ),
                 ],

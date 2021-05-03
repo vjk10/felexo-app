@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:felexo/Data/data.dart';
 import 'package:felexo/Services/authentication-service.dart';
 import 'package:felexo/Views/main-view.dart';
 import 'package:felexo/theme/app-theme.dart';
@@ -20,6 +22,7 @@ class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   AnimationController controller;
+  double elevationValue = 15;
   bool darkMode = false;
   bool visibility = false;
   User user;
@@ -30,7 +33,6 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
     askPermission();
-
     Timer(Duration(seconds: 3), () async {
       if (_auth.currentUser != null) {
         Navigator.pushAndRemoveUntil(
@@ -98,50 +100,35 @@ class _SplashScreenState extends State<SplashScreen>
     return Scaffold(
         body: SafeArea(
       child: Stack(children: [
-        // Align(
-        //   alignment: Alignment.topLeft,
-        //   child: Padding(
-        //     padding: const EdgeInsets.all(15.0),
-        //     child: InkWell(
-        //         onTap: () {
-        //           HapticFeedback.mediumImpact();
-        //           if (isDark == true) {
-        //             onThemeChanged("ThemeMode.dark", themeModeNotifier);
-        //           } else if (isDark == false) {
-        //             onThemeChanged("ThemeMode.light", themeModeNotifier);
-        //           }
-        //           setState(() {});
-        //         },
-        //         child: Icon(Icons.brightness_4_outlined)),
-        //   ),
-        // ),
         Align(
             alignment: Alignment.center,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 150,
-                    decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("FELEXO",
-                            style: TextStyle(
-                                fontFamily: 'Theme Black',
-                                color: Theme.of(context).colorScheme.secondary,
-                                fontSize: 80)),
-                      ],
-                    )),
-                SizedBox(
-                  height: 10,
+                Material(
+                  elevation: 10,
+                  shadowColor: Theme.of(context).colorScheme.primary,
+                  child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 150,
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primary),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("FELEXO",
+                              style: TextStyle(
+                                  fontFamily: 'Theme Black',
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
+                                  fontSize: 80)),
+                        ],
+                      )),
                 ),
                 SizedBox(
-                  height: 20,
+                  height: 50,
                 ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -149,100 +136,164 @@ class _SplashScreenState extends State<SplashScreen>
                   children: [
                     Visibility(
                       visible: visibility,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            onPrimary: Theme.of(context).colorScheme.background,
-                            elevation: 15,
-                            padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.zero),
-                            shadowColor: Theme.of(context)
-                                .colorScheme
-                                .primary
-                                .withOpacity(1),
-                            onSurface: Theme.of(context).colorScheme.secondary),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              "assets/images/googleIcon.png",
-                              scale: 4,
-                            ),
+                      child: Container(
+                        width: 230,
+                        height: 60,
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                              onPrimary:
+                                  Theme.of(context).colorScheme.background,
+                              elevation: elevationValue,
+                              padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.zero),
+                              shadowColor: Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withOpacity(1),
+                              onSurface:
+                                  Theme.of(context).colorScheme.secondary),
+                          icon: CachedNetworkImage(
+                            placeholder: (context, googleIcon) {
+                              return Container(
+                                width: 24,
+                                height: 24,
+                              );
+                            },
+                            imageUrl: googleIcon,
+                            height: 24,
+                            fadeInCurve: Curves.easeIn,
+                            fadeInDuration: const Duration(milliseconds: 500),
+                          ),
+                          label: Row(children: [
                             SizedBox(
-                              width: 20,
+                              width: 10,
                             ),
                             Text("SIGN IN WITH GOOGLE")
-                          ],
-                        ),
-                        onPressed: () {
-                          showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                    backgroundColor: Colors.transparent,
-                                    content: Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      height: 70,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.rectangle,
-                                        color:
-                                            Theme.of(context).backgroundColor,
-                                      ),
-                                      child: Column(
-                                        children: [
-                                          SizedBox(
-                                            width: 550,
-                                            height: 5,
-                                            child: LinearProgressIndicator(
-                                                backgroundColor:
+                          ]),
+                          onPressed: () {
+                            showDialog(
+                                useSafeArea: true,
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                      backgroundColor: Colors.transparent,
+                                      content: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        height: 70,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.rectangle,
+                                          color:
+                                              Theme.of(context).backgroundColor,
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            SizedBox(
+                                              width: 550,
+                                              height: 5,
+                                              child: LinearProgressIndicator(
+                                                  backgroundColor:
+                                                      Theme.of(context)
+                                                          .colorScheme
+                                                          .secondary,
+                                                  valueColor:
+                                                      AlwaysStoppedAnimation(
                                                     Theme.of(context)
                                                         .colorScheme
-                                                        .secondary,
-                                                valueColor:
-                                                    AlwaysStoppedAnimation(
-                                                  Theme.of(context)
-                                                      .colorScheme
-                                                      .primary,
-                                                )),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 20.0),
-                                            child: Text(
-                                              "VERIFYING CREDENTIALS",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .button,
+                                                        .primary,
+                                                  )),
                                             ),
-                                          ),
-                                          SizedBox(
-                                            height: 23,
-                                          ),
-                                          SizedBox(
-                                            width: 550,
-                                            height: 5,
-                                            child: LinearProgressIndicator(
-                                                backgroundColor:
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 20.0),
+                                              child: Text(
+                                                "VERIFYING CREDENTIALS",
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .button,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 23,
+                                            ),
+                                            SizedBox(
+                                              width: 550,
+                                              height: 5,
+                                              child: LinearProgressIndicator(
+                                                  backgroundColor:
+                                                      Theme.of(context)
+                                                          .colorScheme
+                                                          .secondary,
+                                                  valueColor:
+                                                      AlwaysStoppedAnimation(
                                                     Theme.of(context)
                                                         .colorScheme
-                                                        .secondary,
-                                                valueColor:
-                                                    AlwaysStoppedAnimation(
-                                                  Theme.of(context)
-                                                      .colorScheme
-                                                      .primary,
-                                                )),
-                                          ),
-                                        ],
+                                                        .primary,
+                                                  )),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ));
-                          signInWithGoogle(context);
-                        },
+                                    ));
+                            signInWithGoogle(context);
+                          },
+                        ),
                       ),
                     ),
                   ],
-                )
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                // Row(
+                //   crossAxisAlignment: CrossAxisAlignment.center,
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children: [
+                //     Visibility(
+                //       visible: visibility,
+                //       child: Container(
+                //         width: 230,
+                //         height: 60,
+                //         child: ElevatedButton.icon(
+                //           style: ElevatedButton.styleFrom(
+                //             primary: Theme.of(context).colorScheme.secondary,
+                //             onSurface: Theme.of(context).colorScheme.primary,
+                //             elevation: 15,
+                //             padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
+                //             shape: RoundedRectangleBorder(
+                //                 borderRadius: BorderRadius.zero),
+                //             shadowColor: Theme.of(context)
+                //                 .colorScheme
+                //                 .primary
+                //                 .withOpacity(1),
+                //           ),
+                //           icon: Text(
+                //             "F",
+                //             style: TextStyle(
+                //                 fontSize: 24,
+                //                 fontFamily: 'Theme Black',
+                //                 color: Theme.of(context).colorScheme.primary),
+                //           ),
+                //           label: Row(
+                //             children: [
+                //               SizedBox(
+                //                 width: 10,
+                //               ),
+                //               Text(
+                //                 "SIGN IN WITH FELEXO",
+                //                 style: TextStyle(
+                //                     fontFamily: 'Theme Bold',
+                //                     color:
+                //                         Theme.of(context).colorScheme.primary),
+                //               ),
+                //             ],
+                //           ),
+                //           onPressed: () {},
+                //         ),
+                //       ),
+                //     ),
+                //   ],
+                // ),
               ],
             )),
       ]),

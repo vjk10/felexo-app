@@ -1,4 +1,7 @@
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:felexo/Color/colors.dart';
 import 'package:felexo/Views/views.dart';
 import 'package:felexo/Widget/wallpaper-controls.dart';
@@ -7,7 +10,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:permission/permission.dart';
 import 'package:url_launcher/link.dart';
+import 'package:share/share.dart';
 
 class WallPaperView extends StatefulWidget {
   final String avgColor,
@@ -39,7 +45,6 @@ class _WallPaperViewState extends State<WallPaperView> {
   String res;
   bool favExists = false;
   bool deletingFav = false;
-  Stream<String> progressString;
   bool fullScreen = false;
   bool setWall = false;
   bool transparent = false;
@@ -50,16 +55,49 @@ class _WallPaperViewState extends State<WallPaperView> {
   var foregroundColor;
   var linkTarget;
   double elevationValue = 0;
+  bool _permissionStatus;
+  double progressValue;
+  String progressString = "0%";
 
   @override
   void initState() {
     print(widget.uid);
+    checkPermissionStatus();
     transparent = false;
 
     // print("AVG:" + widget.avgColor.toString());
     // print(foregroundColor);
     findIfFav();
     super.initState();
+  }
+
+  checkPermissionStatus() async {
+    List<Permissions> permissions =
+        await Permission.getPermissionsStatus([PermissionName.Storage]);
+    print("PERMISSION STATUS");
+    print(permissions.map((e) {
+      print(e.permissionStatus);
+      if (e.permissionStatus == PermissionStatus.allow) {
+        _permissionStatus = true;
+        setState(() {});
+      }
+      if (e.permissionStatus == PermissionStatus.deny) {
+        _permissionStatus = false;
+        setState(() {});
+      }
+      if (e.permissionStatus == PermissionStatus.notAgain) {
+        _permissionStatus = false;
+        setState(() {});
+      }
+    }));
+    print(_permissionStatus);
+  }
+
+  askPermission() async {
+    // ignore: unused_local_variable
+    List<Permissions> permissionNames =
+        await Permission.requestPermissions([PermissionName.Storage]);
+    checkPermissionStatus();
   }
 
   @mustCallSuper
@@ -117,16 +155,32 @@ class _WallPaperViewState extends State<WallPaperView> {
     return Scaffold(
         appBar: AppBar(
           actions: [],
-          leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back_ios,
-              color: Theme.of(context).colorScheme.primary,
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 10.0),
+            child: Container(
+              width: 14,
+              height: 14,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: foregroundColor.withOpacity(0.2),
+              ),
+              child: InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 10.0),
+                  child: Icon(
+                    Icons.arrow_back_ios,
+                    size: 24,
+                    color: foregroundColor,
+                  ),
+                ),
+              ),
             ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
           ),
           backgroundColor: Colors.transparent,
+          toolbarHeight: 80,
           elevation: 0,
         ),
         extendBodyBehindAppBar: true,
@@ -154,17 +208,19 @@ class _WallPaperViewState extends State<WallPaperView> {
                         child: RotatedBox(
                           quarterTurns: 1,
                           child: Container(
-                            width: 35,
-                            height: 35,
+                            width: 40,
+                            height: 40,
                             decoration: BoxDecoration(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .primary
-                                    .withOpacity(0.4),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Hexcolor(widget.avgColor),
+                                      blurRadius: 10),
+                                ],
+                                color: foregroundColor.withOpacity(0.4),
                                 shape: BoxShape.circle),
                             child: Icon(
                               Icons.arrow_back_ios_rounded,
-                              color: Theme.of(context).colorScheme.primary,
+                              color: foregroundColor,
                             ),
                           ),
                         ),
@@ -174,14 +230,34 @@ class _WallPaperViewState extends State<WallPaperView> {
                 ],
               ),
               SizedBox(
-                height: 15,
+                height: 20,
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  WallpaperControls(
+                      uid: widget.uid,
+                      imgUrl: widget.imgUrl,
+                      originalUrl: widget.originalUrl,
+                      photoID: widget.photoID,
+                      photographer: widget.photographer,
+                      photographerID: widget.photographerID,
+                      photographerUrl: widget.photographerUrl,
+                      avgColor: widget.avgColor,
+                      favExists: favExists,
+                      foregroundColor: foregroundColor)
+                ],
+              ),
+              SizedBox(
+                height: 20,
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Material(
-                    elevation: 15,
+                    elevation: 25,
                     shadowColor: Hexcolor(widget.avgColor),
                     child: Container(
                       width: MediaQuery.of(context).size.width - 30,
@@ -196,23 +272,6 @@ class _WallPaperViewState extends State<WallPaperView> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                WallpaperControls(
-                                    uid: widget.uid,
-                                    imgUrl: widget.imgUrl,
-                                    originalUrl: widget.originalUrl,
-                                    photoID: widget.photoID,
-                                    photographer: widget.photographer,
-                                    photographerID: widget.photographerID,
-                                    photographerUrl: widget.photographerUrl,
-                                    avgColor: widget.avgColor,
-                                    favExists: favExists,
-                                    foregroundColor: foregroundColor)
-                              ],
-                            ),
                             SizedBox(
                               height: 20,
                             ),
@@ -327,6 +386,31 @@ class _WallPaperViewState extends State<WallPaperView> {
                                       builder: (context, followPhotographer) {
                                         return GestureDetector(
                                           onTap: followPhotographer,
+                                          onLongPress: () {
+                                            HapticFeedback.heavyImpact();
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(SnackBar(
+                                                    action: SnackBarAction(
+                                                      textColor:
+                                                          Theme.of(context)
+                                                              .colorScheme
+                                                              .primary,
+                                                      label: "OPEN",
+                                                      onPressed:
+                                                          followPhotographer,
+                                                    ),
+                                                    backgroundColor:
+                                                        Theme.of(context)
+                                                            .colorScheme
+                                                            .secondary,
+                                                    content: Text(
+                                                      widget.photographer
+                                                          .toUpperCase(),
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .button,
+                                                    )));
+                                          },
                                           child: Column(
                                             children: [
                                               Row(
@@ -340,7 +424,7 @@ class _WallPaperViewState extends State<WallPaperView> {
                                                             .colorScheme
                                                             .secondary),
                                                     child: Icon(
-                                                      Icons.badge,
+                                                      Icons.person_pin_outlined,
                                                       size: 20,
                                                       color: Theme.of(context)
                                                           .colorScheme
@@ -350,15 +434,29 @@ class _WallPaperViewState extends State<WallPaperView> {
                                                   SizedBox(
                                                     width: 10,
                                                   ),
-                                                  Text(
-                                                    widget.photographer,
-                                                    style: TextStyle(
-                                                        fontSize: 16,
-                                                        fontFamily:
-                                                            'Theme Bold',
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary),
+                                                  Container(
+                                                    width: 150,
+                                                    child: Row(
+                                                      children: [
+                                                        Flexible(
+                                                          child: Text(
+                                                            widget.photographer
+                                                                .toUpperCase(),
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: TextStyle(
+                                                                fontSize: 16,
+                                                                fontFamily:
+                                                                    'Theme Bold',
+                                                                color: Theme.of(
+                                                                        context)
+                                                                    .colorScheme
+                                                                    .secondary),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ],
                                               ),
@@ -366,41 +464,145 @@ class _WallPaperViewState extends State<WallPaperView> {
                                           ),
                                         );
                                       }),
-                                  Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Container(
-                                            width: 35,
-                                            height: 35,
-                                            decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .secondary),
-                                            child: Icon(
-                                              Icons.share_outlined,
-                                              size: 20,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary,
+                                  InkWell(
+                                    onTap: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.zero),
+                                          content: SizedBox(
+                                            height: 100,
+                                            width: 80,
+                                            child: Center(
+                                              child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceAround,
+                                                  children: [
+                                                    InkWell(
+                                                      onTap: () {
+                                                        _imageShare(
+                                                            widget.imgUrl,
+                                                            _permissionStatus);
+                                                      },
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Icon(
+                                                            Icons
+                                                                .image_outlined,
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .colorScheme
+                                                                .primary,
+                                                          ),
+                                                          SizedBox(
+                                                            height: 10,
+                                                          ),
+                                                          Text(
+                                                            "SHARE\nIMAGE",
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .button,
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        Share.share("Checkout this Photo By: " +
+                                                            widget
+                                                                .photographer +
+                                                            "\n\nPhotographer: " +
+                                                            widget
+                                                                .photographerUrl +
+                                                            "\n\nFind Image at: " +
+                                                            widget.originalUrl +
+                                                            "\n\nDownload FELEXO for more amazing wallpapers");
+                                                      },
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Icon(
+                                                            Icons.link_outlined,
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .colorScheme
+                                                                .primary,
+                                                          ),
+                                                          SizedBox(
+                                                            height: 10,
+                                                          ),
+                                                          Text(
+                                                            "SHARE\nAS LINK",
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .button,
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ]),
                                             ),
                                           ),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(
-                                            "Share",
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontFamily: 'Theme Bold',
+                                        ),
+                                      );
+                                    },
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Container(
+                                              width: 35,
+                                              height: 35,
+                                              decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondary),
+                                              child: Icon(
+                                                Icons.share_outlined,
+                                                size: 20,
                                                 color: Theme.of(context)
                                                     .colorScheme
-                                                    .secondary),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                                                    .primary,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              "SHARE",
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontFamily: 'Theme Bold',
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondary),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ]),
                             SizedBox(
@@ -412,8 +614,28 @@ class _WallPaperViewState extends State<WallPaperView> {
                                     context: context,
                                     builder: (context) {
                                       return AlertDialog(
-                                        title: Text("Visit Pexels"),
-                                        content: Text("Open Pexels in"),
+                                        title: Text("VISIT PEXELS",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .button),
+                                        content: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Icon(Icons.public),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              "OPEN PEXELS IN",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .button,
+                                            ),
+                                          ],
+                                        ),
                                         actions: [
                                           Row(
                                             children: [
@@ -426,7 +648,7 @@ class _WallPaperViewState extends State<WallPaperView> {
                                                     return TextButton(
                                                         onPressed: followBlank,
                                                         child: Text(
-                                                            "Open in Browser"));
+                                                            "OPEN IN BROWSER"));
                                                   }),
                                               SizedBox(
                                                 width: 10,
@@ -440,7 +662,7 @@ class _WallPaperViewState extends State<WallPaperView> {
                                                     return TextButton(
                                                         onPressed: followSelf,
                                                         child: Text(
-                                                            "Open in App"));
+                                                            "OPEN IN APP"));
                                                   }),
                                             ],
                                           )
@@ -472,7 +694,7 @@ class _WallPaperViewState extends State<WallPaperView> {
                                     width: 10,
                                   ),
                                   Text(
-                                    "Visit Pexels",
+                                    "VISIT PEXELS",
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontFamily: 'Theme Bold',
@@ -490,7 +712,10 @@ class _WallPaperViewState extends State<WallPaperView> {
                         ),
                       ),
                     ),
-                  )
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
                 ],
               ),
               SizedBox(
@@ -499,5 +724,68 @@ class _WallPaperViewState extends State<WallPaperView> {
             ],
           ),
         ));
+  }
+
+  _imageShare(String url, bool _permissionReceived) async {
+    setState(() {});
+    if (_permissionStatus) {
+      var response = await Dio()
+          .get(url, options: Options(responseType: ResponseType.bytes),
+              onReceiveProgress: (received, total) {
+        if (total != -1) {
+          progressValue = received / total;
+          progressString = (received / total * 100).toStringAsFixed(0) + "%";
+          setState(() {});
+          print((received / total * 100).toStringAsFixed(0) + "%");
+        }
+      });
+
+      final result = await ImageGallerySaver.saveImage(
+          Uint8List.fromList(response.data),
+          quality: 100,
+          name: widget.photographer + widget.photoID.toString());
+      print(result);
+      Share.shareFiles([
+        "storage/emulated/0/Pictures/" +
+            widget.photographer +
+            widget.photoID.toString() +
+            ".jpg"
+      ],
+          text: "Checkout this Photo By: " +
+              widget.photographer +
+              "\n\nPhotographer: " +
+              widget.photographerUrl +
+              "\n\nFind Image at: " +
+              widget.originalUrl +
+              "\n\nDownload FELEXO for more amazing wallpapers");
+      setState(() {});
+    }
+    if (!_permissionStatus) {
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                backgroundColor: Theme.of(context).colorScheme.secondary,
+                title:
+                    Text("OOPS!", style: Theme.of(context).textTheme.subtitle1),
+                content: Text("FILE PERMISSIONS ARE DENIED",
+                    style: Theme.of(context).textTheme.button),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        askPermission();
+                        Navigator.pop(context);
+                      },
+                      child: Text("ASK PERMISSION",
+                          style: Theme.of(context).textTheme.button)),
+                  TextButton(
+                    child:
+                        Text("OK", style: Theme.of(context).textTheme.button),
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              ));
+    }
   }
 }

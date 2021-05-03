@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
+import 'package:felexo/Color/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -121,12 +122,10 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                       height: 5,
                       child: LinearProgressIndicator(
                         value: progressValue,
-                        backgroundColor: Theme.of(context)
-                            .colorScheme
-                            .secondary
-                            .withAlpha(80),
+                        backgroundColor:
+                            Theme.of(context).colorScheme.primary.withAlpha(80),
                         valueColor: AlwaysStoppedAnimation(
-                            Theme.of(context).colorScheme.secondary),
+                            Theme.of(context).colorScheme.primary),
                       ),
                     ),
                     SizedBox(
@@ -135,7 +134,7 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                     Text(
                       progressString,
                       style: TextStyle(
-                          color: Theme.of(context).colorScheme.secondary,
+                          color: Theme.of(context).colorScheme.primary,
                           fontSize: 10),
                     ),
                   ],
@@ -143,9 +142,9 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                 Row(
                   children: [
                     Text(
-                      "Downloading...",
+                      "DOWNLOADING...",
                       style: TextStyle(
-                          color: Theme.of(context).colorScheme.secondary,
+                          color: Theme.of(context).colorScheme.primary,
                           fontSize: 10),
                     ),
                   ],
@@ -162,16 +161,16 @@ class _WallpaperControlsState extends State<WallpaperControls> {
               body: Padding(
                 padding: const EdgeInsets.only(bottom: 0.0),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
                               child: GestureDetector(
@@ -179,6 +178,12 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                                   width: 50,
                                   height: 50,
                                   decoration: BoxDecoration(
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: Hexcolor(widget.avgColor),
+                                            blurRadius: 20,
+                                            spreadRadius: 10),
+                                      ],
                                       shape: BoxShape.circle,
                                       color: Theme.of(context)
                                           .colorScheme
@@ -194,81 +199,95 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                                   HapticFeedback.heavyImpact();
                                   showDialog(
                                       context: context,
+                                      useSafeArea: true,
                                       builder: (context) => AlertDialog(
-                                          backgroundColor: Colors.transparent,
-                                          elevation: 0,
+                                          backgroundColor: Theme.of(context)
+                                              .scaffoldBackgroundColor,
+                                          elevation: 15,
                                           shape: RoundedRectangleBorder(
                                               borderRadius:
-                                                  BorderRadius.circular(10)),
+                                                  BorderRadius.circular(0)),
+                                          title: Text(
+                                            "SELECT SIZE",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .button,
+                                          ),
                                           content: Container(
-                                            height: 200,
+                                            height: 80,
                                             child: ClipRRect(
-                                              child: Column(
+                                              child: Row(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
                                                 children: [
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: TextButton(
-                                                      child: Column(
-                                                        children: [
-                                                          Icon(
-                                                            Icons
-                                                                .stay_current_portrait,
-                                                            size: 30,
-                                                            color: Colors.white,
-                                                          ),
-                                                          Text(
-                                                            "Portrait",
-                                                            style: TextStyle(
-                                                                fontFamily:
-                                                                    'Theme Bold',
-                                                                color: Colors
-                                                                    .white),
-                                                          )
-                                                        ],
-                                                      ),
-                                                      onPressed: () async {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                        _save(widget.imgUrl,
-                                                            _permissionStatus);
-                                                      },
+                                                  TextButton(
+                                                    child: Column(
+                                                      children: [
+                                                        Icon(
+                                                          Icons.smartphone,
+                                                          size: 30,
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .primary,
+                                                        ),
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        Text(
+                                                          "PORTRAIT",
+                                                          style: TextStyle(
+                                                              fontFamily:
+                                                                  'Theme Bold',
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .colorScheme
+                                                                  .primary),
+                                                        )
+                                                      ],
                                                     ),
+                                                    onPressed: () async {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                      _save(widget.imgUrl,
+                                                          _permissionStatus);
+                                                    },
                                                   ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: TextButton(
-                                                      child: Column(
-                                                        children: [
-                                                          Icon(
-                                                              Icons
-                                                                  .photo_size_select_actual,
-                                                              size: 30,
-                                                              color:
-                                                                  Colors.white),
-                                                          Text(
-                                                            "Original",
-                                                            style: TextStyle(
-                                                                fontFamily:
-                                                                    'Theme Bold',
-                                                                color: Colors
-                                                                    .white),
-                                                          )
-                                                        ],
-                                                      ),
-                                                      onPressed: () async {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                        _save(
-                                                            widget.originalUrl,
-                                                            _permissionStatus);
-                                                      },
+                                                  TextButton(
+                                                    child: Column(
+                                                      children: [
+                                                        Icon(
+                                                            Icons
+                                                                .photo_size_select_actual_outlined,
+                                                            size: 30,
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .colorScheme
+                                                                .primary),
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        Text(
+                                                          "ORIGINAL",
+                                                          style: TextStyle(
+                                                              fontFamily:
+                                                                  'Theme Bold',
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .colorScheme
+                                                                  .primary),
+                                                        )
+                                                      ],
                                                     ),
+                                                    onPressed: () async {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                      _save(widget.originalUrl,
+                                                          _permissionStatus);
+                                                    },
                                                   ),
                                                 ],
                                               ),
@@ -285,12 +304,23 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                         GestureDetector(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Container(
                                 width: 50,
                                 height: 50,
                                 decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Hexcolor(widget.avgColor),
+                                          blurRadius: 20,
+                                          spreadRadius: 10),
+                                      // BoxShadow(
+                                      //   color: Theme.of(context).scaffoldBackgroundColor,
+                                      //   blurRadius: 15,
+                                      //   spreadRadius: 5,
+                                      // )
+                                    ],
                                     shape: BoxShape.circle,
                                     color: Theme.of(context)
                                         .colorScheme
@@ -311,121 +341,146 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                             showDialog(
                                 context: context,
                                 builder: (context) => AlertDialog(
-                                    backgroundColor: Colors.transparent,
-                                    elevation: 0,
+                                    elevation: 10,
                                     shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
+                                        borderRadius: BorderRadius.circular(0)),
+                                    title: Text("SELECT A LOCATION",
+                                        style:
+                                            Theme.of(context).textTheme.button),
                                     content: Container(
-                                      height: 200,
-                                      child: ClipRRect(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: TextButton(
-                                                child: Column(
-                                                  children: [
-                                                    Icon(
-                                                      Icons.home,
-                                                      size: 30,
-                                                      color: Colors.white,
-                                                    ),
-                                                    Text(
-                                                      "Home Screen",
-                                                      style: TextStyle(
-                                                          fontFamily:
-                                                              'Circular Black',
-                                                          color: Colors.white),
-                                                    )
-                                                  ],
-                                                ),
-                                                onPressed: () async {
-                                                  Navigator.of(context).pop();
-                                                  downloading = true;
+                                      height: 100,
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 10, right: 10),
+                                            child: TextButton(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: [
+                                                  Icon(
+                                                    Icons.home_outlined,
+                                                    size: 30,
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .primary,
+                                                  ),
+                                                  Text(
+                                                    "HOME\nSCREEN",
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                        fontFamily:
+                                                            'Theme Bold',
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .primary),
+                                                  )
+                                                ],
+                                              ),
+                                              onPressed: () async {
+                                                Navigator.of(context).pop();
+                                                downloading = true;
 
-                                                  setState(() {});
-                                                  Future.delayed(
-                                                      Duration(seconds: 1), () {
-                                                    saveWallpaper(
-                                                        WallpaperManager
-                                                            .HOME_SCREEN);
-                                                  });
-                                                },
-                                              ),
+                                                setState(() {});
+                                                Future.delayed(
+                                                    Duration(seconds: 1), () {
+                                                  saveWallpaper(WallpaperManager
+                                                      .HOME_SCREEN);
+                                                });
+                                              },
                                             ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: TextButton(
-                                                child: Column(
-                                                  children: [
-                                                    Icon(
-                                                        Icons
-                                                            .screen_lock_portrait,
-                                                        size: 30,
-                                                        color: Colors.white),
-                                                    Text(
-                                                      "Lock Screen",
-                                                      style: TextStyle(
-                                                          fontFamily:
-                                                              'Circular Black',
-                                                          color: Colors.white),
-                                                    )
-                                                  ],
-                                                ),
-                                                onPressed: () async {
-                                                  Navigator.of(context).pop();
-                                                  downloading = true;
-
-                                                  setState(() {});
-                                                  Future.delayed(
-                                                      Duration(seconds: 1), () {
-                                                    saveWallpaper(
-                                                        WallpaperManager
-                                                            .LOCK_SCREEN);
-                                                  });
-                                                },
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: TextButton(
-                                                child: Column(
-                                                  children: [
-                                                    Icon(
-                                                      Icons.smartphone,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 10, right: 10),
+                                            child: TextButton(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: [
+                                                  Icon(Icons.lock_outlined,
                                                       size: 30,
-                                                      color: Colors.white,
-                                                    ),
-                                                    Text(
-                                                      "Both Screen",
-                                                      style: TextStyle(
-                                                          fontFamily:
-                                                              'Circular Black',
-                                                          color: Colors.white),
-                                                    )
-                                                  ],
-                                                ),
-                                                onPressed: () async {
-                                                  Navigator.of(context).pop();
-                                                  downloading = true;
-                                                  setState(() {});
-                                                  Future.delayed(
-                                                      Duration(seconds: 1), () {
-                                                    saveWallpaper(
-                                                        WallpaperManager
-                                                            .BOTH_SCREENS);
-                                                  });
-                                                },
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .primary),
+                                                  Text(
+                                                    "LOCK\nSCREEN",
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                        fontFamily:
+                                                            'Theme Bold',
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .primary),
+                                                  )
+                                                ],
                                               ),
+                                              onPressed: () async {
+                                                Navigator.of(context).pop();
+                                                downloading = true;
+
+                                                setState(() {});
+                                                Future.delayed(
+                                                    Duration(seconds: 1), () {
+                                                  saveWallpaper(WallpaperManager
+                                                      .LOCK_SCREEN);
+                                                });
+                                              },
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 10, right: 0),
+                                            child: TextButton(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: [
+                                                  Icon(
+                                                      Icons.smartphone_outlined,
+                                                      size: 30,
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .primary),
+                                                  Text(
+                                                    "BOTH\nSCREEN",
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                        fontFamily:
+                                                            'Theme Bold',
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .primary),
+                                                  )
+                                                ],
+                                              ),
+                                              onPressed: () async {
+                                                Navigator.of(context).pop();
+                                                downloading = true;
+                                                setState(() {});
+                                                Future.delayed(
+                                                    Duration(seconds: 1), () {
+                                                  saveWallpaper(WallpaperManager
+                                                      .BOTH_SCREENS);
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     )));
                           },
@@ -436,12 +491,18 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                         GestureDetector(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Container(
                                 width: 50,
                                 height: 50,
                                 decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Hexcolor(widget.avgColor),
+                                          blurRadius: 20,
+                                          spreadRadius: 10),
+                                    ],
                                     shape: BoxShape.circle,
                                     color: Theme.of(context)
                                         .colorScheme
@@ -539,19 +600,20 @@ class _WallpaperControlsState extends State<WallpaperControls> {
           builder: (context) => AlertDialog(
                 backgroundColor: Theme.of(context).colorScheme.secondary,
                 title:
-                    Text("Oops!", style: Theme.of(context).textTheme.subtitle1),
-                content: Text("File Permissions are denied!",
-                    style: Theme.of(context).textTheme.subtitle1),
+                    Text("OOPS!", style: Theme.of(context).textTheme.subtitle1),
+                content: Text("FILE PERMISSIONS ARE DENIED",
+                    style: Theme.of(context).textTheme.button),
                 actions: [
                   TextButton(
                       onPressed: () {
                         askPermission();
                         Navigator.pop(context);
                       },
-                      child: Text("ASK PERMISSION")),
+                      child: Text("ASK PERMISSION",
+                          style: Theme.of(context).textTheme.button)),
                   TextButton(
-                    child: Text("OK",
-                        style: Theme.of(context).textTheme.subtitle1),
+                    child:
+                        Text("OK", style: Theme.of(context).textTheme.button),
                     onPressed: () async {
                       Navigator.of(context).pop();
                     },
@@ -570,14 +632,14 @@ class _WallpaperControlsState extends State<WallpaperControls> {
           context: context,
           builder: (context) => AlertDialog(
                 backgroundColor: Theme.of(context).colorScheme.secondary,
-                title: Text("Felexo",
-                    style: Theme.of(context).textTheme.subtitle1),
-                content: Text("Choose Size",
-                    style: Theme.of(context).textTheme.subtitle1),
+                title:
+                    Text("FELEXO", style: Theme.of(context).textTheme.button),
+                content: Text("CHOOSE SIZE",
+                    style: Theme.of(context).textTheme.button),
                 actions: [
                   TextButton(
                     child: Text("COMPRESSED",
-                        style: Theme.of(context).textTheme.subtitle1),
+                        style: Theme.of(context).textTheme.button),
                     onPressed: () async {
                       Navigator.of(context).pop();
                       Future.delayed(Duration(seconds: 1), () {
@@ -587,7 +649,7 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                   ),
                   TextButton(
                     child: Text("ORIGINAL",
-                        style: Theme.of(context).textTheme.subtitle1),
+                        style: Theme.of(context).textTheme.button),
                     onPressed: () async {
                       Navigator.of(context).pop();
 
@@ -643,14 +705,14 @@ class _WallpaperControlsState extends State<WallpaperControls> {
               context: context,
               builder: (context) => AlertDialog(
                     backgroundColor: Theme.of(context).colorScheme.secondary,
-                    title: Text("Felexo",
-                        style: Theme.of(context).textTheme.subtitle1),
-                    content: Text("Wallpaper Set :)",
-                        style: Theme.of(context).textTheme.subtitle1),
+                    title: Text("FELEXO",
+                        style: Theme.of(context).textTheme.button),
+                    content: Text("YOUR WALLPAPER IS SET",
+                        style: Theme.of(context).textTheme.button),
                     actions: [
                       TextButton(
                         child: Text("OK",
-                            style: Theme.of(context).textTheme.subtitle1),
+                            style: Theme.of(context).textTheme.button),
                         onPressed: () {
                           Navigator.of(context).pop();
                         },

@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 // ignore: must_be_immutable
 class SearchView extends StatefulWidget {
@@ -102,47 +103,10 @@ class _SearchViewState extends State<SearchView> {
     ]);
     return Scaffold(
       body: _isLoading
-          ? Center(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 550,
-                    height: 5,
-                    child: LinearProgressIndicator(
-                        backgroundColor:
-                            Theme.of(context).colorScheme.secondary,
-                        valueColor: AlwaysStoppedAnimation(
-                          Theme.of(context).colorScheme.primary,
-                        )),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10.0),
-                    child: Text(
-                      loadingText,
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontFamily: 'Theme Bold'),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  SizedBox(
-                    width: 550,
-                    height: 5,
-                    child: LinearProgressIndicator(
-                        backgroundColor:
-                            Theme.of(context).colorScheme.secondary,
-                        valueColor: AlwaysStoppedAnimation(
-                          Theme.of(context).colorScheme.primary,
-                        )),
-                  ),
-                ],
+          ? Shimmer(
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
               ),
             )
           : SafeArea(
