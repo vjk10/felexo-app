@@ -1,12 +1,14 @@
 import 'dart:convert';
 
 import 'package:felexo/Color/colors.dart';
+import 'package:felexo/Services/ad-services.dart';
 import 'package:felexo/Widget/widgets.dart';
 import 'package:felexo/data/data.dart';
 import 'package:felexo/model/wallpapers-model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
 import 'package:shimmer_animation/shimmer_animation.dart';
 
@@ -204,6 +206,13 @@ class _SearchViewState extends State<SearchView> {
                 ),
               ),
             ),
+      bottomNavigationBar: SizedBox(
+        height: 60,
+        child: AdWidget(
+          ad: AdServices.createBannerAd()..load(),
+          key: UniqueKey(),
+        ),
+      ),
     );
   }
 }

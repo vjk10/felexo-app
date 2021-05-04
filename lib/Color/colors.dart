@@ -16,6 +16,7 @@ Map<int, Color> color = {
 };
 
 MaterialColor backgroundColor = MaterialColor(0xFF000000, color);
+MaterialColor backgroundColorLight = MaterialColor(0xFFFFFFFF, color);
 MaterialColor primaryColor = MaterialColor(0xFFFFFFFF, color);
 MaterialColor cardColor = MaterialColor(0xFF000000, color);
 MaterialColor cardColorLight = MaterialColor(0xFFF5F5F5, color);

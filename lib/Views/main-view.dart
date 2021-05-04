@@ -21,6 +21,7 @@ class _MainViewState extends State<MainView>
   final suggestions = FirebaseFirestore.instance;
   final history = FirebaseFirestore.instance;
   bool storeHistory;
+  bool isDark;
 
   final myTabs = [
     const Tab(text: "CURATED"),
@@ -81,6 +82,22 @@ class _MainViewState extends State<MainView>
   }
 
   @override
+  void didChangeDependencies() {
+    if (MediaQuery.of(context).platformBrightness == Brightness.dark) {
+      setState(() {
+        isDark = true;
+      });
+    }
+    if (MediaQuery.of(context).platformBrightness == Brightness.light) {
+      setState(() {
+        isDark = false;
+      });
+    }
+
+    super.didChangeDependencies();
+  }
+
+  @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
@@ -105,9 +122,9 @@ class _MainViewState extends State<MainView>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: DefaultTabController(
+    return SafeArea(
+      child: Scaffold(
+        body: DefaultTabController(
           length: 4,
           child: NestedScrollView(
             headerSliverBuilder:
@@ -186,20 +203,22 @@ class _MainViewState extends State<MainView>
                               showSearch(
                                   context: context,
                                   delegate: WallpaperSearch(
-                                    defaultSuggestions,
-                                    searchHistory,
-                                    user.uid.toString(),
-                                    storeHistory,
-                                  ));
+                                      defaultSuggestions,
+                                      searchHistory,
+                                      user.uid.toString(),
+                                      storeHistory,
+                                      isDark));
                             },
                             child: Center(
                               child: Material(
                                   shadowColor:
                                       Theme.of(context).colorScheme.primary,
                                   elevation: 10,
-                                  borderRadius: BorderRadius.circular(30),
+                                  borderRadius: BorderRadius.circular(0),
                                   child: Container(
                                     alignment: Alignment.center,
+                                    width:
+                                        MediaQuery.of(context).size.width - 20,
                                     height: 54,
                                     child: Row(
                                       crossAxisAlignment:

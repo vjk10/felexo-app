@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 String apiKey = "563492ad6f9170000100000141a90db465f2497486cf3dcd9237e492";
+String bannerAdId = 'ca-app-pub-1356887710608938/4449237430';
+String interstitialAdId = 'ca-app-pub-1356887710608938/6475087475';
 
 ThemeMode brightness = ThemeMode.system;
 

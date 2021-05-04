@@ -131,7 +131,7 @@ class _SettingsViewState extends State<SettingsView> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 10, 4),
+                  padding: const EdgeInsets.fromLTRB(20, 10, 10, 4),
                   child: Material(
                     elevation: 5,
                     shadowColor: Theme.of(context).colorScheme.primary,

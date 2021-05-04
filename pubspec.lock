@@ -36,13 +36,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0"
-  bordered_text:
-    dependency: "direct main"
-    description:
-      name: bordered_text
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.1"
   cached_network_image:
     dependency: "direct main"
     description:

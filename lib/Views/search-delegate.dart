@@ -9,8 +9,13 @@ class WallpaperSearch extends SearchDelegate<String> {
   List searchHistory;
   String uid;
   bool storeHistory;
-  WallpaperSearch(
-      this.defaultSuggestions, this.searchHistory, this.uid, this.storeHistory);
+  bool isDark;
+  WallpaperSearch(this.defaultSuggestions, this.searchHistory, this.uid,
+      this.storeHistory, this.isDark)
+      : super(
+            searchFieldLabel: "Search by keywords or color",
+            keyboardType: TextInputType.text,
+            textInputAction: TextInputAction.search);
 
   @override
   ThemeData appBarTheme(BuildContext context) {
@@ -40,33 +45,14 @@ class WallpaperSearch extends SearchDelegate<String> {
                 fontFamily: 'Theme Regular',
                 color: Theme.of(context).colorScheme.primary),
             headline6: TextStyle(
-                fontSize: 18,
+                fontSize: 16,
                 fontFamily: 'Theme Regular',
                 color: Theme.of(context).colorScheme.primary)),
         appBarTheme: AppBarTheme(
-          elevation: 0,
           shadowColor: Theme.of(context).colorScheme.primary,
           centerTitle: true,
           titleSpacing: 0,
-          textTheme: TextTheme(
-              headline1: TextStyle(
-                  fontFamily: 'Theme Regular',
-                  color: Theme.of(context).colorScheme.primary),
-              headline2: TextStyle(
-                  fontFamily: 'Theme Regular',
-                  color: Theme.of(context).colorScheme.primary),
-              headline3: TextStyle(
-                  fontFamily: 'Theme Regular',
-                  color: Theme.of(context).colorScheme.primary),
-              headline4: TextStyle(
-                  fontFamily: 'Theme Regular',
-                  color: Theme.of(context).colorScheme.primary),
-              headline5: TextStyle(
-                  fontFamily: 'Theme Regular',
-                  color: Theme.of(context).colorScheme.primary),
-              headline6: TextStyle(
-                  fontFamily: 'Theme Regular',
-                  color: Theme.of(context).colorScheme.primary)),
+          elevation: 0,
           toolbarTextStyle: TextStyle(
               color: Theme.of(context).colorScheme.primary,
               fontFamily: 'Theme Regular'),
@@ -75,20 +61,21 @@ class WallpaperSearch extends SearchDelegate<String> {
               fontFamily: 'Theme Regular'),
         ),
         inputDecorationTheme: InputDecorationTheme(
-            contentPadding: const EdgeInsets.all(10),
+            contentPadding:
+                const EdgeInsets.only(left: 15, right: 5, top: 10, bottom: 15),
+            isDense: true,
+            floatingLabelBehavior: FloatingLabelBehavior.never,
+            fillColor: Theme.of(context).accentColor.withAlpha(80),
+            filled: true,
             focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(0),
-                borderSide: BorderSide(
-                    color: Theme.of(context).colorScheme.primary, width: 3)),
+                borderSide: BorderSide.none),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(0),
-                borderSide: BorderSide(
-                    color: Theme.of(context).colorScheme.primary, width: 3)),
-            isDense: true,
-            fillColor: Theme.of(context).colorScheme.secondary,
-            filled: true,
+                borderSide: BorderSide.none),
             hintStyle: TextStyle(
-                color: Theme.of(context).colorScheme.primary,
+                fontSize: 12,
+                color: Theme.of(context).accentColor,
                 fontFamily: 'Theme Regular')));
   }
 
@@ -105,7 +92,7 @@ class WallpaperSearch extends SearchDelegate<String> {
               width: 35,
               height: 35,
               decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                  color: Theme.of(context).accentColor.withOpacity(0.5),
                   shape: BoxShape.circle),
               child: Center(
                 child: InkWell(
@@ -114,34 +101,15 @@ class WallpaperSearch extends SearchDelegate<String> {
                   },
                   child: Icon(
                     Icons.clear,
-                    size: 24,
+                    size: 20,
                     color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
               ),
             ),
-            // SizedBox(
-            //   width: 5,
-            // ),
-            // Container(
-            //   width: 35,
-            //   height: 35,
-            //   decoration: BoxDecoration(
-            //       color: Colors.redAccent.withOpacity(0.5),
-            //       shape: BoxShape.circle),
-            //   child: Center(
-            //     child: InkWell(
-            //       onTap: () {
-            //         print("Speech Recognition");
-            //       },
-            //       child: Icon(
-            //         Icons.mic_outlined,
-            //         size: 24,
-            //         color: Theme.of(context).colorScheme.primary,
-            //       ),
-            //     ),
-            //   ),
-            // ),
+            SizedBox(
+              width: 5,
+            ),
           ],
         ),
       )

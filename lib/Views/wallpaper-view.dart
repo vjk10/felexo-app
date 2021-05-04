@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:felexo/Color/colors.dart';
+import 'package:felexo/Services/ad-services.dart';
 import 'package:felexo/Views/views.dart';
 import 'package:felexo/Widget/wallpaper-controls.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission/permission.dart';
 import 'package:url_launcher/link.dart';
@@ -211,12 +213,8 @@ class _WallPaperViewState extends State<WallPaperView> {
                             width: 40,
                             height: 40,
                             decoration: BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                      color: Hexcolor(widget.avgColor),
-                                      blurRadius: 10),
-                                ],
-                                color: foregroundColor.withOpacity(0.4),
+                                color:
+                                    Hexcolor(widget.avgColor).withOpacity(0.4),
                                 shape: BoxShape.circle),
                             child: Icon(
                               Icons.arrow_back_ios_rounded,
@@ -716,6 +714,23 @@ class _WallPaperViewState extends State<WallPaperView> {
                   SizedBox(
                     height: 20,
                   ),
+                ],
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 80,
+                    child: AdWidget(
+                      ad: AdServices.createBannerAd()..load(),
+                      key: UniqueKey(),
+                    ),
+                  )
                 ],
               ),
               SizedBox(

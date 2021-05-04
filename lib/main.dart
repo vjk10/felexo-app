@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'Services/ad-services.dart';
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.top]).then((_) {
@@ -22,6 +24,8 @@ void main() {
         prefTheme = ThemeMode.light;
       }
       await Firebase.initializeApp();
+      WidgetsFlutterBinding.ensureInitialized();
+      AdServices.intialize();
       runApp(
         ChangeNotifierProvider<ThemeModeNotifier>(
           create: (_) => ThemeModeNotifier(prefTheme),

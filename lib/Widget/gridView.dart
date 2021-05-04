@@ -62,6 +62,7 @@ class _CuratedState extends State<Curated> {
     // print("TrendingState");
     imagesLoaded = true;
     setState(() {});
+
     return wallpapers;
   }
 

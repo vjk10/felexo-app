@@ -5,7 +5,7 @@ description: A library of wallpapers directly from Pexels
 # pub.dev using `pub publish`. This is preferred for private packages.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 0.0.0003+1
+version: 0.0.0031+1
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -39,7 +39,6 @@ dependencies:
   shared_preferences: ^2.0.5
   url_launcher: ^6.0.3
   wallpaper_manager: ^1.0.10
-  bordered_text: ^1.0.1
   lottie: ^1.0.1
   package_info: ^2.0.0
   md2_tab_indicator: ^1.0.2  

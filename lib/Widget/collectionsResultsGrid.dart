@@ -154,7 +154,7 @@ class _CRGridState extends State<CRGrid> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      "Loading Images...",
+                                      loadingMessage,
                                       style: TextStyle(
                                           color: foregroundColor,
                                           fontFamily: 'Theme Bold'),
