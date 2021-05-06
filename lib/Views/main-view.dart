@@ -20,8 +20,8 @@ class _MainViewState extends State<MainView>
   TabController _tabController;
   final suggestions = FirebaseFirestore.instance;
   final history = FirebaseFirestore.instance;
-  bool storeHistory;
-  bool isDark;
+  bool storeHistory = true;
+  bool isDark = true;
 
   final myTabs = [
     const Tab(text: "CURATED"),
@@ -33,6 +33,7 @@ class _MainViewState extends State<MainView>
   @override
   void initState() {
     initUser();
+    findIfStoreHistory();
     fetchSuggestions();
     fetchHistory();
     _tabController = new TabController(length: 4, vsync: this);
@@ -44,15 +45,22 @@ class _MainViewState extends State<MainView>
     assert(user.email != null);
     assert(user.uid != null);
     assert(user.photoURL != null);
+    setState(() {});
+    // print("User: " + user.uid.toString());
+  }
+
+  findIfStoreHistory() {
     FirebaseFirestore.instance
         .collection("User")
         .doc(user.uid.toString())
         .snapshots()
         .forEach((element) {
-      storeHistory = element.data()["storeHistory"];
+      setState(() {
+        storeHistory = element.data()["storeHistory"];
+        print("Mainsh" + storeHistory.toString());
+      });
     });
     setState(() {});
-    // print("User: " + user.uid.toString());
   }
 
   Future<List> fetchSuggestions() async {
@@ -81,21 +89,21 @@ class _MainViewState extends State<MainView>
     return searchHistory;
   }
 
-  @override
-  void didChangeDependencies() {
-    if (MediaQuery.of(context).platformBrightness == Brightness.dark) {
-      setState(() {
-        isDark = true;
-      });
-    }
-    if (MediaQuery.of(context).platformBrightness == Brightness.light) {
-      setState(() {
-        isDark = false;
-      });
-    }
+  // @override
+  // void didChangeDependencies() {
+  //   if (MediaQuery.of(context).platformBrightness == Brightness.dark) {
+  //     setState(() {
+  //       isDark = true;
+  //     });
+  //   }
+  //   if (MediaQuery.of(context).platformBrightness == Brightness.light) {
+  //     setState(() {
+  //       isDark = false;
+  //     });
+  //   }
 
-    super.didChangeDependencies();
-  }
+  //   super.didChangeDependencies();
+  // }
 
   @override
   void dispose() {
@@ -154,9 +162,7 @@ class _MainViewState extends State<MainView>
                     InkWell(
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => SettingsView(
-                                  storeHistory: storeHistory,
-                                )));
+                            builder: (context) => SettingsView()));
                       },
                       child: Padding(
                           padding: const EdgeInsets.only(right: 10.0),
@@ -200,6 +206,9 @@ class _MainViewState extends State<MainView>
                               )),
                           InkWell(
                             onTap: () async {
+                              setState(() {
+                                findIfStoreHistory();
+                              });
                               showSearch(
                                   context: context,
                                   delegate: WallpaperSearch(

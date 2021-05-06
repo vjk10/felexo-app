@@ -12,10 +12,6 @@ import 'package:package_info/package_info.dart';
 import 'package:random_string/random_string.dart';
 
 class SettingsView extends StatefulWidget {
-  final bool storeHistory;
-
-  SettingsView({@required this.storeHistory});
-
   @override
   _SettingsViewState createState() => _SettingsViewState();
 }
@@ -25,13 +21,12 @@ class _SettingsViewState extends State<SettingsView> {
   User user;
   String feedbackToken;
   final globalKey = GlobalKey<ScaffoldState>();
-  bool themeBoxOpen = false;
   bool isDark = true;
   String appName;
   String packageName;
   String version;
   String buildNumber;
-  bool _storeHistory;
+  bool _storeHistory = true;
   bool historyAvail = false;
   TextEditingController subject = new TextEditingController();
   TextEditingController feedback = new TextEditingController();
@@ -46,19 +41,30 @@ class _SettingsViewState extends State<SettingsView> {
   @override
   void initState() {
     _initPackageInfo();
-    _storeHistory = widget.storeHistory;
+    setState(() {});
     // print(searchHistory.length);
+    if (searchHistory.length == null) {
+      setState(() {
+        historyAvail = false;
+      });
+    }
     if (searchHistory.length == 0) {
-      historyAvail = false;
-      setState(() {});
+      setState(() {
+        historyAvail = false;
+      });
     }
     if (searchHistory.length > 0) {
-      historyAvail = true;
-      setState(() {});
+      setState(() {
+        historyAvail = true;
+      });
+    } else {
+      setState(() {
+        historyAvail = false;
+      });
     }
-    // print(_storeHistory);
-    super.initState();
     initUser();
+    findIfStoreHistory();
+    super.initState();
   }
 
   initUser() async {
@@ -74,6 +80,20 @@ class _SettingsViewState extends State<SettingsView> {
     setState(() {
       _packageInfo = info;
     });
+  }
+
+  findIfStoreHistory() {
+    FirebaseFirestore.instance
+        .collection("User")
+        .doc(user.uid.toString())
+        .snapshots()
+        .forEach((element) {
+      setState(() {
+        _storeHistory = element.data()["storeHistory"];
+        print("Settingsh" + _storeHistory.toString());
+      });
+    });
+    setState(() {});
   }
 
   void historyPref(bool value) {
