@@ -5,6 +5,7 @@ import 'package:expandable_bottom_sheet/expandable_bottom_sheet.dart';
 import 'package:felexo/Data/data.dart';
 import 'package:felexo/Services/authentication-service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,6 +19,7 @@ class SettingsView extends StatefulWidget {
 
 class _SettingsViewState extends State<SettingsView> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final fsref = FirebaseStorage.instance.ref();
   User user;
   String feedbackToken;
   final globalKey = GlobalKey<ScaffoldState>();
@@ -30,6 +32,7 @@ class _SettingsViewState extends State<SettingsView> {
   bool historyAvail = false;
   TextEditingController subject = new TextEditingController();
   TextEditingController feedback = new TextEditingController();
+  var logoPlayStore;
 
   PackageInfo _packageInfo = PackageInfo(
     appName: 'Unknown',
@@ -62,9 +65,21 @@ class _SettingsViewState extends State<SettingsView> {
         historyAvail = false;
       });
     }
+    getLogo();
     initUser();
     findIfStoreHistory();
     super.initState();
+  }
+
+  getLogo() async {
+    await fsref
+        .child('ic_launcher-playstore.png')
+        .getDownloadURL()
+        .then((value) {
+      setState(() {
+        logoPlayStore = value;
+      });
+    });
   }
 
   initUser() async {

@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:felexo/Data/data.dart';
 import 'package:felexo/Services/authentication-service.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,11 +15,22 @@ class _LandingPageState extends State<LandingPage>
     with SingleTickerProviderStateMixin {
   AnimationController controller;
   bool darkMode = false;
+  final fsref = FirebaseStorage.instance.ref();
+  String googleIcon;
 
   @override
   void initState() {
+    getIcon();
     askStoragePermission();
     super.initState();
+  }
+
+  getIcon() async {
+    await fsref.child('googleIcon.png').getDownloadURL().then((value) {
+      setState(() {
+        googleIcon = value;
+      });
+    });
   }
 
   @override

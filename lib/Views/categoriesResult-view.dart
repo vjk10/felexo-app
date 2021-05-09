@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:felexo/Color/colors.dart';
+import 'package:felexo/Data/data.dart';
 import 'package:felexo/Services/ad-services.dart';
 import 'package:felexo/Widget/widgets.dart';
-import 'package:felexo/data/data.dart';
 import 'package:felexo/model/wallpapers-model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

@@ -1,10 +1,8 @@
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:felexo/Color/colors.dart';
-import 'package:felexo/Data/data.dart';
 import 'package:felexo/Services/ad-services.dart';
 import 'package:felexo/Views/views.dart';
 import 'package:felexo/Widget/wallpaper-controls.dart';
@@ -18,7 +16,6 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission/permission.dart';
 import 'package:url_launcher/link.dart';
 import 'package:share/share.dart';
-import 'package:http/http.dart' as http;
 
 class WallPaperView extends StatefulWidget {
   final String avgColor,
@@ -65,12 +62,12 @@ class _WallPaperViewState extends State<WallPaperView> {
   bool _permissionStatus;
   double progressValue;
   String progressString = "0%";
-  String _baseUri = "twinword-word-associations-v1.p.rapidapi.com";
-  static const Map<String, String> _headers = {
-    "content-type": "json",
-    "x-rapidapi-host": "twinword-word-associations-v1.p.rapidapi.com",
-    "x-rapidapi-key": stApi,
-  };
+  // String _baseUri = "twinword-word-associations-v1.p.rapidapi.com";
+  // static const Map<String, String> _headers = {
+  //   "content-type": "json",
+  //   "x-rapidapi-host": "twinword-word-associations-v1.p.rapidapi.com",
+  //   "x-rapidapi-key": stApi,
+  // };
 
   List<String> searchTerms = [];
 
@@ -116,32 +113,32 @@ class _WallPaperViewState extends State<WallPaperView> {
     checkPermissionStatus();
   }
 
-  fetchSearchTerms(String query) async {
-    getSearchTerms(endpoint: '/associations/', query: {"entry": query});
-  }
+  // fetchSearchTerms(String query) async {
+  //   getSearchTerms(endpoint: '/associations/', query: {"entry": query});
+  // }
 
-  Future<dynamic> getSearchTerms({
-    @required String endpoint,
-    @required Map<String, String> query,
-  }) async {
-    Uri uri = Uri.https(_baseUri, endpoint, query);
-    final searchResponse = await http.get(uri, headers: _headers);
-    if (searchResponse.statusCode == 200) {
-      Map<String, dynamic> jsonData = jsonDecode(searchResponse.body);
-      // for (int i = 0; i <= 5; i++) {}
-      // print(jsonData["associations"]);
-      print("SEARCH TERMS");
-      searchTerms = jsonData["associations"].toString().split(',');
-      for (int i = 0; i <= searchTerms.length; i++) {
-        print(searchTerms[i]);
-      }
-      // print("RESPONSE");
-      // print(searchResponse.body);
-    } else {
-      print(searchResponse.statusCode);
-      throw Exception('Failed to load json data');
-    }
-  }
+  // Future<dynamic> getSearchTerms({
+  //   @required String endpoint,
+  //   @required Map<String, String> query,
+  // }) async {
+  //   Uri uri = Uri.https(_baseUri, endpoint, query);
+  //   final searchResponse = await http.get(uri, headers: _headers);
+  //   if (searchResponse.statusCode == 200) {
+  //     Map<String, dynamic> jsonData = jsonDecode(searchResponse.body);
+  //     // for (int i = 0; i <= 5; i++) {}
+  //     // print(jsonData["associations"]);
+  //     print("SEARCH TERMS");
+  //     searchTerms = jsonData["associations"].toString().split(',');
+  //     for (int i = 0; i <= searchTerms.length; i++) {
+  //       print(searchTerms[i]);
+  //     }
+  //     // print("RESPONSE");
+  //     // print(searchResponse.body);
+  //   } else {
+  //     print(searchResponse.statusCode);
+  //     throw Exception('Failed to load json data');
+  //   }
+  // }
 
   @mustCallSuper
   didChangeDependencies() async {
@@ -232,40 +229,7 @@ class _WallPaperViewState extends State<WallPaperView> {
             children: [
               Row(
                 children: [
-                  Stack(children: [
-                    Align(
-                      alignment: Alignment.center,
-                      child: Image.network(
-                        widget.imgUrl,
-                        fit: BoxFit.fitHeight,
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height,
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 25,
-                      right: MediaQuery.of(context).size.width / 3,
-                      left: MediaQuery.of(context).size.width / 3,
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: RotatedBox(
-                          quarterTurns: 1,
-                          child: Container(
-                            width: 40,
-                            height: 40,
-                            decoration: BoxDecoration(
-                                color:
-                                    Hexcolor(widget.avgColor).withOpacity(0.4),
-                                shape: BoxShape.circle),
-                            child: Icon(
-                              Icons.arrow_back_ios_rounded,
-                              color: foregroundColor,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ]),
+                  wallpaperBox(context),
                 ],
               ),
               SizedBox(
@@ -291,89 +255,222 @@ class _WallPaperViewState extends State<WallPaperView> {
               SizedBox(
                 height: 20,
               ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
+              infoCard(context),
+              SizedBox(
+                height: 30,
+              ),
+              adBox(context),
+              SizedBox(
+                height: 30,
+              )
+            ],
+          ),
+        ));
+  }
+
+  Stack wallpaperBox(BuildContext context) {
+    return Stack(children: [
+      Align(
+        alignment: Alignment.center,
+        child: Image.network(
+          widget.imgUrl,
+          fit: BoxFit.fitHeight,
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+        ),
+      ),
+      Positioned(
+        bottom: 25,
+        right: MediaQuery.of(context).size.width / 3,
+        left: MediaQuery.of(context).size.width / 3,
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: RotatedBox(
+            quarterTurns: 1,
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                  color: Hexcolor(widget.avgColor).withOpacity(0.4),
+                  shape: BoxShape.circle),
+              child: Icon(
+                Icons.arrow_back_ios_rounded,
+                color: foregroundColor,
+              ),
+            ),
+          ),
+        ),
+      ),
+    ]);
+  }
+
+  Row adBox(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          width: MediaQuery.of(context).size.width,
+          height: 80,
+          child: AdWidget(
+            ad: AdServices.createBannerAd()..load(),
+            key: UniqueKey(),
+          ),
+        )
+      ],
+    );
+  }
+
+  Row infoCard(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Material(
+          elevation: 25,
+          shadowColor: Hexcolor(widget.avgColor),
+          child: Container(
+            width: MediaQuery.of(context).size.width - 30,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.zero,
+              color: Theme.of(context).colorScheme.primary,
+              // color: Colors.transparent,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Material(
-                    elevation: 25,
-                    shadowColor: Hexcolor(widget.avgColor),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width - 30,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.zero,
-                        color: Theme.of(context).colorScheme.primary,
-                        // color: Colors.transparent,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Column(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              var color = widget.avgColor
+                                  .substring(1, widget.avgColor.length);
+                              print(color);
+                              Navigator.of(context).push(CupertinoPageRoute(
+                                  builder: (context) => ColorSearchView(
+                                        color: color,
+                                      )));
+                            },
+                            child: Row(
                               children: [
-                                Column(
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        var color = widget.avgColor.substring(
-                                            1, widget.avgColor.length);
-                                        print(color);
-                                        Navigator.of(context).push(
-                                            CupertinoPageRoute(
-                                                builder: (context) =>
-                                                    ColorSearchView(
-                                                      color: color,
-                                                    )));
-                                      },
-                                      child: Row(
-                                        children: [
-                                          Material(
-                                            type: MaterialType.circle,
-                                            color: Hexcolor(widget.avgColor),
-                                            elevation: elevationValue,
-                                            shadowColor: Theme.of(context)
+                                Material(
+                                  type: MaterialType.circle,
+                                  color: Hexcolor(widget.avgColor),
+                                  elevation: elevationValue,
+                                  shadowColor:
+                                      Theme.of(context).colorScheme.primary,
+                                  child: Container(
+                                    width: 35,
+                                    height: 35,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Hexcolor(widget.avgColor),
+                                    ),
+                                    child: Icon(
+                                      Icons.palette_outlined,
+                                      size: 20,
+                                      color: foregroundColor,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  widget.avgColor,
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontFamily: 'Theme Bold',
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                width: 35,
+                                height: 35,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
+                                child: Icon(
+                                  Icons.tag,
+                                  size: 20,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                widget.photoID,
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontFamily: 'Theme Bold',
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Link(
+                            target: LinkTarget.self,
+                            uri: Uri.parse(widget.photographerUrl),
+                            builder: (context, followPhotographer) {
+                              return GestureDetector(
+                                onTap: followPhotographer,
+                                onLongPress: () {
+                                  HapticFeedback.heavyImpact();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          action: SnackBarAction(
+                                            textColor: Theme.of(context)
                                                 .colorScheme
                                                 .primary,
-                                            child: Container(
-                                              width: 35,
-                                              height: 35,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color:
-                                                    Hexcolor(widget.avgColor),
-                                              ),
-                                              child: Icon(
-                                                Icons.palette_outlined,
-                                                size: 20,
-                                                color: foregroundColor,
-                                              ),
-                                            ),
+                                            label: "OPEN",
+                                            onPressed: followPhotographer,
                                           ),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(
-                                            widget.avgColor,
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontFamily: 'Theme Bold',
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .secondary),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Column(
+                                          backgroundColor: Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                          content: Text(
+                                            widget.photographer.toUpperCase(),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .button,
+                                          )));
+                                },
+                                child: Column(
                                   children: [
                                     Row(
                                       children: [
@@ -386,7 +483,7 @@ class _WallPaperViewState extends State<WallPaperView> {
                                                   .colorScheme
                                                   .secondary),
                                           child: Icon(
-                                            Icons.tag,
+                                            Icons.person_pin_outlined,
                                             size: 20,
                                             color: Theme.of(context)
                                                 .colorScheme
@@ -396,334 +493,136 @@ class _WallPaperViewState extends State<WallPaperView> {
                                         SizedBox(
                                           width: 10,
                                         ),
-                                        Text(
-                                          widget.photoID,
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontFamily: 'Theme Bold',
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary),
+                                        Container(
+                                          width: 150,
+                                          child: Row(
+                                            children: [
+                                              Flexible(
+                                                child: Text(
+                                                  widget.photographer
+                                                      .toUpperCase(),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontFamily: 'Theme Bold',
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .secondary),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ],
                                     ),
                                   ],
                                 ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Link(
-                                      target: LinkTarget.self,
-                                      uri: Uri.parse(widget.photographerUrl),
-                                      builder: (context, followPhotographer) {
-                                        return GestureDetector(
-                                          onTap: followPhotographer,
-                                          onLongPress: () {
-                                            HapticFeedback.heavyImpact();
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(SnackBar(
-                                                    action: SnackBarAction(
-                                                      textColor:
-                                                          Theme.of(context)
-                                                              .colorScheme
-                                                              .primary,
-                                                      label: "OPEN",
-                                                      onPressed:
-                                                          followPhotographer,
-                                                    ),
-                                                    backgroundColor:
-                                                        Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary,
-                                                    content: Text(
-                                                      widget.photographer
-                                                          .toUpperCase(),
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .button,
-                                                    )));
-                                          },
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Container(
-                                                    width: 35,
-                                                    height: 35,
-                                                    decoration: BoxDecoration(
-                                                        shape: BoxShape.circle,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary),
-                                                    child: Icon(
-                                                      Icons.person_pin_outlined,
-                                                      size: 20,
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .primary,
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  Container(
-                                                    width: 150,
-                                                    child: Row(
-                                                      children: [
-                                                        Flexible(
-                                                          child: Text(
-                                                            widget.photographer
-                                                                .toUpperCase(),
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            style: TextStyle(
-                                                                fontSize: 16,
-                                                                fontFamily:
-                                                                    'Theme Bold',
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .colorScheme
-                                                                    .secondary),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      }),
-                                  InkWell(
-                                    onTap: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) => AlertDialog(
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.zero),
-                                          content: SizedBox(
-                                            height: 100,
-                                            width: 80,
-                                            child: Center(
-                                              child: Row(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceAround,
-                                                  children: [
-                                                    InkWell(
-                                                      onTap: () {
-                                                        _imageShare(
-                                                            widget.imgUrl,
-                                                            _permissionStatus);
-                                                      },
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .center,
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          Icon(
-                                                            Icons
-                                                                .image_outlined,
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .colorScheme
-                                                                .primary,
-                                                          ),
-                                                          SizedBox(
-                                                            height: 10,
-                                                          ),
-                                                          Text(
-                                                            "SHARE\nIMAGE",
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                            style: Theme.of(
-                                                                    context)
-                                                                .textTheme
-                                                                .button,
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        Share.share("Checkout this Photo By: " +
-                                                            widget
-                                                                .photographer +
-                                                            "\n\nPhotographer: " +
-                                                            widget
-                                                                .photographerUrl +
-                                                            "\n\nFind Image at: " +
-                                                            widget.originalUrl +
-                                                            "\n\nDownload FELEXO for more amazing wallpapers");
-                                                      },
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .center,
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          Icon(
-                                                            Icons.link_outlined,
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .colorScheme
-                                                                .primary,
-                                                          ),
-                                                          SizedBox(
-                                                            height: 10,
-                                                          ),
-                                                          Text(
-                                                            "SHARE\nAS LINK",
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                            style: Theme.of(
-                                                                    context)
-                                                                .textTheme
-                                                                .button,
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ]),
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Container(
-                                              width: 35,
-                                              height: 35,
-                                              decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
+                              );
+                            }),
+                        InkWell(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.zero),
+                                content: SizedBox(
+                                  height: 100,
+                                  width: 80,
+                                  child: Center(
+                                    child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          InkWell(
+                                            onTap: () {
+                                              _imageShare(widget.imgUrl,
+                                                  _permissionStatus);
+                                            },
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  Icons.image_outlined,
                                                   color: Theme.of(context)
                                                       .colorScheme
-                                                      .secondary),
-                                              child: Icon(
-                                                Icons.share_outlined,
-                                                size: 20,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .primary,
-                                              ),
+                                                      .primary,
+                                                ),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Text(
+                                                  "SHARE\nIMAGE",
+                                                  textAlign: TextAlign.center,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .button,
+                                                )
+                                              ],
                                             ),
-                                            SizedBox(
-                                              width: 10,
-                                            ),
-                                            Text(
-                                              "SHARE",
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontFamily: 'Theme Bold',
+                                          ),
+                                          InkWell(
+                                            onTap: () {
+                                              Share.share(
+                                                  "Checkout this Photo By: " +
+                                                      widget.photographer +
+                                                      "\n\nPhotographer: " +
+                                                      widget.photographerUrl +
+                                                      "\n\nFind Image at: " +
+                                                      widget.originalUrl +
+                                                      "\n\nDownload FELEXO for more amazing wallpapers");
+                                            },
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  Icons.link_outlined,
                                                   color: Theme.of(context)
                                                       .colorScheme
-                                                      .secondary),
+                                                      .primary,
+                                                ),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Text(
+                                                  "SHARE\nAS LINK",
+                                                  textAlign: TextAlign.center,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .button,
+                                                )
+                                              ],
                                             ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
+                                          ),
+                                        ]),
                                   ),
-                                ]),
-                            SizedBox(
-                              height: 40,
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return AlertDialog(
-                                        title: Text("VISIT PEXELS",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .button),
-                                        content: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            Icon(Icons.public),
-                                            SizedBox(
-                                              width: 10,
-                                            ),
-                                            Text(
-                                              "OPEN PEXELS IN",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .button,
-                                            ),
-                                          ],
-                                        ),
-                                        actions: [
-                                          Row(
-                                            children: [
-                                              Link(
-                                                  target: LinkTarget.blank,
-                                                  uri: Uri.parse(
-                                                      "https://www.pexels.com/"),
-                                                  builder:
-                                                      (context, followBlank) {
-                                                    return TextButton(
-                                                        onPressed: followBlank,
-                                                        child: Text(
-                                                            "OPEN IN BROWSER"));
-                                                  }),
-                                              SizedBox(
-                                                width: 10,
-                                              ),
-                                              Link(
-                                                  target: LinkTarget.self,
-                                                  uri: Uri.parse(
-                                                      "https://www.pexels.com/"),
-                                                  builder:
-                                                      (context, followSelf) {
-                                                    return TextButton(
-                                                        onPressed: followSelf,
-                                                        child: Text(
-                                                            "OPEN IN APP"));
-                                                  }),
-                                            ],
-                                          )
-                                        ],
-                                      );
-                                    });
-                              },
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                ),
+                              ),
+                            );
+                          },
+                          child: Column(
+                            children: [
+                              Row(
                                 children: [
                                   Container(
                                     width: 35,
                                     height: 35,
                                     decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
-                                    ),
+                                        shape: BoxShape.circle,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary),
                                     child: Icon(
-                                      Icons.public_outlined,
+                                      Icons.share_outlined,
                                       size: 20,
                                       color:
                                           Theme.of(context).colorScheme.primary,
@@ -733,53 +632,118 @@ class _WallPaperViewState extends State<WallPaperView> {
                                     width: 10,
                                   ),
                                   Text(
-                                    "VISIT PEXELS",
+                                    "SHARE",
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontFamily: 'Theme Bold',
                                         color: Theme.of(context)
                                             .colorScheme
                                             .secondary),
-                                  )
+                                  ),
                                 ],
                               ),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
+                      ]),
+                  SizedBox(
+                    height: 40,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text("VISIT PEXELS",
+                                  style: Theme.of(context).textTheme.button),
+                              content: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Icon(Icons.public),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    "OPEN PEXELS IN",
+                                    style: Theme.of(context).textTheme.button,
+                                  ),
+                                ],
+                              ),
+                              actions: [
+                                Row(
+                                  children: [
+                                    Link(
+                                        target: LinkTarget.blank,
+                                        uri: Uri.parse(
+                                            "https://www.pexels.com/"),
+                                        builder: (context, followBlank) {
+                                          return TextButton(
+                                              onPressed: followBlank,
+                                              child: Text("OPEN IN BROWSER"));
+                                        }),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Link(
+                                        target: LinkTarget.self,
+                                        uri: Uri.parse(
+                                            "https://www.pexels.com/"),
+                                        builder: (context, followSelf) {
+                                          return TextButton(
+                                              onPressed: followSelf,
+                                              child: Text("OPEN IN APP"));
+                                        }),
+                                  ],
+                                )
+                              ],
+                            );
+                          });
+                    },
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 35,
+                          height: 35,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                          child: Icon(
+                            Icons.public_outlined,
+                            size: 20,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          "VISIT PEXELS",
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontFamily: 'Theme Bold',
+                              color: Theme.of(context).colorScheme.secondary),
+                        )
+                      ],
                     ),
                   ),
                   SizedBox(
-                    height: 20,
+                    height: 5,
                   ),
                 ],
               ),
-              SizedBox(
-                height: 30,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 80,
-                    child: AdWidget(
-                      ad: AdServices.createBannerAd()..load(),
-                      key: UniqueKey(),
-                    ),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 30,
-              )
-            ],
+            ),
           ),
-        ));
+        ),
+        SizedBox(
+          height: 20,
+        ),
+      ],
+    );
   }
 
   _imageShare(String url, bool _permissionReceived) async {

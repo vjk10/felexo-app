@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:felexo/Data/data.dart';
 import 'package:felexo/Services/authentication-service.dart';
 import 'package:felexo/Views/main-view.dart';
 import 'package:felexo/theme/app-theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,10 +28,14 @@ class _SplashScreenState extends State<SplashScreen>
   User user;
   String _systemTheme;
   bool isDark = true;
+  final fsref = FirebaseStorage.instance.ref();
+  var googleIcon;
 
   @override
-  void initState() {
+  initState() {
     super.initState();
+    getIcon();
+    setState(() {});
     askPermission();
     Timer(Duration(seconds: 3), () async {
       if (_auth.currentUser != null) {
@@ -43,6 +47,14 @@ class _SplashScreenState extends State<SplashScreen>
         visibility = true;
         setState(() {});
       }
+    });
+  }
+
+  getIcon() async {
+    await fsref.child('googleIcon.png').getDownloadURL().then((value) {
+      setState(() {
+        googleIcon = value;
+      });
     });
   }
 
@@ -160,7 +172,7 @@ class _SplashScreenState extends State<SplashScreen>
                                 height: 24,
                               );
                             },
-                            imageUrl: googleIcon,
+                            imageUrl: googleIcon.toString(),
                             height: 24,
                             fadeInCurve: Curves.easeIn,
                             fadeInDuration: const Duration(milliseconds: 500),
