@@ -53,8 +53,8 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   askPermission() async {
-    List<Permissions> permissionNames = await Permission.requestPermissions(
-        [PermissionName.Storage, PermissionName.Microphone]);
+    List<Permissions> permissionNames =
+        await Permission.requestPermissions([PermissionName.Storage]);
     return permissionNames;
   }
 

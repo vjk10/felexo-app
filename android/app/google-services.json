@@ -15,11 +15,19 @@
       },
       "oauth_client": [
         {
-          "client_id": "142888533580-ei58l7eruni6src533bpmjl55nm3rj3t.apps.googleusercontent.com",
+          "client_id": "142888533580-goo8d0asgaku0qq5b0c2lq2jjonsnpvl.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.vlabs.felexo",
-            "certificate_hash": "d9a9edc74ed97bf96e3866cdb5f68e290f183541"
+            "certificate_hash": "32317c8d5dca0e6bbdbf10d2015a5bd677399652"
+          }
+        },
+        {
+          "client_id": "142888533580-r1mic9pcoi9hrf8undfpd1i3fu6us3qi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vlabs.felexo",
+            "certificate_hash": "ef78aafd23bb52d7e7b4af9f73b7cfcd2450196e"
           }
         },
         {

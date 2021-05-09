@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:felexo/Color/colors.dart';
+import 'package:felexo/Data/data.dart';
 import 'package:felexo/Services/ad-services.dart';
 import 'package:felexo/Views/views.dart';
 import 'package:felexo/Widget/wallpaper-controls.dart';
@@ -16,9 +18,11 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission/permission.dart';
 import 'package:url_launcher/link.dart';
 import 'package:share/share.dart';
+import 'package:http/http.dart' as http;
 
 class WallPaperView extends StatefulWidget {
   final String avgColor,
+      searchString,
       imgUrl,
       photoID,
       photographer,
@@ -28,6 +32,7 @@ class WallPaperView extends StatefulWidget {
       uid;
   WallPaperView(
       {this.avgColor,
+      this.searchString,
       @required this.uid,
       @required this.imgUrl,
       @required this.originalUrl,
@@ -60,10 +65,19 @@ class _WallPaperViewState extends State<WallPaperView> {
   bool _permissionStatus;
   double progressValue;
   String progressString = "0%";
+  String _baseUri = "twinword-word-associations-v1.p.rapidapi.com";
+  static const Map<String, String> _headers = {
+    "content-type": "json",
+    "x-rapidapi-host": "twinword-word-associations-v1.p.rapidapi.com",
+    "x-rapidapi-key": stApi,
+  };
+
+  List<String> searchTerms = [];
 
   @override
   void initState() {
     print(widget.uid);
+    // fetchSearchTerms("android wallpapers");
     checkPermissionStatus();
     transparent = false;
 
@@ -100,6 +114,33 @@ class _WallPaperViewState extends State<WallPaperView> {
     List<Permissions> permissionNames =
         await Permission.requestPermissions([PermissionName.Storage]);
     checkPermissionStatus();
+  }
+
+  fetchSearchTerms(String query) async {
+    getSearchTerms(endpoint: '/associations/', query: {"entry": query});
+  }
+
+  Future<dynamic> getSearchTerms({
+    @required String endpoint,
+    @required Map<String, String> query,
+  }) async {
+    Uri uri = Uri.https(_baseUri, endpoint, query);
+    final searchResponse = await http.get(uri, headers: _headers);
+    if (searchResponse.statusCode == 200) {
+      Map<String, dynamic> jsonData = jsonDecode(searchResponse.body);
+      // for (int i = 0; i <= 5; i++) {}
+      // print(jsonData["associations"]);
+      print("SEARCH TERMS");
+      searchTerms = jsonData["associations"].toString().split(',');
+      for (int i = 0; i <= searchTerms.length; i++) {
+        print(searchTerms[i]);
+      }
+      // print("RESPONSE");
+      // print(searchResponse.body);
+    } else {
+      print(searchResponse.statusCode);
+      throw Exception('Failed to load json data');
+    }
   }
 
   @mustCallSuper

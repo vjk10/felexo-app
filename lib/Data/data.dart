@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 String apiKey = "563492ad6f9170000100000141a90db465f2497486cf3dcd9237e492";
+const stApi = "09b14f6a45msh462fef5ed93361ep1d7785jsn7538262ea50b";
 String bannerAdId = 'ca-app-pub-1356887710608938/4449237430';
 String interstitialAdId = 'ca-app-pub-1356887710608938/6475087475';
 

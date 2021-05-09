@@ -134,7 +134,8 @@ class _CollectionsGridState extends State<CollectionsGrid> {
                                               MainAxisAlignment.start,
                                           children: [
                                             Text(
-                                              collection.collectionDescription,
+                                              collection.collectionDescription
+                                                  .toUpperCase(),
                                               style: TextStyle(
                                                   color: Theme.of(context)
                                                       .scaffoldBackgroundColor),
