@@ -20,6 +20,7 @@ class Curated extends StatefulWidget {
 class _CuratedState extends State<Curated> {
   List<WallpaperModel> wallpapers = [];
   bool _buttonVisible = false;
+  bool loading = true;
   String wallpaperLocation,
       uid,
       imgUrl,
@@ -29,54 +30,141 @@ class _CuratedState extends State<Curated> {
       photographerID,
       avgColor,
       nextPage,
+      prevPage,
       photographerUrl;
   int noOfImages = 20;
   int pageNumber = 1;
   bool imagesLoaded = false;
   bool moreVisible = false;
+  bool _foundLast = false;
   User user;
   var foregroundColor;
+  Uri uri = Uri.parse(
+      "https://api.pexels.com/v1/collections/thnxj4c?page=1&per_page=80&type=photos");
 
   @override
   void initState() {
     initUser();
-    getTrendingWallpapers();
+    getLastPage();
     _buttonVisible = true;
     super.initState();
   }
 
-  Future<List> getTrendingWallpapers() async {
-    var response = await http.get(
-        Uri.parse("https://api.pexels.com/v1/curated?per_page=$noOfImages"),
-        headers: {"Authorization": apiKey}); // print(response.body.toString());
+  // Future<List> getTrendingWallpapers() async {
+  //   var response = await http.get(
+  //       Uri.parse("https://api.pexels.com/v1/curated?per_page=$noOfImages"),
+  //       headers: {"Authorization": apiKey}); // print(response.body.toString());
 
+  //   Map<String, dynamic> jsonData = jsonDecode(response.body);
+  //   // print(jsonData["next_page"].toString());
+  //   nextPage = jsonData["next_page"].toString();
+  //   jsonData["photos"].forEach((element) {
+  //     // print(element);
+  //     WallpaperModel wallpaperModel = new WallpaperModel();
+  //     wallpaperModel = WallpaperModel.fromMap(element);
+  //     wallpapers.add(wallpaperModel);
+  //   });
+  //   // print("TrendingState");
+  //   imagesLoaded = true;
+  //   setState(() {});
+
+  //   return wallpapers;
+  // }
+
+  // Future<List> getMoreWallpapers() async {
+  //   var response =
+  //       await http.get(Uri.parse(nextPage), headers: {"Authorization": apiKey});
+  //   Map<String, dynamic> jsonData = jsonDecode(response.body);
+  //   jsonData["photos"].forEach((element) {
+  //     WallpaperModel wallpaperModel = new WallpaperModel();
+  //     wallpaperModel = WallpaperModel.fromMap(element);
+  //     wallpapers.add(wallpaperModel);
+  //   });
+  //   // print("Next" + jsonData["next_page"].toString());
+  //   nextPage = jsonData["next_page"].toString();
+  //   moreVisible = false;
+  //   _buttonVisible = !_buttonVisible;
+  //   setState(() {});
+  //   return wallpapers;
+  // }
+  getLastPage() async {
+    while (_foundLast == false) {
+      var response = await http.get(uri, headers: {
+        "Authorization": apiKey
+      }); // print(response.body.toString());
+
+      Map<String, dynamic> jsonData = jsonDecode(response.body);
+      print("NEXTLOOP: " + jsonData["next_page"].toString());
+      nextPage = jsonData["next_page"];
+      if (nextPage == null) {
+        print("URI: " + uri.toString());
+        print("NEXT PAGE: " + nextPage.toString());
+        getTrendingWallpapers(uri);
+        _foundLast = true;
+      } else {
+        setState(() {
+          uri = Uri.parse(nextPage);
+        });
+      }
+    }
+  }
+  // do {
+  //   var response = await http.get(
+  //       Uri.parse(
+  //           "https://api.pexels.com/v1/collections/thnxj4c?per_page=80&type=photos"),
+  //       headers: {
+  //         "Authorization": apiKey
+  //       }); // print(response.body.toString());
+
+  //   Map<String, dynamic> jsonData = jsonDecode(response.body);
+  //   print("NEXT: " + jsonData["next_page"].toString());
+  //   nextPage = jsonData["next_page"].toString();
+  //   setState(() {});
+  //   if (nextPage == null || nextPage == "") {
+  //     setState(() {
+  //       i = 1;
+  //     });
+  //   }
+  // } while (i == 0);
+
+  Future<List> getTrendingWallpapers(Uri _uri) async {
+    var response = await http.get(_uri,
+        headers: {"Authorization": apiKey}); // print(response.body.toString());
     Map<String, dynamic> jsonData = jsonDecode(response.body);
-    // print(jsonData["next_page"].toString());
-    nextPage = jsonData["next_page"].toString();
-    jsonData["photos"].forEach((element) {
-      // print(element);
+    print("NEXT: " + jsonData["prev_page"].toString());
+    prevPage = jsonData["prev_page"].toString();
+    if (prevPage == "null") {
+      setState(() {
+        loading = false;
+      });
+    }
+    jsonData["media"].forEach((element) {
       WallpaperModel wallpaperModel = new WallpaperModel();
       wallpaperModel = WallpaperModel.fromMap(element);
       wallpapers.add(wallpaperModel);
     });
-    // print("TrendingState");
+    wallpapers = wallpapers.reversed.toList();
     imagesLoaded = true;
     setState(() {});
-
     return wallpapers;
   }
 
   Future<List> getMoreWallpapers() async {
     var response =
-        await http.get(Uri.parse(nextPage), headers: {"Authorization": apiKey});
+        await http.get(Uri.parse(prevPage), headers: {"Authorization": apiKey});
     Map<String, dynamic> jsonData = jsonDecode(response.body);
-    jsonData["photos"].forEach((element) {
+    jsonData["media"].forEach((element) {
       WallpaperModel wallpaperModel = new WallpaperModel();
       wallpaperModel = WallpaperModel.fromMap(element);
       wallpapers.add(wallpaperModel);
     });
     // print("Next" + jsonData["next_page"].toString());
-    nextPage = jsonData["next_page"].toString();
+    prevPage = jsonData["prev_page"].toString();
+    if (prevPage == "null") {
+      setState(() {
+        loading = false;
+      });
+    }
     moreVisible = false;
     _buttonVisible = !_buttonVisible;
     setState(() {});
@@ -121,7 +209,7 @@ class _CuratedState extends State<Curated> {
                     child: Material(
                       type: MaterialType.card,
                       shadowColor: Theme.of(context).backgroundColor,
-                      elevation: 5,
+                      elevation: 0,
                       borderRadius: BorderRadius.circular(0),
                       child: Container(
                         decoration: BoxDecoration(
@@ -204,82 +292,89 @@ class _CuratedState extends State<Curated> {
               SizedBox(
                 height: 0,
               ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Visibility(
-                    visible: !_buttonVisible,
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.rectangle,
-                        color: Theme.of(context).backgroundColor,
-                      ),
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            width: 550,
-                            height: 5,
-                            child: LinearProgressIndicator(
-                                backgroundColor:
-                                    Theme.of(context).colorScheme.secondary,
-                                valueColor: AlwaysStoppedAnimation(
-                                  Theme.of(context).colorScheme.primary,
-                                )),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10.0),
+              loading
+                  ? Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Visibility(
+                          visible: !_buttonVisible,
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.rectangle,
+                              color: Theme.of(context).backgroundColor,
+                            ),
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  width: 550,
+                                  height: 5,
+                                  child: LinearProgressIndicator(
+                                      backgroundColor: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
+                                      valueColor: AlwaysStoppedAnimation(
+                                        Theme.of(context).colorScheme.primary,
+                                      )),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 10.0),
+                                  child: Text(
+                                    loadingText,
+                                    style: Theme.of(context).textTheme.button,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                SizedBox(
+                                  width: 550,
+                                  height: 5,
+                                  child: LinearProgressIndicator(
+                                      backgroundColor: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
+                                      valueColor: AlwaysStoppedAnimation(
+                                        Theme.of(context).colorScheme.primary,
+                                      )),
+                                ),
+                              ],
+                            ),
+                          )),
+                    )
+                  : Container(),
+              loading
+                  ? Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Visibility(
+                        visible: _buttonVisible,
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 50,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _buttonVisible = !_buttonVisible;
+                              setState(() {});
+                              getMoreWallpapers();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              primary: Theme.of(context).colorScheme.primary,
+                              onPrimary: textColor,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(0)),
+                            ),
                             child: Text(
-                              loadingText,
-                              style: Theme.of(context).textTheme.button,
+                              loadMoreMessage,
+                              style: TextStyle(
+                                  fontFamily: 'Theme Bold',
+                                  color:
+                                      Theme.of(context).colorScheme.secondary),
                             ),
                           ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          SizedBox(
-                            width: 550,
-                            height: 5,
-                            child: LinearProgressIndicator(
-                                backgroundColor:
-                                    Theme.of(context).colorScheme.secondary,
-                                valueColor: AlwaysStoppedAnimation(
-                                  Theme.of(context).colorScheme.primary,
-                                )),
-                          ),
-                        ],
+                        ),
                       ),
-                    )),
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Visibility(
-                  visible: _buttonVisible,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        _buttonVisible = !_buttonVisible;
-                        setState(() {});
-                        getMoreWallpapers();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        primary: Theme.of(context).colorScheme.primary,
-                        onPrimary: textColor,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(0)),
-                      ),
-                      child: Text(
-                        loadMoreMessage,
-                        style: TextStyle(
-                            fontFamily: 'Theme Bold',
-                            color: Theme.of(context).colorScheme.secondary),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+                    )
+                  : Container(),
             ],
           )
         : Shimmer(

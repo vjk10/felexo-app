@@ -129,10 +129,10 @@ class _MainViewState extends State<MainView>
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: DefaultTabController(
-          length: 4,
+    return Scaffold(
+      body: DefaultTabController(
+        length: 4,
+        child: SafeArea(
           child: NestedScrollView(
             headerSliverBuilder:
                 (BuildContext context, bool innerBoxIsScrolled) {
@@ -140,7 +140,7 @@ class _MainViewState extends State<MainView>
                 SliverAppBar(
                   elevation: 15,
                   backgroundColor: Theme.of(context).colorScheme.secondary,
-                  expandedHeight: 220.0,
+                  expandedHeight: 200.0,
                   floating: true,
                   pinned: true,
                   centerTitle: true,
@@ -149,7 +149,7 @@ class _MainViewState extends State<MainView>
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SizedBox(
-                        height: 15,
+                        height: 20,
                       ),
                       Text(
                         "FELEXO",
@@ -191,13 +191,13 @@ class _MainViewState extends State<MainView>
                     centerTitle: true,
                     background: Padding(
                       padding: const EdgeInsets.only(
-                          top: 50.0, left: 10, right: 10, bottom: 20),
+                          top: 20.0, left: 10, right: 10, bottom: 0),
                       child: Stack(
                         children: [
                           Align(
                               alignment: Alignment.topCenter,
                               child: Padding(
-                                padding: const EdgeInsets.only(top: 18.0),
+                                padding: const EdgeInsets.only(top: 40.0),
                                 child: Text(
                                   "A LIBRARY OF AMAZING WALLPAPERS!",
                                   style: TextStyle(fontSize: 12),
@@ -256,16 +256,7 @@ class _MainViewState extends State<MainView>
                   ),
                   backwardsCompatibility: true,
                   collapsedHeight: 80,
-                  bottom: PreferredSize(
-                      preferredSize: _tabBar.preferredSize,
-                      child: Column(
-                        children: [
-                          _tabBar,
-                          SizedBox(
-                            height: 10,
-                          ),
-                        ],
-                      )),
+                  bottom: _tabBar,
                 ),
               ];
             },

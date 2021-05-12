@@ -30,11 +30,13 @@ class _CategoriesListState extends State<CategoriesList> {
   @override
   Widget build(BuildContext context) {
     final categories = Provider.of<List<Categories>>(context);
-    return ListView.builder(
-      itemCount: categories.length,
-      itemBuilder: (context, index) {
-        return CategoriesTile(categories: categories[index]);
-      },
+    return Scaffold(
+      body: ListView.builder(
+        itemCount: categories.length,
+        itemBuilder: (context, index) {
+          return CategoriesTile(categories: categories[index]);
+        },
+      ),
     );
   }
 }

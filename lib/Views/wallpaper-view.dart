@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:felexo/Color/colors.dart';
@@ -62,24 +64,14 @@ class _WallPaperViewState extends State<WallPaperView> {
   bool _permissionStatus;
   double progressValue;
   String progressString = "0%";
-  // String _baseUri = "twinword-word-associations-v1.p.rapidapi.com";
-  // static const Map<String, String> _headers = {
-  //   "content-type": "json",
-  //   "x-rapidapi-host": "twinword-word-associations-v1.p.rapidapi.com",
-  //   "x-rapidapi-key": stApi,
-  // };
 
   List<String> searchTerms = [];
 
   @override
   void initState() {
     print(widget.uid);
-    // fetchSearchTerms("android wallpapers");
     checkPermissionStatus();
     transparent = false;
-
-    // print("AVG:" + widget.avgColor.toString());
-    // print(foregroundColor);
     findIfFav();
     super.initState();
   }
@@ -112,33 +104,6 @@ class _WallPaperViewState extends State<WallPaperView> {
         await Permission.requestPermissions([PermissionName.Storage]);
     checkPermissionStatus();
   }
-
-  // fetchSearchTerms(String query) async {
-  //   getSearchTerms(endpoint: '/associations/', query: {"entry": query});
-  // }
-
-  // Future<dynamic> getSearchTerms({
-  //   @required String endpoint,
-  //   @required Map<String, String> query,
-  // }) async {
-  //   Uri uri = Uri.https(_baseUri, endpoint, query);
-  //   final searchResponse = await http.get(uri, headers: _headers);
-  //   if (searchResponse.statusCode == 200) {
-  //     Map<String, dynamic> jsonData = jsonDecode(searchResponse.body);
-  //     // for (int i = 0; i <= 5; i++) {}
-  //     // print(jsonData["associations"]);
-  //     print("SEARCH TERMS");
-  //     searchTerms = jsonData["associations"].toString().split(',');
-  //     for (int i = 0; i <= searchTerms.length; i++) {
-  //       print(searchTerms[i]);
-  //     }
-  //     // print("RESPONSE");
-  //     // print(searchResponse.body);
-  //   } else {
-  //     print(searchResponse.statusCode);
-  //     throw Exception('Failed to load json data');
-  //   }
-  // }
 
   @mustCallSuper
   didChangeDependencies() async {
@@ -272,12 +237,18 @@ class _WallPaperViewState extends State<WallPaperView> {
     return Stack(children: [
       Align(
         alignment: Alignment.center,
-        child: Image.network(
-          widget.imgUrl,
-          fit: BoxFit.fitHeight,
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-        ),
+        // child: Image.network(
+        //   widget.imgUrl,
+        //   fit: BoxFit.fitHeight,
+        //   width: MediaQuery.of(context).size.width,
+        //   height: MediaQuery.of(context).size.height,
+        // ),
+        child: CachedNetworkImage(
+            imageUrl: widget.imgUrl,
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            fit: BoxFit.fitHeight,
+            fadeInCurve: Curves.easeIn),
       ),
       Positioned(
         bottom: 25,

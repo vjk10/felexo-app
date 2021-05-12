@@ -2,13 +2,11 @@ import 'dart:convert';
 
 import 'package:felexo/Color/colors.dart';
 import 'package:felexo/Data/data.dart';
-import 'package:felexo/Services/ad-services.dart';
 import 'package:felexo/Widget/widgets.dart';
 import 'package:felexo/model/wallpapers-model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
 
 class CategoriesResult extends StatefulWidget {
@@ -203,14 +201,6 @@ class _CategoriesResultState extends State<CategoriesResult> {
               ),
             ),
           )),
-        ),
-        bottomNavigationBar: Container(
-          height: 50,
-          color: Colors.transparent,
-          child: AdWidget(
-            key: UniqueKey(),
-            ad: AdServices.createBannerAd()..load(),
-          ),
         ),
       );
     }

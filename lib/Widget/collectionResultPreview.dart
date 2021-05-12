@@ -28,7 +28,7 @@ class _CRPreviewState extends State<CRPreview> {
     var response = await http.get(
         Uri.parse("https://api.pexels.com/v1/collections/" +
             widget.collectionsID +
-            "?&type=photos&page=1&per_page=200"),
+            "?&type=photos&page=1&per_page=400"),
         headers: {"Authorization": apiKey});
     Map<String, dynamic> jsonData = jsonDecode(response.body);
     // print("TOTALRESULTS " + jsonData["total_results"].toString());
@@ -62,13 +62,14 @@ class _CRPreviewState extends State<CRPreview> {
   @override
   Widget build(BuildContext context) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Image.network(
           p1 ?? loadingAnimation,
-          width: 250,
+          width: MediaQuery.of(context).size.width / 1.7639,
           height: 250,
-          fit: BoxFit.cover,
+          fit: BoxFit.fill,
           errorBuilder:
               (BuildContext context, Object exception, StackTrace trace) {
             return Container(
@@ -78,11 +79,11 @@ class _CRPreviewState extends State<CRPreview> {
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.network(
               p2 ?? loadingAnimation,
-              width: 160,
+              width: MediaQuery.of(context).size.width / 2.47,
               height: 160,
               errorBuilder:
                   (BuildContext context, Object exception, StackTrace trace) {
@@ -90,13 +91,13 @@ class _CRPreviewState extends State<CRPreview> {
                   color: Theme.of(context).colorScheme.primary,
                 );
               },
-              fit: BoxFit.cover,
+              fit: BoxFit.fill,
             ),
             _p3avail
                 ? Stack(
                     children: [
                       Container(
-                        width: 160,
+                        width: MediaQuery.of(context).size.width / 2.47,
                         height: 90,
                         child: Image.network(
                           p3 ?? loadingAnimation,
@@ -110,7 +111,7 @@ class _CRPreviewState extends State<CRPreview> {
                         ),
                       ),
                       Container(
-                          width: 160,
+                          width: MediaQuery.of(context).size.width / 2.47,
                           height: 90,
                           color: foregroundColor.withOpacity(0.3) ??
                               Theme.of(context).scaffoldBackgroundColor,

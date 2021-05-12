@@ -29,8 +29,14 @@ class _CRViewState extends State<CRView> {
         ),
       ),
       body: SingleChildScrollView(
-        child: CRGrid(
-          collectionsID: widget.collectionID,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CRGrid(
+              collectionsID: widget.collectionID,
+            ),
+          ],
         ),
       ),
     );

@@ -32,7 +32,7 @@ class _CollectionsGridState extends State<CollectionsGrid> {
 
   getCollections() async {
     var response = await http.get(
-        Uri.parse("https://api.pexels.com/v1/collections?page=1&per_page=250"),
+        Uri.parse("https://api.pexels.com/v1/collections?page=1&per_page=450"),
         headers: {"Authorization": apiKey});
     Map<String, dynamic> jsonData = jsonDecode(response.body);
     totalResults = jsonData["total_results"];
@@ -40,7 +40,9 @@ class _CollectionsGridState extends State<CollectionsGrid> {
     jsonData["collections"].forEach((element) {
       CollectionsModel collectionsModel = new CollectionsModel();
       collectionsModel = CollectionsModel.fromMap(element);
-      collections.add(collectionsModel);
+      if (element['id'] != "thnxj4c") {
+        collections.add(collectionsModel);
+      }
     });
     setState(() {
       isLoading = false;
@@ -73,8 +75,10 @@ class _CollectionsGridState extends State<CollectionsGrid> {
               crossAxisSpacing: 0,
               children: collections.map((collection) {
                 setState(() {});
+
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Column(
                       children: [
@@ -90,86 +94,90 @@ class _CollectionsGridState extends State<CollectionsGrid> {
                                                 collection.collectionTitle,
                                           )));
                             },
-                            child: CRPreview(
-                                collectionsID:
-                                    collection.collectionId.toString())),
+                            child: Container(
+                              child: CRPreview(
+                                  collectionsID:
+                                      collection.collectionId.toString()),
+                            )),
                         SizedBox(
                           height: 5,
                         ),
-                        Material(
-                          elevation: 10,
-                          shadowColor: Theme.of(context).colorScheme.primary,
-                          child: Container(
-                              color: Theme.of(context).colorScheme.primary,
-                              width: MediaQuery.of(context).size.width - 10,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              collection.collectionTitle
-                                                  .toUpperCase(),
-                                              style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .scaffoldBackgroundColor,
-                                                  fontSize: 24,
-                                                  fontFamily: 'Theme Black'),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              collection.collectionDescription
-                                                  .toUpperCase(),
-                                              style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .scaffoldBackgroundColor),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                        Center(
+                          child: Material(
+                            elevation: 10,
+                            shadowColor: Theme.of(context).colorScheme.primary,
+                            child: Container(
+                                color: Theme.of(context).colorScheme.primary,
+                                width: MediaQuery.of(context).size.width - 10,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                collection.collectionTitle
+                                                    .toUpperCase(),
+                                                style: TextStyle(
+                                                    color: Theme.of(context)
+                                                        .scaffoldBackgroundColor,
+                                                    fontSize: 24,
+                                                    fontFamily: 'Theme Black'),
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                collection.collectionDescription
+                                                    .toUpperCase(),
+                                                style: TextStyle(
+                                                    color: Theme.of(context)
+                                                        .scaffoldBackgroundColor),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.photo_library_outlined,
-                                          size: 14,
-                                          color: Theme.of(context)
-                                              .scaffoldBackgroundColor,
-                                        ),
-                                        SizedBox(
-                                          width: 5,
-                                        ),
-                                        Text(
-                                          collection.photosCount,
-                                          style: TextStyle(
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.photo_library_outlined,
+                                            size: 14,
                                             color: Theme.of(context)
                                                 .scaffoldBackgroundColor,
                                           ),
-                                        )
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              )),
+                                          SizedBox(
+                                            width: 5,
+                                          ),
+                                          Text(
+                                            collection.photosCount,
+                                            style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .scaffoldBackgroundColor,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                )),
+                          ),
                         ),
                       ],
                     ),

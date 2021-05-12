@@ -34,6 +34,7 @@ class _SearchViewState extends State<SearchView> {
   List<WallpaperModel> wallpapers = [];
   bool _buttonVisible = true;
   bool _isLoading = true;
+  bool _hasResults = true;
 
   @override
   void initState() {
@@ -58,8 +59,22 @@ class _SearchViewState extends State<SearchView> {
         Uri.parse(
             "https://api.pexels.com/v1/search?query=$searchQuery&per_page=$noOfImages"),
         headers: {"Authorization": apiKey});
+    print("STATUS CODE: " + response.statusCode.toString());
+    print("CONTENT LENGHT: " + response.contentLength.toString());
     Map<String, dynamic> jsonData = jsonDecode(response.body);
     // print(jsonData["next_page"].toString());
+    print("CONTENT LENGHT: " + jsonData['photos'].toString());
+    if (jsonData['photos'].toList().isEmpty) {
+      setState(() {
+        _hasResults = false;
+      });
+      print("NO RESULTS");
+    } else {
+      setState(() {
+        _hasResults = true;
+      });
+      print("RESULTS FOUND!");
+    }
     nextPage = jsonData["next_page"].toString();
     jsonData["photos"].forEach((element) {
       // print(element);
@@ -109,101 +124,132 @@ class _SearchViewState extends State<SearchView> {
                 height: MediaQuery.of(context).size.height,
               ),
             )
-          : SafeArea(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: wallpaperSearchGrid(
-                          wallpapers: wallpapers,
-                          context: context,
-                          uid: user.uid),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Visibility(
-                          visible: !_buttonVisible,
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.rectangle,
-                              color: Theme.of(context).backgroundColor,
-                            ),
-                            child: Column(
-                              children: [
-                                SizedBox(
-                                  width: 550,
-                                  height: 5,
-                                  child: LinearProgressIndicator(
-                                      backgroundColor: Theme.of(context)
+          : _hasResults
+              ? SafeArea(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Align(
+                          alignment: Alignment.topCenter,
+                          child: wallpaperSearchGrid(
+                              wallpapers: wallpapers,
+                              context: context,
+                              uid: user.uid),
+                        ),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Visibility(
+                              visible: !_buttonVisible,
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.rectangle,
+                                  color: Theme.of(context).backgroundColor,
+                                ),
+                                child: Column(
+                                  children: [
+                                    SizedBox(
+                                      width: 550,
+                                      height: 5,
+                                      child: LinearProgressIndicator(
+                                          backgroundColor: Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                          valueColor: AlwaysStoppedAnimation(
+                                            Theme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                          )),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 10.0),
+                                      child: Text(
+                                        loadingText,
+                                        style:
+                                            Theme.of(context).textTheme.button,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    SizedBox(
+                                      width: 550,
+                                      height: 5,
+                                      child: LinearProgressIndicator(
+                                          backgroundColor: Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                          valueColor: AlwaysStoppedAnimation(
+                                            Theme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                          )),
+                                    ),
+                                  ],
+                                ),
+                              )),
+                        ),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Visibility(
+                            visible: _buttonVisible,
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: 50,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  _buttonVisible = !_buttonVisible;
+                                  pageNumber = pageNumber + 1;
+                                  setState(() {});
+                                  getMoreSearchResults(widget.searchQuery);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  primary:
+                                      Theme.of(context).colorScheme.primary,
+                                  onPrimary: textColor,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(0)),
+                                ),
+                                child: Text(
+                                  loadMoreMessage,
+                                  style: TextStyle(
+                                      fontFamily: 'Theme Bold',
+                                      color: Theme.of(context)
                                           .colorScheme
-                                          .secondary,
-                                      valueColor: AlwaysStoppedAnimation(
-                                        Theme.of(context).colorScheme.primary,
-                                      )),
+                                          .secondary),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 10.0),
-                                  child: Text(
-                                    loadingText,
-                                    style: Theme.of(context).textTheme.button,
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                SizedBox(
-                                  width: 550,
-                                  height: 5,
-                                  child: LinearProgressIndicator(
-                                      backgroundColor: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
-                                      valueColor: AlwaysStoppedAnimation(
-                                        Theme.of(context).colorScheme.primary,
-                                      )),
-                                ),
-                              ],
-                            ),
-                          )),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Visibility(
-                        visible: _buttonVisible,
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: 50,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              _buttonVisible = !_buttonVisible;
-                              pageNumber = pageNumber + 1;
-                              setState(() {});
-                              getMoreSearchResults(widget.searchQuery);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              primary: Theme.of(context).colorScheme.primary,
-                              onPrimary: textColor,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(0)),
-                            ),
-                            child: Text(
-                              loadMoreMessage,
-                              style: TextStyle(
-                                  fontFamily: 'Theme Bold',
-                                  color:
-                                      Theme.of(context).colorScheme.secondary),
+                              ),
                             ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
+                  ),
+                )
+              : Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.warning_amber_rounded,
+                        size: 30,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "WE COULDN'T FIND ANY RESULTS FOR YOUR SEARCH!",
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
+                            fontSize: 12,
+                            fontFamily: 'Theme Black'),
+                        textAlign: TextAlign.center,
+                      )
+                    ],
+                  ),
                 ),
-              ),
-            ),
     );
   }
 }
