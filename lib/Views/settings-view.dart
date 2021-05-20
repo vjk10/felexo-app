@@ -88,26 +88,32 @@ class _SettingsViewState extends State<SettingsView> {
     assert(user.email != null);
     assert(user.uid != null);
     assert(user.photoURL != null);
-    // setState(() {
-    //   checkVerified();
-    // });
+    setState(() {
+      checkVerified();
+    });
   }
 
-  // checkVerified() async {
-  //   print(user.displayName);
-  //   DocumentSnapshot snapShot = await FirebaseFirestore.instance
-  //       .collection("VerifiedCreators")
-  //       .doc(user.displayName.toUpperCase())
-  //       .get();
-  //   if (snapShot.exists) {
-  //     setState(() {
-  //       _isVerified = true;
-  //     });
-  //     print("CREATORVERIFIED");
-  //   } else {
-  //     print("CREATORNOTVERIFIED");
-  //   }
-  // }
+  checkVerified() async {
+    print("CHECK VERIFIED");
+    FirebaseFirestore.instance
+        .collection('User')
+        .snapshots()
+        .forEach((element) {
+      print(element.docs.map((e) async {
+        if (e.get('displayName') == user.displayName) {
+          DocumentSnapshot snapshot = await FirebaseFirestore.instance
+              .collection('VerifiedCreators')
+              .doc(e.get('uid'))
+              .get();
+          if (snapshot.exists) {
+            setState(() {
+              _isVerified = true;
+            });
+          }
+        }
+      }));
+    });
+  }
 
   Future<void> _initPackageInfo() async {
     final PackageInfo info = await PackageInfo.fromPlatform();
@@ -236,7 +242,9 @@ class _SettingsViewState extends State<SettingsView> {
                                       ? Icon(
                                           Icons.verified,
                                           size: 16,
-                                          color: Colors.blue,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
                                         )
                                       : SizedBox(),
                                 ],
@@ -261,7 +269,8 @@ class _SettingsViewState extends State<SettingsView> {
                               _isVerified
                                   ? Icon(
                                       Icons.verified,
-                                      color: Colors.blue,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
                                     )
                                   : SizedBox(),
                             ],

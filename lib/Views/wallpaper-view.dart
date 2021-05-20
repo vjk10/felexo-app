@@ -74,24 +74,31 @@ class _WallPaperViewState extends State<WallPaperView> {
     checkPermissionStatus();
     transparent = false;
     findIfFav();
-    // checkVerified();
+    checkVerified();
     super.initState();
   }
 
-  // checkVerified() async {
-  //   DocumentSnapshot snapShot = await FirebaseFirestore.instance
-  //       .collection("VerifiedCreators")
-  //       .doc(widget.photographer.toUpperCase())
-  //       .get();
-  //   if (snapShot.exists) {
-  //     setState(() {
-  //       _isVerified = true;
-  //     });
-  //     print("CREATORVERIFIED");
-  //   } else {
-  //     print("CREATORNOTVERIFIED");
-  //   }
-  // }
+  checkVerified() async {
+    print("CHECK VERIFIED");
+    FirebaseFirestore.instance
+        .collection('User')
+        .snapshots()
+        .forEach((element) {
+      print(element.docs.map((e) async {
+        if (e.get('displayName') == widget.photographer) {
+          DocumentSnapshot snapshot = await FirebaseFirestore.instance
+              .collection('VerifiedCreators')
+              .doc(e.get('uid'))
+              .get();
+          if (snapshot.exists) {
+            setState(() {
+              _isVerified = true;
+            });
+          }
+        }
+      }));
+    });
+  }
 
   checkPermissionStatus() async {
     List<Permissions> permissions =
@@ -483,7 +490,10 @@ class _WallPaperViewState extends State<WallPaperView> {
                                         SizedBox(width: 5),
                                         _isVerified
                                             ? Icon(Icons.verified,
-                                                size: 16, color: Colors.blue)
+                                                size: 16,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary)
                                             : SizedBox(),
                                       ],
                                     ),
