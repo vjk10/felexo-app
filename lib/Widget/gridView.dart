@@ -40,7 +40,7 @@ class _CuratedState extends State<Curated> {
   User user;
   var foregroundColor;
   Uri uri = Uri.parse(
-      "https://api.pexels.com/v1/collections/thnxj4c?page=1&per_page=80&type=photos");
+      "https://api.pexels.com/v1/collections/thnxj4c?page=1&per_page=10&type=photos");
 
   @override
   void initState() {
@@ -133,6 +133,7 @@ class _CuratedState extends State<Curated> {
     Map<String, dynamic> jsonData = jsonDecode(response.body);
     print("NEXT: " + jsonData["prev_page"].toString());
     prevPage = jsonData["prev_page"].toString();
+    print("TOTAL RESULTS: " + jsonData['total_results'].toString());
     if (prevPage == "null") {
       setState(() {
         loading = false;

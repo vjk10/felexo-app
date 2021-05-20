@@ -68,7 +68,7 @@ class _MainViewState extends State<MainView>
         .get()
         .then((QuerySnapshot snapshot) {
       snapshot.docs.map((e) {
-        defaultSuggestions.add(e.data()["term"]);
+        defaultSuggestions.add(e.get("term"));
       }).toList();
     });
     return defaultSuggestions;
@@ -82,7 +82,7 @@ class _MainViewState extends State<MainView>
         .get()
         .then((QuerySnapshot snapshot) {
       snapshot.docs.map((e) {
-        searchHistory.add(e.data()["searchHistory"].toString());
+        searchHistory.add(e.get("searchHistory").toString());
       }).toList();
     });
     return searchHistory;

@@ -28,7 +28,7 @@ class _CRPreviewState extends State<CRPreview> {
     var response = await http.get(
         Uri.parse("https://api.pexels.com/v1/collections/" +
             widget.collectionsID +
-            "?&type=photos&page=1&per_page=400"),
+            "?&type=photos&page=1&per_page=80"),
         headers: {"Authorization": apiKey});
     Map<String, dynamic> jsonData = jsonDecode(response.body);
     // print("TOTALRESULTS " + jsonData["total_results"].toString());
@@ -69,7 +69,7 @@ class _CRPreviewState extends State<CRPreview> {
           p1 ?? loadingAnimation,
           width: MediaQuery.of(context).size.width / 1.7639,
           height: 250,
-          fit: BoxFit.fill,
+          fit: BoxFit.cover,
           errorBuilder:
               (BuildContext context, Object exception, StackTrace trace) {
             return Container(
@@ -91,7 +91,7 @@ class _CRPreviewState extends State<CRPreview> {
                   color: Theme.of(context).colorScheme.primary,
                 );
               },
-              fit: BoxFit.fill,
+              fit: BoxFit.cover,
             ),
             _p3avail
                 ? Stack(

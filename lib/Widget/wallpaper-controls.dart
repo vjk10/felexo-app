@@ -2,7 +2,6 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
-import 'package:felexo/Services/ad-services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -195,7 +194,6 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                                   ),
                                   onTap: () {
                                     HapticFeedback.heavyImpact();
-                                    AdServices.showInterstitialAd();
                                     showDialog(
                                         context: context,
                                         useSafeArea: true,
@@ -334,7 +332,6 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                             ),
                             onTap: () {
                               HapticFeedback.heavyImpact();
-                              AdServices.showInterstitialAd();
 
                               showDialog(
                                   context: context,
@@ -534,7 +531,6 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                             ),
                             onTap: () async {
                               HapticFeedback.heavyImpact();
-                              AdServices.showInterstitialAd();
                               if (widget.favExists == true) {
                                 showDialog(
                                     context: context,

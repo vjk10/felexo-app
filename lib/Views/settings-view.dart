@@ -33,6 +33,7 @@ class _SettingsViewState extends State<SettingsView> {
   TextEditingController subject = new TextEditingController();
   TextEditingController feedback = new TextEditingController();
   var logoPlayStore;
+  bool _isVerified = false;
 
   PackageInfo _packageInfo = PackageInfo(
     appName: 'Unknown',
@@ -87,8 +88,26 @@ class _SettingsViewState extends State<SettingsView> {
     assert(user.email != null);
     assert(user.uid != null);
     assert(user.photoURL != null);
-    setState(() {});
+    // setState(() {
+    //   checkVerified();
+    // });
   }
+
+  // checkVerified() async {
+  //   print(user.displayName);
+  //   DocumentSnapshot snapShot = await FirebaseFirestore.instance
+  //       .collection("VerifiedCreators")
+  //       .doc(user.displayName.toUpperCase())
+  //       .get();
+  //   if (snapShot.exists) {
+  //     setState(() {
+  //       _isVerified = true;
+  //     });
+  //     print("CREATORVERIFIED");
+  //   } else {
+  //     print("CREATORNOTVERIFIED");
+  //   }
+  // }
 
   Future<void> _initPackageInfo() async {
     final PackageInfo info = await PackageInfo.fromPlatform();
@@ -210,6 +229,16 @@ class _SettingsViewState extends State<SettingsView> {
                                             .scaffoldBackgroundColor,
                                         fontFamily: 'Theme Bold'),
                                   ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  _isVerified
+                                      ? Icon(
+                                          Icons.verified,
+                                          size: 16,
+                                          color: Colors.blue,
+                                        )
+                                      : SizedBox(),
                                 ],
                               ),
                             ),
@@ -226,6 +255,15 @@ class _SettingsViewState extends State<SettingsView> {
                                   style: Theme.of(context).textTheme.headline5,
                                 ),
                               ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              _isVerified
+                                  ? Icon(
+                                      Icons.verified,
+                                      color: Colors.blue,
+                                    )
+                                  : SizedBox(),
                             ],
                           ),
                         ),

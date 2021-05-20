@@ -36,6 +36,8 @@ class _CategoriesViewState extends State<CategoriesView> {
   @override
   Widget build(BuildContext context) {
     return StreamProvider<List<Categories>>.value(
-        value: CategoryService().categories, child: CategoriesList());
+        value: CategoryService().categories,
+        initialData: [],
+        child: CategoriesList());
   }
 }

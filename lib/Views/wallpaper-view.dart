@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -61,20 +60,38 @@ class _WallPaperViewState extends State<WallPaperView> {
   var foregroundColor;
   var linkTarget;
   double elevationValue = 0;
+  bool _isVerified = false;
   bool _permissionStatus;
   double progressValue;
   String progressString = "0%";
+  String creatorCheck = "";
 
   List<String> searchTerms = [];
 
   @override
-  void initState() {
+  initState() {
     print(widget.uid);
     checkPermissionStatus();
     transparent = false;
     findIfFav();
+    // checkVerified();
     super.initState();
   }
+
+  // checkVerified() async {
+  //   DocumentSnapshot snapShot = await FirebaseFirestore.instance
+  //       .collection("VerifiedCreators")
+  //       .doc(widget.photographer.toUpperCase())
+  //       .get();
+  //   if (snapShot.exists) {
+  //     setState(() {
+  //       _isVerified = true;
+  //     });
+  //     print("CREATORVERIFIED");
+  //   } else {
+  //     print("CREATORNOTVERIFIED");
+  //   }
+  // }
 
   checkPermissionStatus() async {
     List<Permissions> permissions =
@@ -414,83 +431,68 @@ class _WallPaperViewState extends State<WallPaperView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Link(
-                            target: LinkTarget.self,
-                            uri: Uri.parse(widget.photographerUrl),
-                            builder: (context, followPhotographer) {
-                              return GestureDetector(
-                                onTap: followPhotographer,
-                                onLongPress: () {
-                                  HapticFeedback.heavyImpact();
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                          action: SnackBarAction(
-                                            textColor: Theme.of(context)
-                                                .colorScheme
-                                                .primary,
-                                            label: "OPEN",
-                                            onPressed: followPhotographer,
-                                          ),
-                                          backgroundColor: Theme.of(context)
-                                              .colorScheme
-                                              .secondary,
-                                          content: Text(
-                                            widget.photographer.toUpperCase(),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .button,
-                                          )));
-                                },
-                                child: Column(
-                                  children: [
-                                    Row(
+                        GestureDetector(
+                          onLongPress: () {
+                            HapticFeedback.heavyImpact();
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.secondary,
+                                content: Text(
+                                  widget.photographer.toUpperCase(),
+                                  style: Theme.of(context).textTheme.button,
+                                )));
+                          },
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    width: 35,
+                                    height: 35,
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary),
+                                    child: Icon(
+                                      Icons.person_pin_outlined,
+                                      size: 20,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Container(
+                                    width: 150,
+                                    child: Row(
                                       children: [
-                                        Container(
-                                          width: 35,
-                                          height: 35,
-                                          decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary),
-                                          child: Icon(
-                                            Icons.person_pin_outlined,
-                                            size: 20,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary,
+                                        Flexible(
+                                          child: Text(
+                                            widget.photographer.toUpperCase(),
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontFamily: 'Theme Bold',
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary),
                                           ),
                                         ),
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        Container(
-                                          width: 150,
-                                          child: Row(
-                                            children: [
-                                              Flexible(
-                                                child: Text(
-                                                  widget.photographer
-                                                      .toUpperCase(),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontFamily: 'Theme Bold',
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .secondary),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
+                                        SizedBox(width: 5),
+                                        _isVerified
+                                            ? Icon(Icons.verified,
+                                                size: 16, color: Colors.blue)
+                                            : SizedBox(),
                                       ],
                                     ),
-                                  ],
-                                ),
-                              );
-                            }),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
                         InkWell(
                           onTap: () {
                             showDialog(

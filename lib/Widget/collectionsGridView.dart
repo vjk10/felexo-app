@@ -32,7 +32,7 @@ class _CollectionsGridState extends State<CollectionsGrid> {
 
   getCollections() async {
     var response = await http.get(
-        Uri.parse("https://api.pexels.com/v1/collections?page=1&per_page=450"),
+        Uri.parse("https://api.pexels.com/v1/collections?page=1&per_page=80"),
         headers: {"Authorization": apiKey});
     Map<String, dynamic> jsonData = jsonDecode(response.body);
     totalResults = jsonData["total_results"];

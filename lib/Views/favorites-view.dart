@@ -34,6 +34,7 @@ class _FavoritesViewState extends State<FavoritesView> {
       height: 800,
       child: StreamProvider<List<Favorites>>.value(
           value: DatabaseService(uid: user.uid).favorites,
+          initialData: [],
           child: FavoritesList()),
     );
   }
