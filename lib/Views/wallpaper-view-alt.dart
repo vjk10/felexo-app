@@ -19,7 +19,7 @@ import 'package:url_launcher/link.dart';
 
 import 'views.dart';
 
-class WallPaperView extends StatefulWidget {
+class WallpaperViewALt extends StatefulWidget {
   final String avgColor,
       searchString,
       imgUrl,
@@ -29,7 +29,7 @@ class WallPaperView extends StatefulWidget {
       originalUrl,
       photographerUrl,
       uid;
-  WallPaperView(
+  WallpaperViewALt(
       {this.avgColor,
       this.searchString,
       @required this.uid,
@@ -40,10 +40,10 @@ class WallPaperView extends StatefulWidget {
       @required this.photographerID,
       @required this.photographerUrl});
   @override
-  _WallPaperViewState createState() => _WallPaperViewState();
+  _WallpaperViewALtState createState() => _WallpaperViewALtState();
 }
 
-class _WallPaperViewState extends State<WallPaperView> {
+class _WallpaperViewALtState extends State<WallpaperViewALt> {
   String home = "Home Screen";
   String lock = "Lock Screen";
   String both = "Both Screen";
