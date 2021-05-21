@@ -94,27 +94,34 @@ class _CollectionsGridState extends State<CollectionsGrid> {
                                                 collection.collectionTitle,
                                           )));
                             },
-                            child: Container(
-                              child: CRPreview(
-                                  collectionsID:
-                                      collection.collectionId.toString()),
-                            )),
+                            child: CRPreview(
+                                collectionsID:
+                                    collection.collectionId.toString())),
                         SizedBox(
                           height: 5,
                         ),
                         Center(
-                          child: Material(
-                            elevation: 10,
-                            shadowColor: Theme.of(context).colorScheme.primary,
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.only(left: 20.0, right: 20),
                             child: Container(
-                                color: Theme.of(context).colorScheme.primary,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(0),
+                                  border: Border.all(
+                                      color: Theme.of(context)
+                                          .accentColor
+                                          .withOpacity(0.5),
+                                      width: 1),
+                                  color: Theme.of(context).cardColor,
+                                ),
                                 width: MediaQuery.of(context).size.width - 10,
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.all(8.0),
+                                      padding: const EdgeInsets.only(
+                                          left: 10.0, top: 10, bottom: 10),
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
@@ -130,7 +137,8 @@ class _CollectionsGridState extends State<CollectionsGrid> {
                                                     .toUpperCase(),
                                                 style: TextStyle(
                                                     color: Theme.of(context)
-                                                        .scaffoldBackgroundColor,
+                                                        .colorScheme
+                                                        .primary,
                                                     fontSize: 24,
                                                     fontFamily: 'Theme Black'),
                                               ),
@@ -144,8 +152,10 @@ class _CollectionsGridState extends State<CollectionsGrid> {
                                                 collection.collectionDescription
                                                     .toUpperCase(),
                                                 style: TextStyle(
+                                                    fontSize: 10,
                                                     color: Theme.of(context)
-                                                        .scaffoldBackgroundColor),
+                                                        .colorScheme
+                                                        .primary),
                                               ),
                                             ],
                                           ),
@@ -153,14 +163,16 @@ class _CollectionsGridState extends State<CollectionsGrid> {
                                       ),
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.all(8.0),
+                                      padding:
+                                          const EdgeInsets.only(right: 10.0),
                                       child: Row(
                                         children: [
                                           Icon(
                                             Icons.photo_library_outlined,
                                             size: 14,
                                             color: Theme.of(context)
-                                                .scaffoldBackgroundColor,
+                                                .colorScheme
+                                                .primary,
                                           ),
                                           SizedBox(
                                             width: 5,
@@ -169,7 +181,8 @@ class _CollectionsGridState extends State<CollectionsGrid> {
                                             collection.photosCount,
                                             style: TextStyle(
                                               color: Theme.of(context)
-                                                  .scaffoldBackgroundColor,
+                                                  .colorScheme
+                                                  .primary,
                                             ),
                                           )
                                         ],

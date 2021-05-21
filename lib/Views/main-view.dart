@@ -138,7 +138,6 @@ class _MainViewState extends State<MainView>
                 (BuildContext context, bool innerBoxIsScrolled) {
               return <Widget>[
                 SliverAppBar(
-                  elevation: 15,
                   backgroundColor: Theme.of(context).colorScheme.secondary,
                   expandedHeight: 200.0,
                   floating: true,
@@ -159,29 +158,20 @@ class _MainViewState extends State<MainView>
                   ),
                   actions: [
                     InkWell(
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => SettingsView()));
-                      },
-                      child: Padding(
-                          padding: const EdgeInsets.only(right: 10.0),
-                          child: CircleAvatar(
-                            radius: 17,
-                            backgroundColor: Colors.redAccent,
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => SettingsView()));
+                        },
+                        child: Padding(
+                            padding: const EdgeInsets.only(right: 10.0),
                             child: CircleAvatar(
-                              radius: 16,
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.primary,
-                              foregroundColor:
-                                  Theme.of(context).colorScheme.primary,
-                              backgroundImage: NetworkImage(
-                                user.photoURL,
+                              radius: 18,
+                              child: CircleAvatar(
+                                radius: 18,
+                                backgroundImage: NetworkImage(user.photoURL),
                               ),
-                            ),
-                          )),
-                    )
+                            )))
                   ],
-                  forceElevated: true,
                   shadowColor: Theme.of(context).colorScheme.secondary,
                   flexibleSpace: FlexibleSpaceBar(
                     stretchModes: [
@@ -197,57 +187,61 @@ class _MainViewState extends State<MainView>
                           Align(
                               alignment: Alignment.topCenter,
                               child: Padding(
-                                padding: const EdgeInsets.only(top: 40.0),
+                                padding: const EdgeInsets.only(
+                                    top: 45.0, bottom: 30),
                                 child: Text(
                                   "A LIBRARY OF AMAZING WALLPAPERS!",
                                   style: TextStyle(fontSize: 12),
                                 ),
                               )),
-                          InkWell(
-                            onTap: () async {
-                              setState(() {
-                                findIfStoreHistory();
-                              });
-                              showSearch(
-                                  context: context,
-                                  delegate: WallpaperSearch(
-                                      defaultSuggestions,
-                                      searchHistory,
-                                      user.uid.toString(),
-                                      storeHistory,
-                                      isDark));
-                            },
-                            child: Center(
-                              child: Material(
-                                  shadowColor:
-                                      Theme.of(context).colorScheme.primary,
-                                  elevation: 10,
-                                  borderRadius: BorderRadius.circular(0),
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    width:
-                                        MediaQuery.of(context).size.width - 20,
-                                    height: 54,
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        SizedBox(
-                                          width: 20,
-                                        ),
-                                        Icon(Icons.search),
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        Text(
-                                          "SEARCH ACROSS THE LIBRARY OF PEXELS",
-                                          style: TextStyle(fontSize: 12),
-                                        )
-                                      ],
-                                    ),
-                                  )),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10.0),
+                            child: InkWell(
+                              onTap: () async {
+                                setState(() {
+                                  findIfStoreHistory();
+                                });
+                                showSearch(
+                                    context: context,
+                                    delegate: WallpaperSearch(
+                                        defaultSuggestions,
+                                        searchHistory,
+                                        user.uid.toString(),
+                                        storeHistory,
+                                        isDark));
+                              },
+                              child: Center(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(0),
+                                    border: Border.all(
+                                        color: Theme.of(context)
+                                            .accentColor
+                                            .withOpacity(0.5)),
+                                  ),
+                                  alignment: Alignment.center,
+                                  width: MediaQuery.of(context).size.width - 20,
+                                  height: 54,
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        width: 20,
+                                      ),
+                                      Icon(Icons.search),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text(
+                                        "SEARCH ACROSS THE LIBRARY OF PEXELS",
+                                        style: TextStyle(fontSize: 12),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         ],

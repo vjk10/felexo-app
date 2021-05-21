@@ -54,13 +54,12 @@ class _HomeViewState extends State<HomeView>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
         body: SingleChildScrollView(
             child: Column(
-          children: [
-            Curated(),
-          ],
-        )));
+      children: [
+        Curated(),
+      ],
+    )));
   }
 
   @override

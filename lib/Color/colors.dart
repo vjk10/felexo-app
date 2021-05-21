@@ -15,11 +15,11 @@ Map<int, Color> color = {
   900: Color.fromRGBO(136, 14, 79, 1),
 };
 
-MaterialColor backgroundColor = MaterialColor(0xFF000000, color);
-MaterialColor backgroundColorLight = MaterialColor(0xFFFFFFFF, color);
+MaterialColor backgroundColor = MaterialColor(0xFF0C0C0C, color);
+MaterialColor backgroundColorLight = MaterialColor(0xFFF7F7F7, color);
 MaterialColor primaryColor = MaterialColor(0xFFFFFFFF, color);
 MaterialColor cardColor = MaterialColor(0xFF000000, color);
-MaterialColor cardColorLight = MaterialColor(0xFFF5F5F5, color);
+MaterialColor cardColorLight = MaterialColor(0xFFFFFFFF, color);
 MaterialColor textColor = MaterialColor(0xFFFFFFFF, color);
 MaterialColor iconColor = MaterialColor(0xff5f6368, color);
 MaterialColor iconColorLight = MaterialColor(0xFF9298A0, color);

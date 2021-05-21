@@ -221,51 +221,58 @@ class _CRGridState extends State<CRGrid> {
                     ? Align(
                         alignment: Alignment.bottomCenter,
                         child: Visibility(
-                            visible: !_buttonVisible,
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.rectangle,
-                                color: Theme.of(context).backgroundColor,
+                          visible: !_buttonVisible,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                height: 10,
                               ),
-                              child: Column(
-                                children: [
-                                  SizedBox(
-                                    width: 550,
-                                    height: 5,
-                                    child: LinearProgressIndicator(
-                                        backgroundColor: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                        valueColor: AlwaysStoppedAnimation(
+                              Container(
+                                width: MediaQuery.of(context).size.width - 20,
+                                height: 60,
+                                child: Shimmer(
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      _buttonVisible = !_buttonVisible;
+                                      setState(() {});
+                                      getMoreWallpapers();
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      elevation: 0,
+                                      primary: Theme.of(context)
+                                          .scaffoldBackgroundColor,
+                                      onPrimary:
                                           Theme.of(context).colorScheme.primary,
-                                        )),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 10.0),
+                                      onSurface:
+                                          Theme.of(context).colorScheme.primary,
+                                      shape: RoundedRectangleBorder(
+                                          side: BorderSide(
+                                              color: Theme.of(context)
+                                                  .accentColor
+                                                  .withOpacity(0.5),
+                                              width: 1),
+                                          borderRadius:
+                                              BorderRadius.circular(00)),
+                                    ),
                                     child: Text(
-                                      loadingText,
-                                      style: Theme.of(context).textTheme.button,
+                                      loadingMessage,
+                                      style: TextStyle(
+                                          fontFamily: 'Theme Bold',
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary),
                                     ),
                                   ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  SizedBox(
-                                    width: 550,
-                                    height: 5,
-                                    child: LinearProgressIndicator(
-                                        backgroundColor: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                        valueColor: AlwaysStoppedAnimation(
-                                          Theme.of(context).colorScheme.primary,
-                                        )),
-                                  ),
-                                ],
+                                ),
                               ),
-                            )),
+                              SizedBox(
+                                height: 10,
+                              ),
+                            ],
+                          ),
+                        ),
                       )
                     : Container(),
                 loading
@@ -273,30 +280,53 @@ class _CRGridState extends State<CRGrid> {
                         alignment: Alignment.bottomCenter,
                         child: Visibility(
                           visible: _buttonVisible,
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: 50,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                _buttonVisible = !_buttonVisible;
-                                setState(() {});
-                                getMoreWallpapers();
-                              },
-                              style: ElevatedButton.styleFrom(
-                                primary: Theme.of(context).colorScheme.primary,
-                                onPrimary: textColor,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(0)),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                height: 10,
                               ),
-                              child: Text(
-                                loadMoreMessage,
-                                style: TextStyle(
-                                    fontFamily: 'Theme Bold',
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary),
+                              Container(
+                                width: MediaQuery.of(context).size.width - 20,
+                                height: 60,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    _buttonVisible = !_buttonVisible;
+                                    setState(() {});
+                                    getMoreWallpapers();
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    elevation: 0,
+                                    primary: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    onPrimary:
+                                        Theme.of(context).colorScheme.primary,
+                                    onSurface:
+                                        Theme.of(context).colorScheme.primary,
+                                    shape: RoundedRectangleBorder(
+                                        side: BorderSide(
+                                            color: Theme.of(context)
+                                                .accentColor
+                                                .withOpacity(0.5),
+                                            width: 1),
+                                        borderRadius:
+                                            BorderRadius.circular(00)),
+                                  ),
+                                  child: Text(
+                                    loadMoreMessage,
+                                    style: TextStyle(
+                                        fontFamily: 'Theme Bold',
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary),
+                                  ),
+                                ),
                               ),
-                            ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                            ],
                           ),
                         ),
                       )

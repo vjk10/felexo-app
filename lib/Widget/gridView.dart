@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:felexo/Color/colors.dart';
 import 'package:felexo/Data/data.dart';
 import 'package:felexo/Services/animation-route.dart';
-import 'package:felexo/Views/wallpaper-view-alt.dart';
+import 'package:felexo/Views/views.dart';
 import 'package:felexo/model/wallpapers-model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -152,66 +152,60 @@ class _CuratedState extends State<Curated> {
                           : Colors.white;
                   setState(() {});
                   return GridTile(
-                    child: Material(
-                      type: MaterialType.card,
-                      shadowColor: Theme.of(context).backgroundColor,
-                      elevation: 0,
-                      borderRadius: BorderRadius.circular(0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            color: Hexcolor(wallpaper.avgColor),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Hexcolor(wallpaper.avgColor),
+                          borderRadius: BorderRadius.circular(0),
+                          shape: BoxShape.rectangle),
+                      child: Stack(children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 0),
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  loadingMessage,
+                                  style: TextStyle(
+                                      color: foregroundColor,
+                                      fontFamily: 'Theme Bold'),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+                        ClipRRect(
                             borderRadius: BorderRadius.circular(0),
-                            shape: BoxShape.rectangle),
-                        child: Stack(children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(bottom: 0),
-                              ),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    loadingMessage,
-                                    style: TextStyle(
-                                        color: foregroundColor,
-                                        fontFamily: 'Theme Bold'),
-                                  )
-                                ],
-                              ),
-                            ],
-                          ),
-                          ClipRRect(
-                              borderRadius: BorderRadius.circular(0),
-                              child: Image.network(
-                                wallpaper.src.portrait,
-                                height: 800,
-                                fit: BoxFit.fill,
-                              )),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  ScaleRoute(context,
-                                      page: WallpaperViewALt(
-                                        avgColor: wallpaper.avgColor.toString(),
-                                        uid: uid,
-                                        photographerUrl:
-                                            wallpaper.photographerUrl,
-                                        imgUrl: wallpaper.src.portrait,
-                                        originalUrl: wallpaper.src.original,
-                                        photoID: wallpaper.photoID.toString(),
-                                        photographer: wallpaper.photographer,
-                                        photographerID:
-                                            wallpaper.photographerId.toString(),
-                                      )));
-                            },
-                          )
-                        ]),
-                      ),
+                            child: Image.network(
+                              wallpaper.src.portrait,
+                              height: 800,
+                              fit: BoxFit.fill,
+                            )),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                ScaleRoute(context,
+                                    page: WallPaperView(
+                                      avgColor: wallpaper.avgColor.toString(),
+                                      uid: uid,
+                                      photographerUrl:
+                                          wallpaper.photographerUrl,
+                                      imgUrl: wallpaper.src.portrait,
+                                      originalUrl: wallpaper.src.original,
+                                      photoID: wallpaper.photoID.toString(),
+                                      photographer: wallpaper.photographer,
+                                      photographerID:
+                                          wallpaper.photographerId.toString(),
+                                    )));
+                          },
+                        )
+                      ]),
                     ),
                   );
                 }).toList(),
@@ -223,51 +217,58 @@ class _CuratedState extends State<Curated> {
                   ? Align(
                       alignment: Alignment.bottomCenter,
                       child: Visibility(
-                          visible: !_buttonVisible,
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.rectangle,
-                              color: Theme.of(context).backgroundColor,
+                        visible: !_buttonVisible,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              height: 10,
                             ),
-                            child: Column(
-                              children: [
-                                SizedBox(
-                                  width: 550,
-                                  height: 5,
-                                  child: LinearProgressIndicator(
-                                      backgroundColor: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
-                                      valueColor: AlwaysStoppedAnimation(
+                            Container(
+                              width: MediaQuery.of(context).size.width - 20,
+                              height: 60,
+                              child: Shimmer(
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    _buttonVisible = !_buttonVisible;
+                                    setState(() {});
+                                    getMoreWallpapers();
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    elevation: 0,
+                                    primary: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    onPrimary:
                                         Theme.of(context).colorScheme.primary,
-                                      )),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 10.0),
+                                    onSurface:
+                                        Theme.of(context).colorScheme.primary,
+                                    shape: RoundedRectangleBorder(
+                                        side: BorderSide(
+                                            color: Theme.of(context)
+                                                .accentColor
+                                                .withOpacity(0.5),
+                                            width: 1),
+                                        borderRadius:
+                                            BorderRadius.circular(00)),
+                                  ),
                                   child: Text(
-                                    loadingText,
-                                    style: Theme.of(context).textTheme.button,
+                                    loadingMessage,
+                                    style: TextStyle(
+                                        fontFamily: 'Theme Bold',
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary),
                                   ),
                                 ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                SizedBox(
-                                  width: 550,
-                                  height: 5,
-                                  child: LinearProgressIndicator(
-                                      backgroundColor: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
-                                      valueColor: AlwaysStoppedAnimation(
-                                        Theme.of(context).colorScheme.primary,
-                                      )),
-                                ),
-                              ],
+                              ),
                             ),
-                          )),
+                            SizedBox(
+                              height: 10,
+                            ),
+                          ],
+                        ),
+                      ),
                     )
                   : Container(),
               loading
@@ -275,29 +276,52 @@ class _CuratedState extends State<Curated> {
                       alignment: Alignment.bottomCenter,
                       child: Visibility(
                         visible: _buttonVisible,
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: 50,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              _buttonVisible = !_buttonVisible;
-                              setState(() {});
-                              getMoreWallpapers();
-                            },
-                            style: ElevatedButton.styleFrom(
-                              primary: Theme.of(context).colorScheme.primary,
-                              onPrimary: textColor,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(0)),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              height: 10,
                             ),
-                            child: Text(
-                              loadMoreMessage,
-                              style: TextStyle(
-                                  fontFamily: 'Theme Bold',
-                                  color:
-                                      Theme.of(context).colorScheme.secondary),
+                            Container(
+                              width: MediaQuery.of(context).size.width - 20,
+                              height: 60,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  _buttonVisible = !_buttonVisible;
+                                  setState(() {});
+                                  getMoreWallpapers();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  elevation: 0,
+                                  primary:
+                                      Theme.of(context).scaffoldBackgroundColor,
+                                  onPrimary:
+                                      Theme.of(context).colorScheme.primary,
+                                  onSurface:
+                                      Theme.of(context).colorScheme.primary,
+                                  shape: RoundedRectangleBorder(
+                                      side: BorderSide(
+                                          color: Theme.of(context)
+                                              .accentColor
+                                              .withOpacity(0.5),
+                                          width: 1),
+                                      borderRadius: BorderRadius.circular(00)),
+                                ),
+                                child: Text(
+                                  loadMoreMessage,
+                                  style: TextStyle(
+                                      fontFamily: 'Theme Bold',
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary),
+                                ),
+                              ),
                             ),
-                          ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                          ],
                         ),
                       ),
                     )

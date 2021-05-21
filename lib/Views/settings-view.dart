@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,6 +12,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:random_string/random_string.dart';
 
 class SettingsView extends StatefulWidget {
@@ -172,6 +175,7 @@ class _SettingsViewState extends State<SettingsView> {
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
+        toolbarHeight: 80,
         leading: IconButton(
             onPressed: () {
               Navigator.pop(context);
@@ -191,15 +195,20 @@ class _SettingsViewState extends State<SettingsView> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 10, 4),
-                  child: Material(
-                    elevation: 5,
-                    shadowColor: Theme.of(context).colorScheme.primary,
-                    type: MaterialType.circle,
-                    color: Theme.of(context).colorScheme.secondary,
-                    child: CircleAvatar(
-                      radius: 45,
-                      backgroundImage: NetworkImage(user.photoURL),
+                  padding: const EdgeInsets.fromLTRB(20, 20, 10, 4),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                            color: Theme.of(context)
+                                .accentColor
+                                .withOpacity(0.5))),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CircleAvatar(
+                        radius: 45,
+                        backgroundImage: NetworkImage(user.photoURL),
+                      ),
                     ),
                   ),
                 ),
@@ -293,47 +302,9 @@ class _SettingsViewState extends State<SettingsView> {
                 SizedBox(
                   height: 10,
                 ),
-                Divider(),
-                // ListTile(
-                //   minVerticalPadding: 10,
-                //   horizontalTitleGap: 20,
-                //   title: Text(
-                //     "Clear Cache",
-                //   ),
-                //   leading: Icon(
-                //     Icons.delete,
-                //     color: Theme.of(context).colorScheme.primary,
-                //   ),
-                //   onTap: () async {
-                //     HapticFeedback.mediumImpact();
-                //     var appDir = (await getTemporaryDirectory()).path +
-                //         '/com.vlabs.felexo';
-                //     new Directory(appDir).delete(recursive: true)
-                //       ..whenComplete(() =>
-                //           // ignore: deprecated_member_use
-                //           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                //             content: Row(
-                //               children: [
-                //                 Icon(
-                //                   Icons.check,
-                //                   color: Theme.of(context).colorScheme.secondary,
-                //                 ),
-                //                 SizedBox(
-                //                   width: 10,
-                //                 ),
-                //                 Text(
-                //                   "Cache Deleted!",
-                //                 ),
-                //               ],
-                //             ),
-                //             backgroundColor:
-                //                 Theme.of(context).colorScheme.primary,
-                //           )));
-                //     print(appDir);
-                //     print("Clicked");
-                //   },
-                // ),
-                // Divider(),
+                Divider(
+                  color: Theme.of(context).accentColor,
+                ),
                 ListTile(
                   minVerticalPadding: 10,
                   horizontalTitleGap: 20,
@@ -402,7 +373,9 @@ class _SettingsViewState extends State<SettingsView> {
                     // print("Clicked");
                   },
                 ),
-                Divider(),
+                Divider(
+                  color: Theme.of(context).accentColor,
+                ),
                 ListTile(
                   minVerticalPadding: 10,
                   horizontalTitleGap: 20,
@@ -433,7 +406,88 @@ class _SettingsViewState extends State<SettingsView> {
                     HapticFeedback.mediumImpact();
                   },
                 ),
-                Divider(),
+                Divider(
+                  color: Theme.of(context).accentColor,
+                ),
+                ListTile(
+                  minVerticalPadding: 10,
+                  horizontalTitleGap: 20,
+                  title: Text(
+                    "CLEAR CACHE",
+                    style: Theme.of(context).textTheme.button,
+                  ),
+                  leading: Icon(
+                    Icons.delete_outline,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  onTap: () async {
+                    HapticFeedback.mediumImpact();
+                    _deleteCacheDir().whenComplete(() {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Row(
+                          children: [
+                            Icon(
+                              Icons.check,
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              "Cache Deleted!",
+                            ),
+                          ],
+                        ),
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                      ));
+                    });
+                    // await DefaultCacheManager().emptyCache().whenComplete(() =>
+                    //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    //       content: Row(
+                    //         children: [
+                    //           Icon(
+                    //             Icons.check,
+                    //             color: Theme.of(context).colorScheme.secondary,
+                    //           ),
+                    //           SizedBox(
+                    //             width: 10,
+                    //           ),
+                    //           Text(
+                    //             "Cache Deleted!",
+                    //           ),
+                    //         ],
+                    //       ),
+                    //       backgroundColor:
+                    //           Theme.of(context).colorScheme.primary,
+                    //     )));
+                    // var appDir = (await getTemporaryDirectory()).path;
+                    // new Directory(appDir).delete(recursive: true)
+                    //   ..whenComplete(() =>
+                    //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    //         content: Row(
+                    //           children: [
+                    //             Icon(
+                    //               Icons.check,
+                    //               color:
+                    //                   Theme.of(context).colorScheme.secondary,
+                    //             ),
+                    //             SizedBox(
+                    //               width: 10,
+                    //             ),
+                    //             Text(
+                    //               "Cache Deleted!",
+                    //             ),
+                    //           ],
+                    //         ),
+                    //         backgroundColor:
+                    //             Theme.of(context).colorScheme.primary,
+                    //       )));
+                    // print(appDir);
+                  },
+                ),
+                Divider(
+                  color: Theme.of(context).accentColor,
+                ),
                 ListTile(
                   minVerticalPadding: 10,
                   horizontalTitleGap: 20,
@@ -450,7 +504,9 @@ class _SettingsViewState extends State<SettingsView> {
                     feedbackForm();
                   },
                 ),
-                Divider(),
+                Divider(
+                  color: Theme.of(context).accentColor,
+                ),
                 ListTile(
                   minVerticalPadding: 10,
                   horizontalTitleGap: 20,
@@ -469,7 +525,9 @@ class _SettingsViewState extends State<SettingsView> {
                     style: TextStyle(fontSize: 10),
                   ),
                 ),
-                Divider(),
+                Divider(
+                  color: Theme.of(context).accentColor,
+                ),
                 ListTile(
                   minVerticalPadding: 10,
                   horizontalTitleGap: 20,
@@ -484,7 +542,9 @@ class _SettingsViewState extends State<SettingsView> {
                     style: TextStyle(fontSize: 10),
                   ),
                 ),
-                Divider(),
+                Divider(
+                  color: Theme.of(context).accentColor,
+                ),
                 ListTile(
                   minVerticalPadding: 10,
                   horizontalTitleGap: 20,
@@ -551,26 +611,36 @@ class _SettingsViewState extends State<SettingsView> {
                                 )));
                   },
                 ),
-                Divider(),
+                Divider(
+                  color: Theme.of(context).accentColor,
+                ),
                 SizedBox(
                   height: 10,
                 ),
                 Align(
                   alignment: Alignment.bottomCenter,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width - 20,
-                    height: 60,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        signOutGoogle(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                          elevation: 10,
-                          shadowColor: Theme.of(context).colorScheme.primary,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.zero)),
-                      child: Text(
-                        "LOGOUT",
+                  child: Center(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width - 30,
+                      height: 60,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          signOutGoogle(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                            elevation: 0,
+                            primary: Theme.of(context).scaffoldBackgroundColor,
+                            onPrimary: Theme.of(context).colorScheme.primary,
+                            shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                    color: Theme.of(context)
+                                        .accentColor
+                                        .withOpacity(0.5),
+                                    width: 1),
+                                borderRadius: BorderRadius.circular(0))),
+                        child: Text(
+                          "LOGOUT",
+                        ),
                       ),
                     ),
                   ),
@@ -764,6 +834,14 @@ class _SettingsViewState extends State<SettingsView> {
                 color: Colors.transparent,
               ),
             ));
+  }
+
+  Future<void> _deleteCacheDir() async {
+    Directory tempDir = await getTemporaryDirectory();
+
+    if (tempDir.existsSync()) {
+      tempDir.deleteSync(recursive: true);
+    }
   }
 
   // void onThemeChanged(String val, ThemeModeNotifier themeModeNotifier) async {

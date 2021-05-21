@@ -2,7 +2,6 @@ import 'package:felexo/Color/colors.dart';
 import 'package:flutter/material.dart';
 
 final ThemeData darkTheme = ThemeData(
-  shadowColor: backgroundColorLight,
   canvasColor: Colors.black,
   cardColor: Colors.black,
   dialogBackgroundColor: Colors.black,
@@ -56,7 +55,6 @@ final ThemeData darkTheme = ThemeData(
 );
 
 final ThemeData lightTheme = ThemeData(
-  shadowColor: backgroundColor,
   canvasColor: Colors.white,
   cardColor: Colors.white,
   dialogBackgroundColor: Colors.white,

@@ -65,33 +65,40 @@ class _CRPreviewState extends State<CRPreview> {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Image.network(
-          p1 ?? loadingAnimation,
-          width: MediaQuery.of(context).size.width / 1.7639,
-          height: 250,
-          fit: BoxFit.cover,
-          errorBuilder:
-              (BuildContext context, Object exception, StackTrace trace) {
-            return Container(
-              color: Theme.of(context).colorScheme.primary,
-            );
-          },
+        ClipRRect(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(0), bottomLeft: Radius.circular(0)),
+          child: Image.network(
+            p1 ?? loadingAnimation,
+            width: MediaQuery.of(context).size.width / 2,
+            height: 250,
+            fit: BoxFit.cover,
+            errorBuilder:
+                (BuildContext context, Object exception, StackTrace trace) {
+              return Container(
+                color: Theme.of(context).colorScheme.primary,
+              );
+            },
+          ),
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.network(
-              p2 ?? loadingAnimation,
-              width: MediaQuery.of(context).size.width / 2.47,
-              height: 160,
-              errorBuilder:
-                  (BuildContext context, Object exception, StackTrace trace) {
-                return Container(
-                  color: Theme.of(context).colorScheme.primary,
-                );
-              },
-              fit: BoxFit.cover,
+            ClipRRect(
+              borderRadius: BorderRadius.only(topRight: Radius.circular(0)),
+              child: Image.network(
+                p2 ?? loadingAnimation,
+                width: MediaQuery.of(context).size.width / 2.47,
+                height: 160,
+                errorBuilder:
+                    (BuildContext context, Object exception, StackTrace trace) {
+                  return Container(
+                    color: Theme.of(context).colorScheme.primary,
+                  );
+                },
+                fit: BoxFit.cover,
+              ),
             ),
             _p3avail
                 ? Stack(
@@ -99,22 +106,29 @@ class _CRPreviewState extends State<CRPreview> {
                       Container(
                         width: MediaQuery.of(context).size.width / 2.47,
                         height: 90,
-                        child: Image.network(
-                          p3 ?? loadingAnimation,
-                          fit: BoxFit.cover,
-                          errorBuilder: (BuildContext context, Object exception,
-                              StackTrace trace) {
-                            return Container(
-                              color: Theme.of(context).colorScheme.primary,
-                            );
-                          },
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.only(
+                              bottomRight: Radius.circular(0)),
+                          child: Image.network(
+                            p3 ?? loadingAnimation,
+                            fit: BoxFit.cover,
+                            errorBuilder: (BuildContext context,
+                                Object exception, StackTrace trace) {
+                              return Container(
+                                color: Theme.of(context).colorScheme.primary,
+                              );
+                            },
+                          ),
                         ),
                       ),
                       Container(
                           width: MediaQuery.of(context).size.width / 2.47,
                           height: 90,
-                          color: foregroundColor.withOpacity(0.3) ??
-                              Theme.of(context).scaffoldBackgroundColor,
+                          decoration: BoxDecoration(
+                              color: foregroundColor.withOpacity(0.3) ??
+                                  Theme.of(context).scaffoldBackgroundColor,
+                              borderRadius: BorderRadius.only(
+                                  bottomRight: Radius.circular(0))),
                           child: Center(
                             child: Text(
                               "VIEW MORE",

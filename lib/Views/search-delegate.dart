@@ -62,17 +62,19 @@ class WallpaperSearch extends SearchDelegate<String> {
         ),
         inputDecorationTheme: InputDecorationTheme(
             contentPadding:
-                const EdgeInsets.only(left: 15, right: 5, top: 10, bottom: 15),
+                const EdgeInsets.only(left: 5, right: 5, top: 10, bottom: 15),
             isDense: true,
             floatingLabelBehavior: FloatingLabelBehavior.never,
-            fillColor: Theme.of(context).accentColor.withAlpha(80),
+            fillColor: Theme.of(context).scaffoldBackgroundColor,
             filled: true,
             focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(0),
-                borderSide: BorderSide.none),
+                borderSide: BorderSide(
+                    color: Theme.of(context).accentColor.withOpacity(0.5))),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(0),
-                borderSide: BorderSide.none),
+                borderSide: BorderSide(
+                    color: Theme.of(context).accentColor.withOpacity(0.5))),
             hintStyle: TextStyle(
                 fontSize: 12,
                 color: Theme.of(context).accentColor,
@@ -92,7 +94,10 @@ class WallpaperSearch extends SearchDelegate<String> {
               width: 35,
               height: 35,
               decoration: BoxDecoration(
-                  color: Theme.of(context).accentColor.withOpacity(0.5),
+                  border: Border.all(
+                      color: Theme.of(context).accentColor.withOpacity(0.5),
+                      width: 1),
+                  color: Theme.of(context).scaffoldBackgroundColor,
                   shape: BoxShape.circle),
               child: Center(
                 child: InkWell(
@@ -203,13 +208,9 @@ class WallpaperSearch extends SearchDelegate<String> {
     return ListView.builder(
       itemCount: suggestionList.length,
       itemBuilder: (context, index) => ListTile(
-        // onTap: () {
-        //   query = suggestionList[index].toString();
-        //   showResults(context);
-        // },
         leading: Icon(
           icon,
-          color: Theme.of(context).colorScheme.primary,
+          color: Theme.of(context).accentColor,
         ),
         title: InkWell(
           onTap: () {
@@ -220,13 +221,14 @@ class WallpaperSearch extends SearchDelegate<String> {
             text: TextSpan(
                 text: suggestionList[index].substring(0, query.length),
                 style: TextStyle(
-                    fontFamily: 'Theme Regular', color: Colors.redAccent),
+                    fontFamily: 'Theme Regular',
+                    color: Theme.of(context).colorScheme.primary),
                 children: [
                   TextSpan(
                       text: suggestionList[index].substring(query.length),
                       style: TextStyle(
                           fontFamily: 'Theme Regular',
-                          color: Theme.of(context).colorScheme.primary)),
+                          color: Theme.of(context).accentColor)),
                 ]),
           ),
         ),
@@ -237,7 +239,7 @@ class WallpaperSearch extends SearchDelegate<String> {
           child: Icon(
             Icons.north_west_outlined,
             size: 16,
-            color: Colors.grey,
+            color: Theme.of(context).accentColor,
           ),
         ),
       ),

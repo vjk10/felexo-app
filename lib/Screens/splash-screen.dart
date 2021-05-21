@@ -12,6 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:permission/permission.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -109,206 +110,186 @@ class _SplashScreenState extends State<SplashScreen>
     }
     print(_systemTheme);
     return Scaffold(
+        backgroundColor: Theme.of(context).cardColor,
         body: SafeArea(
-      child: Stack(children: [
-        Align(
-            alignment: Alignment.center,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Material(
-                  elevation: 10,
-                  shadowColor: Theme.of(context).colorScheme.primary,
-                  child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 150,
-                      decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("FELEXO",
-                              style: TextStyle(
-                                  fontFamily: 'Theme Black',
-                                  color:
-                                      Theme.of(context).colorScheme.secondary,
-                                  fontSize: 80)),
-                        ],
-                      )),
-                ),
-                SizedBox(
-                  height: 50,
-                ),
-                Row(
+          child: Stack(children: [
+            Align(
+                alignment: Alignment.center,
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Visibility(
-                      visible: visibility,
-                      child: Container(
-                        width: 230,
-                        height: 60,
-                        child: ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                              onPrimary:
-                                  Theme.of(context).colorScheme.background,
-                              elevation: elevationValue,
-                              padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.zero),
-                              shadowColor: Theme.of(context)
-                                  .colorScheme
-                                  .primary
-                                  .withOpacity(1),
-                              onSurface:
-                                  Theme.of(context).colorScheme.secondary),
-                          icon: CachedNetworkImage(
-                            placeholder: (context, googleIcon) {
-                              return Container(
-                                width: 24,
+                    Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 150,
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primary),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("FELEXO",
+                                style: TextStyle(
+                                    fontFamily: 'Theme Black',
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                    fontSize: 80)),
+                          ],
+                        )),
+                    SizedBox(
+                      height: 50,
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Visibility(
+                          visible: visibility,
+                          child: Container(
+                            width: 230,
+                            height: 60,
+                            child: ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(
+                                  onPrimary:
+                                      Theme.of(context).colorScheme.background,
+                                  elevation: 0,
+                                  padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.zero),
+                                  shadowColor: Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withOpacity(1),
+                                  onSurface:
+                                      Theme.of(context).colorScheme.secondary),
+                              icon: CachedNetworkImage(
+                                placeholder: (context, googleIcon) {
+                                  return Container(
+                                    width: 24,
+                                    height: 24,
+                                  );
+                                },
+                                imageUrl: googleIcon.toString(),
                                 height: 24,
-                              );
-                            },
-                            imageUrl: googleIcon.toString(),
-                            height: 24,
-                            fadeInCurve: Curves.easeIn,
-                            fadeInDuration: const Duration(milliseconds: 500),
-                          ),
-                          label: Row(children: [
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Text("SIGN IN WITH GOOGLE")
-                          ]),
-                          onPressed: () {
-                            showDialog(
-                                useSafeArea: true,
-                                context: context,
-                                builder: (context) => AlertDialog(
-                                      backgroundColor: Colors.transparent,
-                                      content: Container(
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        height: 70,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.rectangle,
-                                          color:
-                                              Theme.of(context).backgroundColor,
-                                        ),
-                                        child: Column(
-                                          children: [
-                                            SizedBox(
-                                              width: 550,
-                                              height: 5,
-                                              child: LinearProgressIndicator(
-                                                  backgroundColor:
-                                                      Theme.of(context)
-                                                          .colorScheme
-                                                          .secondary,
-                                                  valueColor:
-                                                      AlwaysStoppedAnimation(
-                                                    Theme.of(context)
-                                                        .colorScheme
-                                                        .primary,
-                                                  )),
+                                fadeInCurve: Curves.easeIn,
+                                fadeInDuration:
+                                    const Duration(milliseconds: 500),
+                              ),
+                              label: Row(children: [
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text("SIGN IN WITH GOOGLE")
+                              ]),
+                              onPressed: () {
+                                showDialog(
+                                    useSafeArea: true,
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                          backgroundColor: Colors.transparent,
+                                          content: Container(
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            height: 70,
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Theme.of(context)
+                                                      .accentColor
+                                                      .withOpacity(0.5)),
+                                              shape: BoxShape.rectangle,
+                                              color: Theme.of(context)
+                                                  .backgroundColor,
                                             ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 20.0),
-                                              child: Text(
-                                                "VERIFYING CREDENTIALS",
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .button,
+                                            child: Shimmer(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            top: 20.0),
+                                                    child: Text(
+                                                      "VERIFYING CREDENTIALS",
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .button,
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 23,
+                                                  ),
+                                                ],
                                               ),
                                             ),
-                                            SizedBox(
-                                              height: 23,
-                                            ),
-                                            SizedBox(
-                                              width: 550,
-                                              height: 5,
-                                              child: LinearProgressIndicator(
-                                                  backgroundColor:
-                                                      Theme.of(context)
-                                                          .colorScheme
-                                                          .secondary,
-                                                  valueColor:
-                                                      AlwaysStoppedAnimation(
-                                                    Theme.of(context)
-                                                        .colorScheme
-                                                        .primary,
-                                                  )),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ));
-                            signInWithGoogle(context);
-                          },
+                                          ),
+                                        ));
+                                signInWithGoogle(context);
+                              },
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    // Row(
+                    //   crossAxisAlignment: CrossAxisAlignment.center,
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   children: [
+                    //     Visibility(
+                    //       visible: visibility,
+                    //       child: Container(
+                    //         width: 230,
+                    //         height: 60,
+                    //         child: ElevatedButton.icon(
+                    //           style: ElevatedButton.styleFrom(
+                    //             primary: Theme.of(context).colorScheme.secondary,
+                    //             onSurface: Theme.of(context).colorScheme.primary,
+                    //             elevation: 15,
+                    //             padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
+                    //             shape: RoundedRectangleBorder(
+                    //                 borderRadius: BorderRadius.zero),
+                    //             shadowColor: Theme.of(context)
+                    //                 .colorScheme
+                    //                 .primary
+                    //                 .withOpacity(1),
+                    //           ),
+                    //           icon: Text(
+                    //             "F",
+                    //             style: TextStyle(
+                    //                 fontSize: 24,
+                    //                 fontFamily: 'Theme Black',
+                    //                 color: Theme.of(context).colorScheme.primary),
+                    //           ),
+                    //           label: Row(
+                    //             children: [
+                    //               SizedBox(
+                    //                 width: 10,
+                    //               ),
+                    //               Text(
+                    //                 "SIGN IN WITH FELEXO",
+                    //                 style: TextStyle(
+                    //                     fontFamily: 'Theme Bold',
+                    //                     color:
+                    //                         Theme.of(context).colorScheme.primary),
+                    //               ),
+                    //             ],
+                    //           ),
+                    //           onPressed: () {},
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
                   ],
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                // Row(
-                //   crossAxisAlignment: CrossAxisAlignment.center,
-                //   mainAxisAlignment: MainAxisAlignment.center,
-                //   children: [
-                //     Visibility(
-                //       visible: visibility,
-                //       child: Container(
-                //         width: 230,
-                //         height: 60,
-                //         child: ElevatedButton.icon(
-                //           style: ElevatedButton.styleFrom(
-                //             primary: Theme.of(context).colorScheme.secondary,
-                //             onSurface: Theme.of(context).colorScheme.primary,
-                //             elevation: 15,
-                //             padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
-                //             shape: RoundedRectangleBorder(
-                //                 borderRadius: BorderRadius.zero),
-                //             shadowColor: Theme.of(context)
-                //                 .colorScheme
-                //                 .primary
-                //                 .withOpacity(1),
-                //           ),
-                //           icon: Text(
-                //             "F",
-                //             style: TextStyle(
-                //                 fontSize: 24,
-                //                 fontFamily: 'Theme Black',
-                //                 color: Theme.of(context).colorScheme.primary),
-                //           ),
-                //           label: Row(
-                //             children: [
-                //               SizedBox(
-                //                 width: 10,
-                //               ),
-                //               Text(
-                //                 "SIGN IN WITH FELEXO",
-                //                 style: TextStyle(
-                //                     fontFamily: 'Theme Bold',
-                //                     color:
-                //                         Theme.of(context).colorScheme.primary),
-                //               ),
-                //             ],
-                //           ),
-                //           onPressed: () {},
-                //         ),
-                //       ),
-                //     ),
-                //   ],
-                // ),
-              ],
-            )),
-      ]),
-    ));
+                )),
+          ]),
+        ));
   }
 
   void onThemeChanged(String val, ThemeModeNotifier themeModeNotifier) async {

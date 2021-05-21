@@ -88,11 +88,11 @@ Future<String> signInWithGoogle(BuildContext context) async {
                     borderRadius: BorderRadius.circular(8),
                     side: BorderSide(color: Colors.black, width: 8)),
                 title: Text(
-                  "Error",
+                  "ERROR",
                   style: TextStyle(fontFamily: 'Theme Bold', color: textColor),
                 ),
                 content: Text(
-                  "Something is wrong! Please Try Again...",
+                  "SOMETHING IS WRONG PLEASE TRY AGAIN",
                   style: TextStyle(fontFamily: 'Theme Bold', color: textColor),
                 ),
                 actions: [
