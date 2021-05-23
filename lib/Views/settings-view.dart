@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expandable_bottom_sheet/expandable_bottom_sheet.dart';
@@ -14,6 +13,7 @@ import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:random_string/random_string.dart';
+import 'package:filesize/filesize.dart';
 
 class SettingsView extends StatefulWidget {
   @override
@@ -37,6 +37,12 @@ class _SettingsViewState extends State<SettingsView> {
   TextEditingController feedback = new TextEditingController();
   var logoPlayStore;
   bool _isVerified = false;
+  String cacheMemorySize = "0";
+  String appMemorySize = "0";
+  bool appMemoryFound = false;
+  bool cacheFound = false;
+  Directory tempDir;
+  Directory appDir;
 
   PackageInfo _packageInfo = PackageInfo(
     appName: 'Unknown',
@@ -69,10 +75,23 @@ class _SettingsViewState extends State<SettingsView> {
         historyAvail = false;
       });
     }
+    getCacheMemory();
+    getAppMemory();
     getLogo();
     initUser();
     findIfStoreHistory();
     super.initState();
+  }
+
+  getCacheMemory() async {
+    Directory _tempDir = await getTemporaryDirectory();
+    cacheDirStatSync(_tempDir.path);
+  }
+
+  getAppMemory() async {
+    Directory _appDir = Directory("storage/emulated/0/Pictures/FELEXO");
+    print("APP DIRECTORY" + _appDir.path);
+    appDirStatSync(_appDir.path);
   }
 
   getLogo() async {
@@ -149,6 +168,92 @@ class _SettingsViewState extends State<SettingsView> {
         .update({'storeHistory': _storeHistory});
   }
 
+  Future<void> _deleteCacheDir() async {
+    Directory _tempDir = await getTemporaryDirectory();
+    setState(() {
+      tempDir = _tempDir;
+    });
+    cacheDirStatSync(_tempDir.path);
+
+    if (_tempDir.existsSync()) {
+      _tempDir.deleteSync(recursive: true);
+    }
+  }
+
+  Future<void> _deleteAppDir() async {
+    final _appDir = Directory("storage/emulated/0/Pictures/FELEXO");
+    setState(() {
+      appDir = _appDir;
+    });
+    print("APP DIRECTORY" + appDir.path);
+    appDirStatSync(_appDir.path);
+    if (_appDir.existsSync()) {
+      _appDir.deleteSync(recursive: true);
+    }
+  }
+
+  Map<String, int> cacheDirStatSync(String dirPath) {
+    int fileNum = 0;
+    int totalSize = 0;
+    var dir = Directory(dirPath);
+    try {
+      if (dir.existsSync()) {
+        dir
+            .listSync(recursive: true, followLinks: false)
+            .forEach((FileSystemEntity entity) {
+          if (entity is File) {
+            fileNum++;
+            totalSize += entity.lengthSync();
+          }
+        });
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+    // print("SIZE " + filesize(totalSize).toString());
+    setState(() {
+      cacheMemorySize = filesize(totalSize);
+      if (totalSize > 0) {
+        cacheFound = true;
+      }
+      if (totalSize <= 0) {
+        cacheFound = false;
+      }
+    });
+    return {'fileNum': fileNum, 'size': totalSize};
+  }
+
+  Map<String, int> appDirStatSync(String dirPath) {
+    int fileNum = 0;
+    int totalSize = 0;
+    var dir = Directory(dirPath);
+    try {
+      if (dir.existsSync()) {
+        dir
+            .listSync(recursive: true, followLinks: false)
+            .forEach((FileSystemEntity entity) {
+          if (entity is File) {
+            fileNum++;
+            totalSize += entity.lengthSync();
+          }
+        });
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+    // print("SIZE " + filesize(totalSize).toString());
+    setState(() {
+      appMemorySize = filesize(totalSize);
+      if (totalSize > 0) {
+        appMemoryFound = true;
+      }
+      if (totalSize <= 0) {
+        appMemoryFound = false;
+      }
+    });
+    return {'fileNum': fileNum, 'size': totalSize};
+  }
+
   @override
   void didChangeDependencies() {
     if (MediaQuery.of(context).platformBrightness == Brightness.dark) {
@@ -200,9 +305,7 @@ class _SettingsViewState extends State<SettingsView> {
                     decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
-                            color: Theme.of(context)
-                                .accentColor
-                                .withOpacity(0.5))),
+                            color: Theme.of(context).accentColor, width: 2)),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: CircleAvatar(
@@ -300,10 +403,11 @@ class _SettingsViewState extends State<SettingsView> {
                   ),
                 ),
                 SizedBox(
-                  height: 10,
+                  height: 30,
                 ),
-                Divider(
-                  color: Theme.of(context).accentColor,
+                Padding(
+                  padding: const EdgeInsets.only(left: 20),
+                  child: Text("SEARCH"),
                 ),
                 ListTile(
                   minVerticalPadding: 10,
@@ -373,9 +477,6 @@ class _SettingsViewState extends State<SettingsView> {
                     // print("Clicked");
                   },
                 ),
-                Divider(
-                  color: Theme.of(context).accentColor,
-                ),
                 ListTile(
                   minVerticalPadding: 10,
                   horizontalTitleGap: 20,
@@ -406,8 +507,12 @@ class _SettingsViewState extends State<SettingsView> {
                     HapticFeedback.mediumImpact();
                   },
                 ),
-                Divider(
-                  color: Theme.of(context).accentColor,
+                SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20),
+                  child: Text("DEVICE"),
                 ),
                 ListTile(
                   minVerticalPadding: 10,
@@ -416,77 +521,200 @@ class _SettingsViewState extends State<SettingsView> {
                     "CLEAR CACHE",
                     style: Theme.of(context).textTheme.button,
                   ),
+                  subtitle: Text(
+                    "CLEAR APP CACHE",
+                    style: TextStyle(fontSize: 10),
+                  ),
                   leading: Icon(
-                    Icons.delete_outline,
-                    color: Theme.of(context).colorScheme.primary,
+                    cacheFound ? Icons.delete : Icons.delete_outlined,
+                    color: cacheFound
+                        ? Colors.redAccent
+                        : Theme.of(context).colorScheme.primary,
+                  ),
+                  trailing: Text(
+                    cacheMemorySize,
+                    style: TextStyle(
+                        fontFamily: 'Theme Regular',
+                        fontSize: 10,
+                        color: cacheFound
+                            ? Colors.redAccent
+                            : Theme.of(context).colorScheme.primary),
                   ),
                   onTap: () async {
                     HapticFeedback.mediumImpact();
-                    _deleteCacheDir().whenComplete(() {
+                    if (cacheFound) {
+                      _deleteCacheDir().whenComplete(() {
+                        cacheDirStatSync(tempDir.path);
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Row(
+                            children: [
+                              Icon(
+                                Icons.check,
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                "CACHE DELETED!",
+                              ),
+                            ],
+                          ),
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                        ));
+                      });
+                    }
+                    if (!cacheFound) {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Row(
                           children: [
                             Icon(
-                              Icons.check,
+                              Icons.error_outline_outlined,
                               color: Theme.of(context).colorScheme.secondary,
                             ),
                             SizedBox(
                               width: 10,
                             ),
                             Text(
-                              "Cache Deleted!",
+                              "NO CACHE TO DELETE!",
                             ),
                           ],
                         ),
                         backgroundColor: Theme.of(context).colorScheme.primary,
                       ));
-                    });
-                    // await DefaultCacheManager().emptyCache().whenComplete(() =>
-                    //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    //       content: Row(
-                    //         children: [
-                    //           Icon(
-                    //             Icons.check,
-                    //             color: Theme.of(context).colorScheme.secondary,
-                    //           ),
-                    //           SizedBox(
-                    //             width: 10,
-                    //           ),
-                    //           Text(
-                    //             "Cache Deleted!",
-                    //           ),
-                    //         ],
-                    //       ),
-                    //       backgroundColor:
-                    //           Theme.of(context).colorScheme.primary,
-                    //     )));
-                    // var appDir = (await getTemporaryDirectory()).path;
-                    // new Directory(appDir).delete(recursive: true)
-                    //   ..whenComplete(() =>
-                    //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    //         content: Row(
-                    //           children: [
-                    //             Icon(
-                    //               Icons.check,
-                    //               color:
-                    //                   Theme.of(context).colorScheme.secondary,
-                    //             ),
-                    //             SizedBox(
-                    //               width: 10,
-                    //             ),
-                    //             Text(
-                    //               "Cache Deleted!",
-                    //             ),
-                    //           ],
-                    //         ),
-                    //         backgroundColor:
-                    //             Theme.of(context).colorScheme.primary,
-                    //       )));
-                    // print(appDir);
+                    }
                   },
                 ),
-                Divider(
-                  color: Theme.of(context).accentColor,
+                ListTile(
+                  minVerticalPadding: 10,
+                  horizontalTitleGap: 20,
+                  title: Text(
+                    "DELETE SAVED WALLPAPERS",
+                    style: Theme.of(context).textTheme.button,
+                  ),
+                  subtitle: Text(
+                    "ALL SAVED WALLPAPERS WILL BE DELETED",
+                    style: TextStyle(fontSize: 10),
+                  ),
+                  leading: Icon(
+                    appMemoryFound
+                        ? Icons.delete_forever
+                        : Icons.delete_forever_outlined,
+                    color: appMemoryFound
+                        ? Colors.redAccent
+                        : Theme.of(context).colorScheme.primary,
+                  ),
+                  trailing: Text(
+                    appMemorySize,
+                    style: TextStyle(
+                        fontFamily: 'Theme Regular',
+                        fontSize: 10,
+                        color: appMemoryFound
+                            ? Colors.redAccent
+                            : Theme.of(context).colorScheme.primary),
+                  ),
+                  onTap: () async {
+                    HapticFeedback.mediumImpact();
+                    if (appMemoryFound) {
+                      showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                        width: 1,
+                                        color: Theme.of(context)
+                                            .accentColor
+                                            .withOpacity(0.5)),
+                                    borderRadius: BorderRadius.circular(0)),
+                                title: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "DELETE WALLPAPERS",
+                                      style:
+                                          Theme.of(context).textTheme.bodyText1,
+                                    )
+                                  ],
+                                ),
+                                content: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "THIS WILL PERMENANTLY DELETE \nTHE DOWNLOADED FILES!",
+                                      style:
+                                          Theme.of(context).textTheme.bodyText1,
+                                    )
+                                  ],
+                                ),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text("DON'T DELETE")),
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        _deleteAppDir().whenComplete(() {
+                                          appDirStatSync(appDir.path);
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                            content: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.check,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondary,
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Text(
+                                                  "SAVED WALLPAPERS ARE DELETED!",
+                                                ),
+                                              ],
+                                            ),
+                                            backgroundColor: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                          ));
+                                        });
+                                      },
+                                      child: Text("DELETE")),
+                                ],
+                              ));
+                    }
+                    if (!appMemoryFound) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Row(
+                          children: [
+                            Icon(
+                              Icons.error_outline_outlined,
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              "NO WALLPAPERS TO DELETE!",
+                            ),
+                          ],
+                        ),
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                      ));
+                    }
+                  },
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20),
+                  child: Text("FEEDBACK AND INFO"),
                 ),
                 ListTile(
                   minVerticalPadding: 10,
@@ -503,9 +731,6 @@ class _SettingsViewState extends State<SettingsView> {
                     HapticFeedback.mediumImpact();
                     feedbackForm();
                   },
-                ),
-                Divider(
-                  color: Theme.of(context).accentColor,
                 ),
                 ListTile(
                   minVerticalPadding: 10,
@@ -525,9 +750,6 @@ class _SettingsViewState extends State<SettingsView> {
                     style: TextStyle(fontSize: 10),
                   ),
                 ),
-                Divider(
-                  color: Theme.of(context).accentColor,
-                ),
                 ListTile(
                   minVerticalPadding: 10,
                   horizontalTitleGap: 20,
@@ -542,14 +764,11 @@ class _SettingsViewState extends State<SettingsView> {
                     style: TextStyle(fontSize: 10),
                   ),
                 ),
-                Divider(
-                  color: Theme.of(context).accentColor,
-                ),
                 ListTile(
                   minVerticalPadding: 10,
                   horizontalTitleGap: 20,
                   leading: Icon(
-                    Icons.lightbulb_outlined,
+                    Icons.info_outlined,
                     color: Theme.of(context).colorScheme.primary,
                   ),
                   title: Text(
@@ -562,60 +781,37 @@ class _SettingsViewState extends State<SettingsView> {
                   ),
                   onTap: () {
                     HapticFeedback.mediumImpact();
-                    // showAboutDialog(
-                    //     context: context,
-                    //     applicationName: _packageInfo.appName,
-                    //     applicationVersion: _packageInfo.version +
-                    //         ".BUILD.FBA." +
-                    //         _packageInfo.buildNumber,
-                    //     applicationLegalese:
-                    //         "Apache License\nVersion 2.0, January 2004",
-                    //     applicationIcon: CachedNetworkImage(
-                    //       imageUrl: logoPlayStore,
-                    //       height: 50,
-                    //       width: 50,
-                    //       fadeInCurve: Curves.easeIn,
-                    //       fadeInDuration: const Duration(milliseconds: 500),
-                    //     ));
                     Navigator.push(
                         context,
                         CupertinoPageRoute(
                             builder: (context) => LicensePage(
                                   applicationIcon: Padding(
                                     padding: const EdgeInsets.all(10.0),
-                                    child: AvatarGlow(
-                                      glowColor:
-                                          Theme.of(context).colorScheme.primary,
-                                      endRadius: 90,
-                                      showTwoGlows: true,
-                                      duration: const Duration(seconds: 3),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(50),
-                                        child: CachedNetworkImage(
-                                          imageUrl: logoPlayStore,
-                                          fadeInCurve: Curves.easeIn,
-                                          fadeInDuration:
-                                              const Duration(milliseconds: 500),
-                                          width: 80,
-                                          height: 80,
-                                        ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(50),
+                                      child: CachedNetworkImage(
+                                        imageUrl: logoPlayStore,
+                                        fadeInCurve: Curves.easeIn,
+                                        fadeInDuration:
+                                            const Duration(milliseconds: 500),
+                                        width: 80,
+                                        height: 80,
                                       ),
                                     ),
                                   ),
                                   applicationLegalese:
                                       "Apache License\nVersion 2.0, January 2004",
                                   applicationName: _packageInfo.appName,
-                                  applicationVersion: _packageInfo.version +
-                                      ".BUILD.FBA." +
-                                      _packageInfo.buildNumber,
+                                  applicationVersion: "v" +
+                                      _packageInfo.version +
+                                      " (build v" +
+                                      _packageInfo.buildNumber +
+                                      ")",
                                 )));
                   },
                 ),
-                Divider(
-                  color: Theme.of(context).accentColor,
-                ),
                 SizedBox(
-                  height: 10,
+                  height: 20,
                 ),
                 Align(
                   alignment: Alignment.bottomCenter,
@@ -834,14 +1030,6 @@ class _SettingsViewState extends State<SettingsView> {
                 color: Colors.transparent,
               ),
             ));
-  }
-
-  Future<void> _deleteCacheDir() async {
-    Directory tempDir = await getTemporaryDirectory();
-
-    if (tempDir.existsSync()) {
-      tempDir.deleteSync(recursive: true);
-    }
   }
 
   // void onThemeChanged(String val, ThemeModeNotifier themeModeNotifier) async {

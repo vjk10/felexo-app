@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -171,346 +172,30 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Container(
-                              child: GestureDetector(
-                                child: Container(
-                                  width: 50,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                        color: Theme.of(context)
-                                            .accentColor
-                                            .withOpacity(0.5)),
-                                    color: Theme.of(context).cardColor,
-                                  ),
-                                  child: Icon(
-                                    Icons.save_outlined,
-                                    size: 25,
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
-                                  ),
-                                ),
+                            InkWell(
                                 onTap: () {
                                   HapticFeedback.heavyImpact();
-                                  showDialog(
-                                      context: context,
-                                      useSafeArea: true,
-                                      builder: (context) => AlertDialog(
-                                          elevation: 0,
-                                          backgroundColor:
-                                              Theme.of(context).cardColor,
-                                          shape: RoundedRectangleBorder(
-                                              side: BorderSide(
-                                                  width: 1,
-                                                  color: Theme.of(context)
-                                                      .accentColor
-                                                      .withOpacity(0.5)),
-                                              borderRadius:
-                                                  BorderRadius.circular(0)),
-                                          title: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                "SELECT SIZE OF WALLPAPER",
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText1,
-                                              ),
-                                            ],
-                                          ),
-                                          content: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Container(
-                                              height: 80,
-                                              child: ClipRRect(
-                                                child: Row(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceEvenly,
-                                                  children: [
-                                                    TextButton(
-                                                      child: Column(
-                                                        children: [
-                                                          Icon(
-                                                            Icons.smartphone,
-                                                            size: 24,
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .colorScheme
-                                                                .primary,
-                                                          ),
-                                                          SizedBox(
-                                                            height: 10,
-                                                          ),
-                                                          Text(
-                                                            "PORTRAIT",
-                                                            style: TextStyle(
-                                                                fontSize: 10,
-                                                                fontFamily:
-                                                                    'Theme Bold',
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .colorScheme
-                                                                    .primary),
-                                                          )
-                                                        ],
-                                                      ),
-                                                      onPressed: () async {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                        _save(widget.imgUrl,
-                                                            _permissionStatus);
-                                                      },
-                                                    ),
-                                                    TextButton(
-                                                      child: Column(
-                                                        children: [
-                                                          Icon(
-                                                              Icons
-                                                                  .photo_size_select_actual_outlined,
-                                                              size: 24,
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .colorScheme
-                                                                  .primary),
-                                                          SizedBox(
-                                                            height: 10,
-                                                          ),
-                                                          Text(
-                                                            "ORIGINAL",
-                                                            style: TextStyle(
-                                                                fontSize: 10,
-                                                                fontFamily:
-                                                                    'Theme Bold',
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .colorScheme
-                                                                    .primary),
-                                                          )
-                                                        ],
-                                                      ),
-                                                      onPressed: () async {
-                                                        Navigator.of(context)
-                                                            .pop();
-
-                                                        _save(
-                                                            widget.originalUrl,
-                                                            _permissionStatus);
-                                                      },
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          )));
+                                  saveDialog(context);
                                 },
-                              ),
-                            )
+                                child: controlButton(
+                                    context, Icons.save_outlined)),
                           ],
                         ),
                         SizedBox(
                           width: 30,
                         ),
-                        GestureDetector(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: 50,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: Theme.of(context)
-                                          .accentColor
-                                          .withOpacity(0.5)),
-                                  shape: BoxShape.circle,
-                                  color: Theme.of(context).cardColor,
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Icon(
-                                    Icons.wallpaper,
-                                    size: 25,
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                          onTap: () {
-                            HapticFeedback.heavyImpact();
-
-                            showDialog(
-                                context: context,
-                                builder: (context) => AlertDialog(
-                                    elevation: 0,
-                                    shape: RoundedRectangleBorder(
-                                        side: BorderSide(
-                                            width: 1,
-                                            color: Theme.of(context)
-                                                .accentColor
-                                                .withOpacity(0.5)),
-                                        borderRadius: BorderRadius.circular(0)),
-                                    title: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text("SELECT A LOCATION",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyText1),
-                                      ],
-                                    ),
-                                    content: Container(
-                                      height: 100,
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 10, right: 10),
-                                            child: TextButton(
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
-                                                children: [
-                                                  Icon(
-                                                    Icons.home_outlined,
-                                                    size: 24,
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .primary,
-                                                  ),
-                                                  Text(
-                                                    "HOME\nSCREEN",
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                        fontSize: 10,
-                                                        fontFamily:
-                                                            'Theme Bold',
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .primary),
-                                                  )
-                                                ],
-                                              ),
-                                              onPressed: () async {
-                                                Navigator.of(context).pop();
-                                                downloading = true;
-
-                                                setState(() {});
-                                                Future.delayed(
-                                                    Duration(seconds: 1), () {
-                                                  saveWallpaper(WallpaperManager
-                                                      .HOME_SCREEN);
-                                                });
-                                              },
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 10, right: 10),
-                                            child: TextButton(
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
-                                                children: [
-                                                  Icon(Icons.lock_outlined,
-                                                      size: 24,
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .primary),
-                                                  Text(
-                                                    "LOCK\nSCREEN",
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                        fontSize: 10,
-                                                        fontFamily:
-                                                            'Theme Bold',
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .primary),
-                                                  )
-                                                ],
-                                              ),
-                                              onPressed: () async {
-                                                Navigator.of(context).pop();
-                                                downloading = true;
-
-                                                setState(() {});
-                                                Future.delayed(
-                                                    Duration(seconds: 1), () {
-                                                  saveWallpaper(WallpaperManager
-                                                      .LOCK_SCREEN);
-                                                });
-                                              },
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 10, right: 0),
-                                            child: TextButton(
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
-                                                children: [
-                                                  Icon(
-                                                      Icons.smartphone_outlined,
-                                                      size: 24,
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .primary),
-                                                  Text(
-                                                    "BOTH\nSCREEN",
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                        fontSize: 10,
-                                                        fontFamily:
-                                                            'Theme Bold',
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .primary),
-                                                  )
-                                                ],
-                                              ),
-                                              onPressed: () async {
-                                                Navigator.of(context).pop();
-                                                downloading = true;
-                                                setState(() {});
-                                                Future.delayed(
-                                                    Duration(seconds: 1), () {
-                                                  saveWallpaper(WallpaperManager
-                                                      .BOTH_SCREENS);
-                                                });
-                                              },
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )));
-                          },
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            InkWell(
+                                onTap: () {
+                                  HapticFeedback.heavyImpact();
+                                  setWallpaperDialog(context);
+                                },
+                                child: controlButton(
+                                    context, Icons.wallpaper_outlined)),
+                          ],
                         ),
                         SizedBox(
                           width: 30,
@@ -548,67 +233,10 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                           onTap: () async {
                             HapticFeedback.heavyImpact();
                             if (widget.favExists == true) {
-                              showDialog(
-                                  context: context,
-                                  builder: (context) => AlertDialog(
-                                        elevation: 0,
-                                        shape: RoundedRectangleBorder(
-                                            side: BorderSide(
-                                                width: 1,
-                                                color: Theme.of(context)
-                                                    .accentColor
-                                                    .withOpacity(0.5)),
-                                            borderRadius:
-                                                BorderRadius.circular(0)),
-                                        title: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              "FAVORITES",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText1,
-                                            ),
-                                          ],
-                                        ),
-                                        content: Text(
-                                          "ALREADY ADDED TO FAVORITES!",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyText1,
-                                        ),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: Text("OK"),
-                                          )
-                                        ],
-                                      ));
+                              favExistsDialog(context);
                             }
                             if (widget.favExists != true) {
-                              FirebaseFirestore.instance
-                                  .collection("User")
-                                  .doc(user.uid)
-                                  .collection("Favorites")
-                                  .doc(widget.photoID)
-                                  .set({
-                                "imgUrl": widget.imgUrl,
-                                "photographer": widget.photographer,
-                                "photographerUrl": widget.photographerUrl,
-                                "photoID": widget.photoID.toString(),
-                                "photographerID":
-                                    widget.photographerID.toString(),
-                                "originalUrl": widget.originalUrl,
-                                "avgColor": widget.avgColor,
-                              });
-                              setState(() {
-                                widget.favExists = !widget.favExists;
-                              });
+                              addToFav();
                             }
                           },
                         ),
@@ -622,20 +250,322 @@ class _WallpaperControlsState extends State<WallpaperControls> {
           );
   }
 
-  _save(String url, bool _permissionReceived) async {
+  addToFav() {
+    FirebaseFirestore.instance
+        .collection("User")
+        .doc(user.uid)
+        .collection("Favorites")
+        .doc(widget.photoID)
+        .set({
+      "imgUrl": widget.imgUrl,
+      "photographer": widget.photographer,
+      "photographerUrl": widget.photographerUrl,
+      "photoID": widget.photoID.toString(),
+      "photographerID": widget.photographerID.toString(),
+      "originalUrl": widget.originalUrl,
+      "avgColor": widget.avgColor,
+    });
+    setState(() {
+      widget.favExists = !widget.favExists;
+    });
+  }
+
+  favExistsDialog(BuildContext context) {
+    FirebaseFirestore.instance
+        .collection("User")
+        .doc(user.uid)
+        .collection("Favorites")
+        .doc(widget.photoID)
+        .delete()
+        .whenComplete(() {
+      setState(() {
+        widget.favExists = !widget.favExists;
+      });
+    });
+  }
+
+  Future<dynamic> setWallpaperDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+                side: BorderSide(
+                    width: 1,
+                    color: Theme.of(context).accentColor.withOpacity(0.5)),
+                borderRadius: BorderRadius.circular(0)),
+            title: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("SELECT A LOCATION",
+                    style: Theme.of(context).textTheme.bodyText1),
+              ],
+            ),
+            content: Container(
+              height: 100,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10, right: 10),
+                    child: TextButton(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Icon(
+                            Icons.home_outlined,
+                            size: 24,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          Text(
+                            "HOME\nSCREEN",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 10,
+                                fontFamily: 'Theme Bold',
+                                color: Theme.of(context).colorScheme.primary),
+                          )
+                        ],
+                      ),
+                      onPressed: () async {
+                        Navigator.of(context).pop();
+                        downloading = true;
+
+                        setState(() {});
+                        Future.delayed(Duration(seconds: 1), () {
+                          saveWallpaper(WallpaperManager.HOME_SCREEN);
+                        });
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10, right: 10),
+                    child: TextButton(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Icon(Icons.lock_outlined,
+                              size: 24,
+                              color: Theme.of(context).colorScheme.primary),
+                          Text(
+                            "LOCK\nSCREEN",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 10,
+                                fontFamily: 'Theme Bold',
+                                color: Theme.of(context).colorScheme.primary),
+                          )
+                        ],
+                      ),
+                      onPressed: () async {
+                        Navigator.of(context).pop();
+                        downloading = true;
+
+                        setState(() {});
+                        Future.delayed(Duration(seconds: 1), () {
+                          saveWallpaper(WallpaperManager.LOCK_SCREEN);
+                        });
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10, right: 0),
+                    child: TextButton(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Icon(Icons.smartphone_outlined,
+                              size: 24,
+                              color: Theme.of(context).colorScheme.primary),
+                          Text(
+                            "BOTH\nSCREEN",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 10,
+                                fontFamily: 'Theme Bold',
+                                color: Theme.of(context).colorScheme.primary),
+                          )
+                        ],
+                      ),
+                      onPressed: () async {
+                        Navigator.of(context).pop();
+                        downloading = true;
+                        setState(() {});
+                        Future.delayed(Duration(seconds: 1), () {
+                          saveWallpaper(WallpaperManager.BOTH_SCREENS);
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            )));
+  }
+
+  Container controlButton(
+    BuildContext context,
+    var iconStyle,
+  ) {
+    return Container(
+      child: Container(
+        width: 50,
+        height: 50,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border:
+              Border.all(color: Theme.of(context).accentColor.withOpacity(0.5)),
+          color: Theme.of(context).cardColor,
+        ),
+        child: Icon(
+          iconStyle,
+          size: 25,
+          color: Theme.of(context).colorScheme.primary,
+        ),
+      ),
+    );
+  }
+
+  Future<dynamic> saveDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        useSafeArea: true,
+        builder: (context) => AlertDialog(
+            elevation: 0,
+            backgroundColor: Theme.of(context).cardColor,
+            shape: RoundedRectangleBorder(
+                side: BorderSide(
+                    width: 1,
+                    color: Theme.of(context).accentColor.withOpacity(0.5)),
+                borderRadius: BorderRadius.circular(0)),
+            title: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "SELECT SIZE OF WALLPAPER",
+                  style: Theme.of(context).textTheme.bodyText1,
+                ),
+              ],
+            ),
+            content: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                height: 80,
+                child: ClipRRect(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      TextButton(
+                        child: Column(
+                          children: [
+                            Icon(
+                              Icons.smartphone,
+                              size: 24,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              "PORTRAIT",
+                              style: TextStyle(
+                                  fontSize: 10,
+                                  fontFamily: 'Theme Bold',
+                                  color: Theme.of(context).colorScheme.primary),
+                            )
+                          ],
+                        ),
+                        onPressed: () async {
+                          Navigator.of(context).pop();
+                          _save(widget.imgUrl, _permissionStatus, "p");
+                        },
+                      ),
+                      TextButton(
+                        child: Column(
+                          children: [
+                            Icon(Icons.photo_size_select_actual_outlined,
+                                size: 24,
+                                color: Theme.of(context).colorScheme.primary),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              "ORIGINAL",
+                              style: TextStyle(
+                                  fontSize: 10,
+                                  fontFamily: 'Theme Bold',
+                                  color: Theme.of(context).colorScheme.primary),
+                            )
+                          ],
+                        ),
+                        onPressed: () async {
+                          Navigator.of(context).pop();
+
+                          _save(widget.originalUrl, _permissionStatus, "o");
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )));
+  }
+
+  _save(String url, bool _permissionReceived, String type) async {
+    String _type;
+    if (type == "o") {
+      _type = "ORIGINAL";
+    }
+    if (type == "p") {
+      _type = "PORTRAIT";
+    }
+    var appDirectory = Directory("storage/emulated/0/Pictures/FELEXO");
+    if (!(await appDirectory.exists())) {
+      appDirectory.createSync(recursive: true);
+    }
     downloading = true;
     setState(() {});
     if (_permissionStatus) {
-      var response = await Dio()
-          .get(url, options: Options(responseType: ResponseType.bytes),
-              onReceiveProgress: (received, total) {
+      var response = await Dio().download(
+          url,
+          "storage/emulated/0/Pictures/FELEXO/" +
+              widget.photographer +
+              widget.photoID +
+              " " +
+              _type +
+              ".jpg",
+          options: Options(responseType: ResponseType.bytes),
+          onReceiveProgress: (received, total) {
         if (total != -1) {
           progressValue = received / total;
           progressString = (received / total * 100).toStringAsFixed(0) + "%";
           setState(() {});
           print((received / total * 100).toStringAsFixed(0) + "%");
         }
+      }).whenComplete(() {
+        downloading = false;
+        setState(() {});
       });
+      if (progressString == "100") {
+        downloading = false;
+        setState(() {});
+      }
+      // var response = await Dio()
+      //     .get(url, options: Options(responseType: ResponseType.bytes),
+      //         onReceiveProgress: (received, total) {
+      //   if (total != -1) {
+      //     progressValue = received / total;
+      //     progressString = (received / total * 100).toStringAsFixed(0) + "%";
+      //     setState(() {});
+      //     print((received / total * 100).toStringAsFixed(0) + "%");
+      //   }
+      // });
       final result = await ImageGallerySaver.saveImage(
           Uint8List.fromList(response.data),
           quality: 100,
@@ -746,7 +676,7 @@ class _WallpaperControlsState extends State<WallpaperControls> {
           print((received / total * 100).toStringAsFixed(0) + "%");
         }
       });
-      print(response);
+      print(response.data);
       final result = await ImageGallerySaver.saveImage(
           Uint8List.fromList(response.data),
           quality: 100,
@@ -762,6 +692,11 @@ class _WallpaperControlsState extends State<WallpaperControls> {
           location,
         ).whenComplete(() {
           downloading = false;
+          final file = File("storage/emulated/0/Pictures/" +
+              widget.photographer +
+              widget.photoID.toString() +
+              ".jpg");
+          file.delete();
           setState(() {});
           showDialog(
               context: context,

@@ -150,8 +150,10 @@ class _SplashScreenState extends State<SplashScreen>
                             height: 60,
                             child: ElevatedButton.icon(
                               style: ElevatedButton.styleFrom(
+                                  primary:
+                                      Theme.of(context).colorScheme.primary,
                                   onPrimary:
-                                      Theme.of(context).colorScheme.background,
+                                      Theme.of(context).colorScheme.secondary,
                                   elevation: 0,
                                   padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
                                   shape: RoundedRectangleBorder(

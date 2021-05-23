@@ -789,7 +789,7 @@ class _WallPaperViewState extends State<WallPaperView> {
           name: widget.photographer + widget.photoID.toString());
       print(result);
       Share.shareFiles([
-        "storage/emulated/0/Pictures/" +
+        "storage/emulated/0/Pictures/FELEXO/" +
             widget.photographer +
             widget.photoID.toString() +
             ".jpg"

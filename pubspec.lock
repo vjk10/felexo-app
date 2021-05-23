@@ -22,13 +22,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.0"
-  avatar_glow:
-    dependency: "direct main"
-    description:
-      name: avatar_glow
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.1"
   boolean_selector:
     dependency: transitive
     description:
@@ -148,6 +141,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "6.1.1"
+  filesize:
+    dependency: "direct main"
+    description:
+      name: filesize
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1"
   firebase_auth:
     dependency: "direct main"
     description:
