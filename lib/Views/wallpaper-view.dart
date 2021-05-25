@@ -16,7 +16,8 @@ import 'package:permission/permission.dart';
 import 'package:share/share.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'package:url_launcher/link.dart';
+import 'package:intent/intent.dart' as android_intent;
+import 'package:intent/action.dart' as android_action;
 
 import 'views.dart';
 
@@ -586,7 +587,7 @@ class _WallPaperViewState extends State<WallPaperView> {
                                                 widget.photographerUrl +
                                                 "\n\nFind Image at: " +
                                                 widget.originalUrl +
-                                                "\n\nDownload FELEXO for more amazing wallpapers");
+                                                "\n\nDownload FELEXO for more amazing wallpapers\nbit.ly/33XLfoX");
                                           },
                                           child: Column(
                                             crossAxisAlignment:
@@ -662,68 +663,10 @@ class _WallPaperViewState extends State<WallPaperView> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                    width: 1,
-                                    color: Theme.of(context)
-                                        .accentColor
-                                        .withOpacity(0.5)),
-                                borderRadius: BorderRadius.circular(0)),
-                            elevation: 0,
-                            title: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text("VISIT PEXELS",
-                                    style:
-                                        Theme.of(context).textTheme.bodyText1),
-                              ],
-                            ),
-                            content: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.public),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text(
-                                  "OPEN PEXELS IN",
-                                  style: Theme.of(context).textTheme.bodyText1,
-                                ),
-                              ],
-                            ),
-                            actions: [
-                              Row(
-                                children: [
-                                  Link(
-                                      target: LinkTarget.blank,
-                                      uri: Uri.parse("https://www.pexels.com/"),
-                                      builder: (context, followBlank) {
-                                        return TextButton(
-                                            onPressed: followBlank,
-                                            child: Text("OPEN IN BROWSER"));
-                                      }),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Link(
-                                      target: LinkTarget.self,
-                                      uri: Uri.parse("https://www.pexels.com/"),
-                                      builder: (context, followSelf) {
-                                        return TextButton(
-                                            onPressed: followSelf,
-                                            child: Text("OPEN IN APP"));
-                                      }),
-                                ],
-                              )
-                            ],
-                          );
-                        });
+                    android_intent.Intent()
+                      ..setAction(android_action.Action.ACTION_VIEW)
+                      ..setData(Uri(scheme: "https", host: "pexels.com"))
+                      ..startActivity().catchError((e) => print(e));
                   },
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -800,7 +743,7 @@ class _WallPaperViewState extends State<WallPaperView> {
               widget.photographerUrl +
               "\n\nFind Image at: " +
               widget.originalUrl +
-              "\n\nDownload FELEXO for more amazing wallpapers");
+              "\n\nDownload FELEXO for more amazing wallpapers\nbit.ly/33XLfoX");
       setState(() {});
     }
     if (!_permissionStatus) {

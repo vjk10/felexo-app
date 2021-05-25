@@ -3,7 +3,9 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
+import 'package:felexo/Views/views.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
@@ -332,9 +334,7 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                       ),
                       onPressed: () async {
                         Navigator.of(context).pop();
-                        downloading = true;
 
-                        setState(() {});
                         Future.delayed(Duration(seconds: 1), () {
                           saveWallpaper(WallpaperManager.HOME_SCREEN);
                         });
@@ -363,9 +363,7 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                       ),
                       onPressed: () async {
                         Navigator.of(context).pop();
-                        downloading = true;
 
-                        setState(() {});
                         Future.delayed(Duration(seconds: 1), () {
                           saveWallpaper(WallpaperManager.LOCK_SCREEN);
                         });
@@ -394,8 +392,6 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                       ),
                       onPressed: () async {
                         Navigator.of(context).pop();
-                        downloading = true;
-                        setState(() {});
                         Future.delayed(Duration(seconds: 1), () {
                           saveWallpaper(WallpaperManager.BOTH_SCREENS);
                         });
@@ -572,7 +568,10 @@ class _WallpaperControlsState extends State<WallpaperControls> {
           name: widget.photographer + widget.photoID.toString());
       print(result);
       downloading = false;
-      setState(() {});
+      setState(() {
+        progressString = "0%";
+        progressValue = 0;
+      });
     }
     if (!_permissionStatus) {
       showDialog(
@@ -615,6 +614,7 @@ class _WallpaperControlsState extends State<WallpaperControls> {
       String originalUrl = widget.originalUrl;
       var file;
       showDialog(
+          barrierDismissible: true,
           context: context,
           builder: (context) => AlertDialog(
                 shape: RoundedRectangleBorder(
@@ -624,33 +624,108 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                     borderRadius: BorderRadius.circular(0)),
                 elevation: 0,
                 backgroundColor: Theme.of(context).colorScheme.secondary,
-                title: Text("FELEXO",
-                    style: Theme.of(context).textTheme.bodyText1),
-                content: Text("CHOOSE SIZE",
-                    style: Theme.of(context).textTheme.bodyText1),
-                actions: [
-                  TextButton(
-                    child: Text("COMPRESSED",
-                        style: Theme.of(context).textTheme.button),
-                    onPressed: () async {
-                      Navigator.of(context).pop();
-                      Future.delayed(Duration(seconds: 1), () {
-                        setWallpaper(file, url, location);
-                      });
-                    },
+                title: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("CHOOSE TYPE",
+                        style: Theme.of(context).textTheme.bodyText1),
+                  ],
+                ),
+                content: Container(
+                  height: 80,
+                  child: ClipRRect(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        TextButton(
+                          child: Column(
+                            children: [
+                              Icon(
+                                Icons.compress_outlined,
+                                size: 24,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                "COMPRESSED",
+                                style: TextStyle(
+                                    fontSize: 10,
+                                    fontFamily: 'Theme Bold',
+                                    color:
+                                        Theme.of(context).colorScheme.primary),
+                              )
+                            ],
+                          ),
+                          onPressed: () async {
+                            Navigator.of(context).pop();
+                            setWallpaper(file, url, location);
+                          },
+                        ),
+                        TextButton(
+                          child: Column(
+                            children: [
+                              Icon(Icons.photo_size_select_actual_outlined,
+                                  size: 24,
+                                  color: Theme.of(context).colorScheme.primary),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                "ORIGINAL",
+                                style: TextStyle(
+                                    fontSize: 10,
+                                    fontFamily: 'Theme Bold',
+                                    color:
+                                        Theme.of(context).colorScheme.primary),
+                              )
+                            ],
+                          ),
+                          onPressed: () async {
+                            Navigator.of(context).pop();
+                            setWallpaper(file, originalUrl, location);
+                          },
+                        ),
+                        TextButton(
+                          child: Column(
+                            children: [
+                              Icon(Icons.blur_on_outlined,
+                                  size: 24,
+                                  color: Theme.of(context).colorScheme.primary),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                "BLURRED",
+                                style: TextStyle(
+                                    fontSize: 10,
+                                    fontFamily: 'Theme Bold',
+                                    color:
+                                        Theme.of(context).colorScheme.primary),
+                              )
+                            ],
+                          ),
+                          onPressed: () async {
+                            Navigator.of(context).pop();
+                            Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                    builder: (context) => BlurWallpaperView(
+                                          location: location,
+                                          avgColor: widget.avgColor,
+                                          photoID: widget.photoID,
+                                          url: widget.originalUrl,
+                                          photographer: widget.photographer,
+                                        )));
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                  TextButton(
-                    child: Text("ORIGINAL",
-                        style: Theme.of(context).textTheme.button),
-                    onPressed: () async {
-                      Navigator.of(context).pop();
-
-                      Future.delayed(Duration(seconds: 1), () {
-                        setWallpaper(file, originalUrl, location);
-                      });
-                    },
-                  )
-                ],
+                ),
               ));
     } catch (e) {
       print("Exception: " + e.message);
@@ -658,6 +733,9 @@ class _WallpaperControlsState extends State<WallpaperControls> {
   }
 
   Future<Null> setWallpaper(var file, String url, int location) async {
+    setState(() {
+      downloading = true;
+    });
     try {
       // final file = await DefaultCacheManager().getSingleFile(url);
       // var response = await http.get(Uri.parse(url));
@@ -670,10 +748,11 @@ class _WallpaperControlsState extends State<WallpaperControls> {
             responseType: ResponseType.bytes,
           ), onReceiveProgress: (received, total) {
         if (total != -1) {
-          progressValue = received / total;
-          progressString = (received / total * 100).toStringAsFixed(0) + "%";
-          setState(() {});
-          print((received / total * 100).toStringAsFixed(0) + "%");
+          setState(() {
+            progressValue = received / total;
+            progressString = (received / total * 100).toStringAsFixed(0) + "%";
+          });
+          // print((received / total * 100).toStringAsFixed(0) + "%");
         }
       });
       print(response.data);
@@ -718,6 +797,10 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                         child: Text("OK",
                             style: Theme.of(context).textTheme.button),
                         onPressed: () {
+                          setState(() {
+                            progressString = "0%";
+                            progressValue = 0;
+                          });
                           Navigator.of(context).pop();
                         },
                       )

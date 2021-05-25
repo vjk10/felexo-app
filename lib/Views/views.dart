@@ -8,3 +8,4 @@ export 'wallpaper-view.dart';
 export 'search-delegate.dart';
 export 'collections-view.dart';
 export 'color-search-view.dart';
+export 'blur-wallpaper.dart';
