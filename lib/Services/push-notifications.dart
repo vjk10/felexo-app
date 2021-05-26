@@ -38,7 +38,6 @@ class PushNotificationService {
       RemoteNotification remoteNotification = remoteMessage.notification;
       AndroidNotification androidNotification =
           remoteMessage.notification?.android;
-      AppleNotification appleNotification = remoteMessage.notification?.apple;
       if (remoteNotification != null && androidNotification != null) {
         flutterLocalNotificationsPlugin.show(
             remoteNotification.hashCode,

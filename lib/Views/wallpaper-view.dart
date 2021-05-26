@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -10,9 +11,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_ml_vision/google_ml_vision.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission/permission.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:share/share.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -68,6 +71,8 @@ class _WallPaperViewState extends State<WallPaperView> {
   double progressValue;
   String progressString = "0%";
   String creatorCheck = "";
+  bool foundTerms = false;
+  ScreenshotController _screenshotController = new ScreenshotController();
 
   List<String> searchTerms = [];
 
@@ -75,10 +80,45 @@ class _WallPaperViewState extends State<WallPaperView> {
   initState() {
     print(widget.uid);
     checkPermissionStatus();
+    _getImageAndDetectLabels();
     transparent = false;
     findIfFav();
     checkVerified();
     super.initState();
+  }
+
+  Future<void> _getImageAndDetectLabels() async {
+    // print("GET IMAGE LABELS");
+    var response = await Dio().get(widget.imgUrl,
+        options: Options(
+          responseType: ResponseType.bytes,
+        ));
+    final result = await ImageGallerySaver.saveImage(
+        Uint8List.fromList(response.data),
+        quality: 100,
+        name: widget.photoID.toString());
+
+    File imageFile = File.fromUri(
+        Uri.parse("storage/emulated/0/Pictures/" + widget.photoID + ".jpg"));
+    final GoogleVisionImage visionImage = GoogleVisionImage.fromFile(imageFile);
+    final ImageLabeler labeler = GoogleVision.instance.imageLabeler(
+      ImageLabelerOptions(confidenceThreshold: 0.75),
+    );
+    final List<ImageLabel> labels =
+        await labeler.processImage(visionImage).whenComplete(() {
+      labeler.close();
+    });
+    for (ImageLabel label in labels) {
+      searchTerms.add(label.text);
+    }
+    if (searchTerms.isNotEmpty) {
+      setState(() {
+        foundTerms = true;
+      });
+      final file = File(
+          "storage/emulated/0/Pictures/" + widget.photoID.toString() + ".jpg");
+      file.delete();
+    }
   }
 
   checkVerified() async {
@@ -218,7 +258,7 @@ class _WallPaperViewState extends State<WallPaperView> {
           backdropOpacity: 0.5,
           backdropTapClosesPanel: true,
           color: Theme.of(context).scaffoldBackgroundColor,
-          maxHeight: MediaQuery.of(context).size.height / 1.5,
+          maxHeight: MediaQuery.of(context).size.height - 100,
           minHeight: MediaQuery.of(context).size.height / 8,
           body: Stack(children: [
             Center(
@@ -237,10 +277,13 @@ class _WallPaperViewState extends State<WallPaperView> {
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
-                child: CachedNetworkImage(
-                    imageUrl: widget.imgUrl,
-                    fit: BoxFit.cover,
-                    fadeInCurve: Curves.easeIn),
+                child: Screenshot(
+                  controller: _screenshotController,
+                  child: CachedNetworkImage(
+                      imageUrl: widget.imgUrl,
+                      fit: BoxFit.cover,
+                      fadeInCurve: Curves.easeIn),
+                ),
               ),
             ),
           ]),
@@ -272,7 +315,7 @@ class _WallPaperViewState extends State<WallPaperView> {
                 ],
               ),
               SizedBox(
-                height: 30,
+                height: 20,
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -294,11 +337,95 @@ class _WallPaperViewState extends State<WallPaperView> {
               SizedBox(
                 height: 20,
               ),
-              infoCard(context),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  infoCard(context),
+                ],
+              ),
               SizedBox(
                 height: 20,
               ),
-              adBox(context),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "RELATED SEARCH TERMS",
+                    style: Theme.of(context).textTheme.headline6,
+                  )
+                ],
+              ),
+              foundTerms
+                  ? Container(
+                      width: MediaQuery.of(context).size.width - 20,
+                      height: 80,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              ListView.builder(
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: searchTerms.length,
+                                  itemBuilder: (context, index) {
+                                    return Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                            decoration: BoxDecoration(
+                                                color: Theme.of(context)
+                                                    .scaffoldBackgroundColor,
+                                                border: Border.all(
+                                                    color: Theme.of(context)
+                                                        .accentColor,
+                                                    width: 1)),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Text(searchTerms[index],
+                                                  style: TextStyle(
+                                                      fontFamily: 'Theme Bold',
+                                                      fontSize: 16,
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .primary)),
+                                            )),
+                                        SizedBox(
+                                          width: 10,
+                                        )
+                                      ],
+                                    );
+                                  })
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  : Shimmer(
+                      child: Container(
+                        width: MediaQuery.of(context).size.width - 20,
+                        height: 80,
+                      ),
+                    ),
+              SizedBox(
+                height: 20,
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  adBox(context),
+                ],
+              ),
             ],
           )),
     );

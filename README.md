@@ -18,4 +18,5 @@ Fetching all amazing wallpapers directly from the Pexels API to make your device
     - API 30 (S) Compatibility
     - Users can delete cache and saved wallpapers from settings
     - Settings redesign
-    - Push Notifications :construction:
+    - Push Notifications
+    - Image Related Search Terms :construction:
