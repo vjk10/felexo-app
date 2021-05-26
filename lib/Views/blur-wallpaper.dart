@@ -1,12 +1,10 @@
 import 'dart:io';
-import 'dart:typed_data';
+import 'dart:ui';
 
 import 'package:blurrycontainer/blurrycontainer.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:felexo/Color/colors.dart';
-import 'package:felexo/Services/blur-service.dart';
 import 'package:flutter/material.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 import 'package:wallpaper_manager/wallpaper_manager.dart';
@@ -29,10 +27,9 @@ class _BlurWallpaperViewState extends State<BlurWallpaperView> {
   double sliderValue = 0;
   final sliderMaxValue = 20.0;
   bool downloading = false;
-  Uint8List _imageFile;
   String progressString;
   double progressValue;
-  ScreenshotController _screenshotController;
+  ScreenshotController _screenshotController = new ScreenshotController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,12 +74,37 @@ class _BlurWallpaperViewState extends State<BlurWallpaperView> {
               height: MediaQuery.of(context).size.height,
               color: Hexcolor(widget.avgColor),
             ),
+            // Screenshot(
+            //   controller: _screenshotController,
+            //   child: BlurredImage.network(
+            //     context,
+            //     widget.url,
+            //     blurValue: sliderValue,
+            //   ),
+            // ),
             Screenshot(
               controller: _screenshotController,
-              child: BlurredImage.network(
-                context,
-                widget.url,
-                blurValue: sliderValue,
+              child: Stack(
+                alignment: Alignment.center,
+                children: <Widget>[
+                  CachedNetworkImage(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    fit: BoxFit.cover,
+                    imageUrl: widget.url,
+                    fadeInCurve: Curves.easeIn,
+                  ),
+                  Positioned.fill(
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(
+                          sigmaX: sliderValue, sigmaY: sliderValue),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             Positioned(
@@ -121,21 +143,16 @@ class _BlurWallpaperViewState extends State<BlurWallpaperView> {
                       height: 30,
                       child: ElevatedButton(
                         onPressed: () {
-                          _screenshotController.captureAndSave(
-                              "storage/emulated/0/Pictures/",
-                              fileName: widget.photographer +
-                                  widget.photoID.toString(),
-                              pixelRatio: 1,
-                              delay: const Duration(milliseconds: 10));
-                          // _screenshotController
-                          //     .capture(
-                          //         pixelRatio: 1.5, delay: Duration(seconds: 1))
-                          //     .then((Uint8List image) {
-                          //   setState(() {
-                          //     _imageFile = image;
-                          //     setWallpaper(image, widget.location);
-                          //   });
-                          // });
+                          _screenshotController
+                              .captureAndSave("storage/emulated/0/Pictures",
+                                  fileName: widget.photoID.toString() +
+                                      widget.photographer.toString() +
+                                      ".jpg",
+                                  pixelRatio: 1,
+                                  delay: const Duration(milliseconds: 10))
+                              .then((value) {
+                            setWallpaper(widget.location);
+                          });
                         },
                         style: ElevatedButton.styleFrom(
                           elevation: 0,
@@ -166,7 +183,7 @@ class _BlurWallpaperViewState extends State<BlurWallpaperView> {
     );
   }
 
-  Future<Null> setWallpaper(Uint8List image, int location) async {
+  Future<Null> setWallpaper(int location) async {
     setState(() {
       downloading = true;
     });
@@ -178,15 +195,15 @@ class _BlurWallpaperViewState extends State<BlurWallpaperView> {
       try {
         final String result = await WallpaperManager.setWallpaperFromFile(
           "storage/emulated/0/Pictures/" +
-              widget.photographer +
               widget.photoID.toString() +
+              widget.photographer.toString() +
               ".jpg",
           location,
         ).whenComplete(() {
           downloading = false;
           final file = File("storage/emulated/0/Pictures/" +
-              widget.photographer +
               widget.photoID.toString() +
+              widget.photographer.toString() +
               ".jpg");
           file.delete();
           setState(() {});
