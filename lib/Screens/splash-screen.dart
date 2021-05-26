@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:felexo/Services/authentication-service.dart';
+import 'package:felexo/Services/push-notifications.dart';
 import 'package:felexo/Views/main-view.dart';
 import 'package:felexo/theme/app-theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -30,11 +31,16 @@ class _SplashScreenState extends State<SplashScreen>
   String _systemTheme;
   bool isDark = true;
   final fsref = FirebaseStorage.instance.ref();
+  PushNotificationService fcmNotification;
   var googleIcon;
 
   @override
   initState() {
     super.initState();
+    fcmNotification = PushNotificationService();
+    fcmNotification.initialize();
+    handleAsync();
+    fcmNotification.subscribeToTopic('curated');
     getIcon();
     setState(() {});
     askPermission();
@@ -49,6 +55,11 @@ class _SplashScreenState extends State<SplashScreen>
         setState(() {});
       }
     });
+  }
+
+  handleAsync() async {
+    String _token = await fcmNotification.getToken();
+    print("FCM TOKEN: " + _token);
   }
 
   getIcon() async {
