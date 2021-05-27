@@ -59,6 +59,7 @@ app.*.map.json
 **/android/local.properties
 **/android/**/GeneratedPluginRegistrant.java
 **/android/key.properties
+**/android/app/release/app-release.aab
 *.jks
 
 # iOS/XCode related
