@@ -10,11 +10,11 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:shimmer_animation/shimmer_animation.dart';
 
-// ignore: must_be_immutable
 class SearchView extends StatefulWidget {
-  String searchQuery;
+  final String searchQuery;
+  final bool appBarState;
 
-  SearchView({this.searchQuery});
+  SearchView({@required this.searchQuery, @required this.appBarState});
 
   @override
   _SearchViewState createState() => _SearchViewState();
@@ -36,13 +36,14 @@ class _SearchViewState extends State<SearchView> {
   bool _isLoading = true;
   bool _hasResults = true;
   bool loading = false;
+  bool _appBar;
 
   @override
   void initState() {
     searchQery = widget.searchQuery;
     getSearchResults(widget.searchQuery);
     super.initState();
-
+    _appBar = widget.appBarState;
     initUser();
   }
 
@@ -127,7 +128,204 @@ class _SearchViewState extends State<SearchView> {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
+    return _appBar
+        ? scaffoldWithAppBar(context)
+        : scaffoldWithoutAppBar(context);
+  }
+
+  Scaffold scaffoldWithoutAppBar(BuildContext context) {
     return Scaffold(
+      body: _isLoading
+          ? Shimmer(
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+              ),
+            )
+          : _hasResults
+              ? SafeArea(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Align(
+                          alignment: Alignment.topCenter,
+                          child: wallpaperSearchGrid(
+                              wallpapers: wallpapers,
+                              context: context,
+                              uid: user.uid),
+                        ),
+                        loading
+                            ? Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Visibility(
+                                  visible: !_buttonVisible,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width -
+                                                20,
+                                        height: 60,
+                                        child: Shimmer(
+                                          child: ElevatedButton(
+                                            onPressed: () {
+                                              _buttonVisible = !_buttonVisible;
+                                              setState(() {});
+                                              getMoreSearchResults(
+                                                  widget.searchQuery);
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              elevation: 0,
+                                              primary: Theme.of(context)
+                                                  .scaffoldBackgroundColor,
+                                              onPrimary: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                              onSurface: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                              shape: RoundedRectangleBorder(
+                                                  side: BorderSide(
+                                                      color: Theme.of(context)
+                                                          .accentColor
+                                                          .withOpacity(0.5),
+                                                      width: 1),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          00)),
+                                            ),
+                                            child: Text(
+                                              loadingMessage,
+                                              style: TextStyle(
+                                                  fontFamily: 'Theme Bold',
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .primary),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            : Container(),
+                        loading
+                            ? Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Visibility(
+                                  visible: _buttonVisible,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width -
+                                                20,
+                                        height: 60,
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            _buttonVisible = !_buttonVisible;
+                                            setState(() {});
+                                            getMoreSearchResults(
+                                                widget.searchQuery);
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            elevation: 0,
+                                            primary: Theme.of(context)
+                                                .scaffoldBackgroundColor,
+                                            onPrimary: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                            onSurface: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                            shape: RoundedRectangleBorder(
+                                                side: BorderSide(
+                                                    color: Theme.of(context)
+                                                        .accentColor
+                                                        .withOpacity(0.5),
+                                                    width: 1),
+                                                borderRadius:
+                                                    BorderRadius.circular(00)),
+                                          ),
+                                          child: Text(
+                                            loadMoreMessage,
+                                            style: TextStyle(
+                                                fontFamily: 'Theme Bold',
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            : Container(),
+                      ],
+                    ),
+                  ),
+                )
+              : Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.warning_amber_rounded,
+                        size: 30,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "WE COULDN'T FIND ANY RESULTS FOR YOUR SEARCH!",
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
+                            fontSize: 12,
+                            fontFamily: 'Theme Black'),
+                        textAlign: TextAlign.center,
+                      )
+                    ],
+                  ),
+                ),
+    );
+  }
+
+  Scaffold scaffoldWithAppBar(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 80,
+        leading: InkWell(
+          child: Icon(Icons.arrow_back_ios),
+          onTap: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: Text(
+          widget.searchQuery.toUpperCase(),
+          style: Theme.of(context).textTheme.headline6,
+        ),
+      ),
       body: _isLoading
           ? Shimmer(
               child: Container(

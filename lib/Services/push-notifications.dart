@@ -63,4 +63,8 @@ class PushNotificationService {
   subscribeToTopic(String topic) async {
     await FirebaseMessaging.instance.subscribeToTopic(topic);
   }
+
+  unSubscribeToTopic(String topic) async {
+    await FirebaseMessaging.instance.unsubscribeFromTopic(topic);
+  }
 }

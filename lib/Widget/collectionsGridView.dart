@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:auto_size_text_pk/auto_size_text_pk.dart';
 import 'package:felexo/Data/data.dart';
 import 'package:felexo/Model/collections-model.dart';
 import 'package:felexo/Model/wallpapers-model.dart';
@@ -75,7 +76,6 @@ class _CollectionsGridState extends State<CollectionsGrid> {
               crossAxisSpacing: 0,
               children: collections.map((collection) {
                 setState(() {});
-
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -132,14 +132,15 @@ class _CollectionsGridState extends State<CollectionsGrid> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.start,
                                             children: [
-                                              Text(
+                                              AutoSizeText(
                                                 collection.collectionTitle
                                                     .toUpperCase(),
+                                                maxFontSize: 24,
+                                                minFontSize: 14,
                                                 style: TextStyle(
                                                     color: Theme.of(context)
                                                         .colorScheme
                                                         .primary,
-                                                    fontSize: 24,
                                                     fontFamily: 'Theme Black'),
                                               ),
                                             ],

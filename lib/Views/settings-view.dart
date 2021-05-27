@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expandable_bottom_sheet/expandable_bottom_sheet.dart';
 import 'package:felexo/Data/data.dart';
 import 'package:felexo/Services/authentication-service.dart';
+import 'package:felexo/Services/push-notifications.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -43,6 +44,8 @@ class _SettingsViewState extends State<SettingsView> {
   bool cacheFound = false;
   Directory tempDir;
   Directory appDir;
+  bool _subscribedNotification = true;
+  PushNotificationService fcmNotification;
 
   PackageInfo _packageInfo = PackageInfo(
     appName: 'Unknown',
@@ -55,6 +58,8 @@ class _SettingsViewState extends State<SettingsView> {
   void initState() {
     _initPackageInfo();
     setState(() {});
+    fcmNotification = PushNotificationService();
+    fcmNotification.initialize();
     // print(searchHistory.length);
     if (searchHistory.length == null) {
       setState(() {
@@ -80,6 +85,7 @@ class _SettingsViewState extends State<SettingsView> {
     getLogo();
     initUser();
     findIfStoreHistory();
+    findSubscrptionStatus();
     super.initState();
   }
 
@@ -156,6 +162,16 @@ class _SettingsViewState extends State<SettingsView> {
       });
     });
     setState(() {});
+  }
+
+  findSubscrptionStatus() {
+    FirebaseFirestore.instance
+        .collection("User")
+        .doc(user.uid)
+        .snapshots()
+        .forEach((element) {
+      _subscribedNotification = element.data()["subscribedToNotifications"];
+    });
   }
 
   void historyPref(bool value) {
@@ -494,7 +510,7 @@ class _SettingsViewState extends State<SettingsView> {
                     "THIS WILL HELP US IMPROVE YOUR SEARCH RECOMMENDATIONS",
                     style: TextStyle(fontSize: 10),
                   ),
-                  trailing: Switch(
+                  trailing: Switch.adaptive(
                       activeColor: isDark ? Colors.greenAccent : Colors.green,
                       inactiveThumbColor: Colors.redAccent,
                       activeTrackColor: isDark
@@ -714,7 +730,7 @@ class _SettingsViewState extends State<SettingsView> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 20),
-                  child: Text("FEEDBACK AND INFO"),
+                  child: Text("FEEDBACK AND NOTIFICATIONS"),
                 ),
                 ListTile(
                   minVerticalPadding: 10,
@@ -731,6 +747,81 @@ class _SettingsViewState extends State<SettingsView> {
                     HapticFeedback.mediumImpact();
                     feedbackForm();
                   },
+                ),
+                ListTile(
+                    minVerticalPadding: 10,
+                    horizontalTitleGap: 20,
+                    leading: Icon(
+                      _subscribedNotification
+                          ? Icons.notifications_active_outlined
+                          : Icons.notifications_none_outlined,
+                      color: _subscribedNotification
+                          ? isDark
+                              ? Colors.greenAccent
+                              : Colors.green
+                          : Colors.redAccent,
+                    ),
+                    title: _subscribedNotification
+                        ? Text("SUBSCRIBED TO NOTIFICATION",
+                            style: Theme.of(context).textTheme.button)
+                        : Text("SUBSCRIBE TO NOTIFICATION",
+                            style: Theme.of(context).textTheme.button),
+                    subtitle: Text(
+                      "SUBSCRIBE TO NOTIFICATIONS TO GET LATEST UPDATES",
+                      style: TextStyle(fontSize: 10),
+                    ),
+                    trailing: TextButton(
+                      style: TextButton.styleFrom(
+                          backgroundColor: Theme.of(context).cardColor,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.zero,
+                              side: BorderSide(
+                                  color: Theme.of(context).accentColor))),
+                      onPressed: () {
+                        setState(() {
+                          _subscribedNotification = !_subscribedNotification;
+                        });
+                        if (_subscribedNotification) {
+                          fcmNotification.unSubscribeToTopic('notification');
+                          FirebaseFirestore.instance
+                              .collection("User")
+                              .doc(user.uid)
+                              .update({
+                            "subscribedToNotifications": _subscribedNotification
+                          });
+                        }
+                        if (!_subscribedNotification) {
+                          fcmNotification.subscribeToTopic('notification');
+                          FirebaseFirestore.instance
+                              .collection("User")
+                              .doc(user.uid)
+                              .update({
+                            "subscribedToNotifications": _subscribedNotification
+                          });
+                        }
+                      },
+                      child: _subscribedNotification
+                          ? Text(
+                              "UNSUBSCRIBE",
+                              style: TextStyle(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  fontSize: 10,
+                                  fontFamily: 'Theme Bold'),
+                            )
+                          : Text(
+                              "SUBSCRIBE",
+                              style: TextStyle(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  fontSize: 10,
+                                  fontFamily: 'Theme Bold'),
+                            ),
+                    )),
+                SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 20),
+                  child: Text("ABOUT"),
                 ),
                 ListTile(
                   minVerticalPadding: 10,

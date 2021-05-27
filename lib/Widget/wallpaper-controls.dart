@@ -8,10 +8,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission/permission.dart';
 import 'package:wallpaper_manager/wallpaper_manager.dart';
+// import 'package:toast/toast.dart';
 
 const String testDevices = "10541B246DA05AC314ED0A170DA2B594";
 
@@ -719,6 +721,8 @@ class _WallpaperControlsState extends State<WallpaperControls> {
                                           photoID: widget.photoID,
                                           url: widget.originalUrl,
                                           photographer: widget.photographer,
+                                          foregroundColor:
+                                              widget.foregroundColor,
                                         )));
                           },
                         ),
@@ -777,35 +781,16 @@ class _WallpaperControlsState extends State<WallpaperControls> {
               ".jpg");
           file.delete();
           setState(() {});
-          showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                    shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                            width: 1,
-                            color:
-                                Theme.of(context).accentColor.withOpacity(0.5)),
-                        borderRadius: BorderRadius.circular(0)),
-                    elevation: 0,
-                    backgroundColor: Theme.of(context).colorScheme.secondary,
-                    title: Text("FELEXO",
-                        style: Theme.of(context).textTheme.button),
-                    content: Text("YOUR WALLPAPER IS SET",
-                        style: Theme.of(context).textTheme.button),
-                    actions: [
-                      TextButton(
-                        child: Text("OK",
-                            style: Theme.of(context).textTheme.button),
-                        onPressed: () {
-                          setState(() {
-                            progressString = "0%";
-                            progressValue = 0;
-                          });
-                          Navigator.of(context).pop();
-                        },
-                      )
-                    ],
-                  ));
+          Fluttertoast.showToast(
+              msg: "Your wallpaper is set",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              textColor: Theme.of(context).colorScheme.secondary,
+              fontSize: 16.0);
+          // Toast.show("YOUR WALLPAPER IS SET", context,
+          //     duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
         });
         print(result);
       } catch (e) {

@@ -39,9 +39,8 @@ class _SplashScreenState extends State<SplashScreen>
     super.initState();
     fcmNotification = PushNotificationService();
     fcmNotification.initialize();
-    handleAsync();
-    fcmNotification.subscribeToTopic('curated');
     getIcon();
+    handleAsync();
     setState(() {});
     askPermission();
     Timer(Duration(seconds: 3), () async {
@@ -60,6 +59,7 @@ class _SplashScreenState extends State<SplashScreen>
   handleAsync() async {
     String _token = await fcmNotification.getToken();
     print("FCM TOKEN: " + _token);
+    fcmNotification.subscribeToTopic('curated');
   }
 
   getIcon() async {

@@ -7,17 +7,20 @@ import 'package:felexo/Color/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
+import 'package:toast/toast.dart';
 import 'package:wallpaper_manager/wallpaper_manager.dart';
 
 class BlurWallpaperView extends StatefulWidget {
   final String url, photoID, photographer, avgColor;
   final int location;
+  final foregroundColor;
   BlurWallpaperView(
       {@required this.photoID,
       @required this.location,
       @required this.photographer,
       @required this.url,
-      @required this.avgColor});
+      @required this.avgColor,
+      @required this.foregroundColor});
 
   @override
   _BlurWallpaperViewState createState() => _BlurWallpaperViewState();
@@ -30,6 +33,13 @@ class _BlurWallpaperViewState extends State<BlurWallpaperView> {
   String progressString;
   double progressValue;
   ScreenshotController _screenshotController = new ScreenshotController();
+
+  @override
+  void didChangeDependencies() {
+    // Navigator.pop(context);
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,14 +61,14 @@ class _BlurWallpaperViewState extends State<BlurWallpaperView> {
                 border: Border.all(
                     width: 1,
                     color: Theme.of(context).accentColor.withOpacity(0.5)),
-                color: Theme.of(context).scaffoldBackgroundColor,
+                color: widget.foregroundColor.withOpacity(0.5),
                 shape: BoxShape.circle,
               ),
               child: Center(
                 child: Icon(
                   Icons.arrow_back_ios_new_outlined,
                   size: 20,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: widget.foregroundColor,
                 ),
               ),
             ),
@@ -119,19 +129,20 @@ class _BlurWallpaperViewState extends State<BlurWallpaperView> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text("SELECT BLUR VALUE",
-                        style: Theme.of(context).textTheme.button),
+                        style: TextStyle(
+                            color: widget.foregroundColor,
+                            fontFamily: 'Theme Bold',
+                            fontSize: 14)),
                     SfSlider(
                       min: 0.0,
-                      max: sliderMaxValue,
+                      max: 20.0,
                       value: sliderValue,
-                      showLabels: true,
-                      activeColor: Theme.of(context).colorScheme.primary,
-                      inactiveColor: Theme.of(context)
-                          .colorScheme
-                          .primary
-                          .withOpacity(0.5),
-                      enableTooltip: false,
-                      minorTicksPerInterval: 1,
+                      // showLabels: true,
+                      activeColor: widget.foregroundColor,
+                      inactiveColor: widget.foregroundColor.withOpacity(0.5),
+                      enableTooltip: true,
+                      interval: 5,
+                      showDivisors: true,
                       onChanged: (dynamic value) {
                         setState(() {
                           sliderValue = value;
@@ -157,19 +168,18 @@ class _BlurWallpaperViewState extends State<BlurWallpaperView> {
                         style: ElevatedButton.styleFrom(
                           elevation: 0,
                           primary: Colors.transparent,
-                          onPrimary: Theme.of(context).colorScheme.primary,
-                          onSurface: Theme.of(context).colorScheme.primary,
+                          onPrimary: widget.foregroundColor,
+                          onSurface: widget.foregroundColor,
                           shape: RoundedRectangleBorder(
                               side: BorderSide(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  width: 1),
+                                  color: widget.foregroundColor, width: 1),
                               borderRadius: BorderRadius.circular(00)),
                         ),
                         child: Text(
                           "SET WALLPAPER",
                           style: TextStyle(
                               fontFamily: 'Theme Bold',
-                              color: Theme.of(context).colorScheme.primary),
+                              color: widget.foregroundColor),
                         ),
                       ),
                     ),
@@ -207,35 +217,12 @@ class _BlurWallpaperViewState extends State<BlurWallpaperView> {
               ".jpg");
           file.delete();
           setState(() {});
-          showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                    shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                            width: 1,
-                            color:
-                                Theme.of(context).accentColor.withOpacity(0.5)),
-                        borderRadius: BorderRadius.circular(0)),
-                    elevation: 0,
-                    backgroundColor: Theme.of(context).colorScheme.secondary,
-                    title: Text("FELEXO",
-                        style: Theme.of(context).textTheme.button),
-                    content: Text("YOUR WALLPAPER IS SET",
-                        style: Theme.of(context).textTheme.button),
-                    actions: [
-                      TextButton(
-                        child: Text("OK",
-                            style: Theme.of(context).textTheme.button),
-                        onPressed: () {
-                          setState(() {
-                            progressString = "0%";
-                            progressValue = 0;
-                          });
-                          Navigator.of(context).pop();
-                        },
-                      )
-                    ],
-                  ));
+          Toast.show("YOUR WALLPAPER IS SET", context,
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              textColor: Theme.of(context).colorScheme.secondary,
+              duration: Toast.LENGTH_LONG,
+              gravity: Toast.BOTTOM);
+          Navigator.pop(context);
         });
         print(result);
       } catch (e) {

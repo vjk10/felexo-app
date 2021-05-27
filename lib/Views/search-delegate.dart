@@ -145,6 +145,7 @@ class WallpaperSearch extends SearchDelegate<String> {
     return SafeArea(
       child: SearchView(
         searchQuery: query,
+        appBarState: false,
       ),
     );
     // ignore: dead_code

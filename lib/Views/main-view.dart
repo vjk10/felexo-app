@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:felexo/Data/data.dart';
+import 'package:felexo/Services/push-notifications.dart';
 import 'package:felexo/Views/collections-view.dart';
 import 'package:felexo/Views/search-delegate.dart';
 import 'package:felexo/Widget/wallpaper-controls.dart';
@@ -20,7 +21,9 @@ class _MainViewState extends State<MainView>
   final suggestions = FirebaseFirestore.instance;
   final history = FirebaseFirestore.instance;
   bool storeHistory = true;
+  bool subscription = true;
   bool isDark = true;
+  PushNotificationService fcmNotification;
 
   final myTabs = [
     const Tab(text: "CURATED"),
@@ -34,6 +37,8 @@ class _MainViewState extends State<MainView>
     initUser();
     findIfStoreHistory();
     fetchSuggestions();
+    fcmNotification = PushNotificationService();
+    fcmNotification.initialize();
     fetchHistory();
     _tabController = new TabController(length: 4, vsync: this);
     super.initState();
@@ -44,8 +49,24 @@ class _MainViewState extends State<MainView>
     assert(user.email != null);
     assert(user.uid != null);
     assert(user.photoURL != null);
-    setState(() {});
+    handleAsync();
+
     // print("User: " + user.uid.toString());
+  }
+
+  handleAsync() async {
+    FirebaseFirestore.instance
+        .collection("User")
+        .doc(user.uid)
+        .snapshots()
+        .forEach((element) {
+      if (element.data()["subscribedToNotifications"] == true) {
+        fcmNotification.subscribeToTopic('notification');
+      }
+      if (element.data()["subscribedToNotifications"] == false) {
+        fcmNotification.unSubscribeToTopic('notification');
+      }
+    });
   }
 
   findIfStoreHistory() {
@@ -87,22 +108,6 @@ class _MainViewState extends State<MainView>
     });
     return searchHistory;
   }
-
-  // @override
-  // void didChangeDependencies() {
-  //   if (MediaQuery.of(context).platformBrightness == Brightness.dark) {
-  //     setState(() {
-  //       isDark = true;
-  //     });
-  //   }
-  //   if (MediaQuery.of(context).platformBrightness == Brightness.light) {
-  //     setState(() {
-  //       isDark = false;
-  //     });
-  //   }
-
-  //   super.didChangeDependencies();
-  // }
 
   @override
   void dispose() {
