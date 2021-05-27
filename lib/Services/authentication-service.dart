@@ -34,14 +34,6 @@ Future<String> signInWithGoogle(BuildContext context) async {
     print("UID: " + user.uid);
     DocumentReference documentReference =
         FirebaseFirestore.instance.collection("User").doc(user.uid.toString());
-    documentReference.snapshots().forEach((element) {
-      if (element.get("subscribedToNotifications") == null) {
-        FirebaseFirestore.instance
-            .collection("User")
-            .doc(user.uid)
-            .update({"subscribedToNotifications": true});
-      }
-    });
     documentReference.get().then((value) {
       if (!value.exists) {
         FirebaseFirestore.instance.collection("User").doc(user.uid).set({
