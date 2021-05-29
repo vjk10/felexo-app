@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:felexo/Services/authentication-service.dart';
 import 'package:felexo/Services/push-notifications.dart';
 import 'package:felexo/Views/main-view.dart';
@@ -45,10 +46,32 @@ class _SplashScreenState extends State<SplashScreen>
     askPermission();
     Timer(Duration(seconds: 3), () async {
       if (_auth.currentUser != null) {
-        Navigator.pushAndRemoveUntil(
-            context,
-            CupertinoPageRoute(builder: (context) => MainView()),
-            (route) => false);
+        FirebaseFirestore.instance
+            .collection("User")
+            .doc(_auth.currentUser.uid)
+            .snapshots()
+            .forEach((element) {
+          setState(() {
+            if (element.data()["subscribedToNotifications"].toString() ==
+                "null") {
+              FirebaseFirestore.instance
+                  .collection("User")
+                  .doc(_auth.currentUser.uid)
+                  .update({"subscribedToNotifications": true});
+            }
+            if (element.data()["subscribedToNotifications"].toString() ==
+                null) {
+              FirebaseFirestore.instance
+                  .collection("User")
+                  .doc(_auth.currentUser.uid)
+                  .update({"subscribedToNotifications": true});
+            }
+          });
+          Navigator.pushAndRemoveUntil(
+              context,
+              CupertinoPageRoute(builder: (context) => MainView()),
+              (route) => false);
+        });
       } else {
         visibility = true;
         setState(() {});

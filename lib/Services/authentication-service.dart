@@ -46,6 +46,24 @@ Future<String> signInWithGoogle(BuildContext context) async {
         });
       }
     });
+    FirebaseFirestore.instance
+        .collection("User")
+        .doc(_auth.currentUser.uid)
+        .snapshots()
+        .forEach((element) {
+      if (element.data()["subscribedToNotifications"].toString() == "null") {
+        FirebaseFirestore.instance
+            .collection("User")
+            .doc(_auth.currentUser.uid)
+            .update({"subscribedToNotifications": true});
+      }
+      if (element.data()["subscribedToNotifications"].toString() == null) {
+        FirebaseFirestore.instance
+            .collection("User")
+            .doc(_auth.currentUser.uid)
+            .update({"subscribedToNotifications": true});
+      }
+    });
 
     Navigator.pushAndRemoveUntil(context,
         CupertinoPageRoute(builder: (context) => MainView()), (route) => false);

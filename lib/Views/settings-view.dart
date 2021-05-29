@@ -170,8 +170,16 @@ class _SettingsViewState extends State<SettingsView> {
         .doc(user.uid)
         .snapshots()
         .forEach((element) {
-      _subscribedNotification = element.data()["subscribedToNotifications"];
+      setState(() {
+        _subscribedNotification = element.data()["subscribedToNotifications"];
+      });
+      print("SUBSCRIPTION STATUS: " + _subscribedNotification.toString());
     });
+    if (_subscribedNotification == null) {
+      setState(() {
+        _subscribedNotification = true;
+      });
+    }
   }
 
   void historyPref(bool value) {
@@ -728,9 +736,9 @@ class _SettingsViewState extends State<SettingsView> {
                 SizedBox(
                   height: 20,
                 ),
-                Padding(
+                Padding(  
                   padding: const EdgeInsets.only(left: 20),
-                  child: Text("FEEDBACK AND NOTIFICATIONS"),
+                  child: Text("FEEDBACK & NOTIFICATIONS"),
                 ),
                 ListTile(
                   minVerticalPadding: 10,

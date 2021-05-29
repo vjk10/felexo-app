@@ -781,6 +781,7 @@ class _WallpaperControlsState extends State<WallpaperControls> {
               ".jpg");
           file.delete();
           setState(() {});
+          HapticFeedback.heavyImpact();
           Fluttertoast.showToast(
               msg: "Your wallpaper is set",
               toastLength: Toast.LENGTH_SHORT,
@@ -789,8 +790,6 @@ class _WallpaperControlsState extends State<WallpaperControls> {
               backgroundColor: Theme.of(context).colorScheme.primary,
               textColor: Theme.of(context).colorScheme.secondary,
               fontSize: 16.0);
-          // Toast.show("YOUR WALLPAPER IS SET", context,
-          //     duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
         });
         print(result);
       } catch (e) {

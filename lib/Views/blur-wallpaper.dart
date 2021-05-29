@@ -5,9 +5,10 @@ import 'package:blurrycontainer/blurrycontainer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:felexo/Color/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
-import 'package:toast/toast.dart';
 import 'package:wallpaper_manager/wallpaper_manager.dart';
 
 class BlurWallpaperView extends StatefulWidget {
@@ -217,11 +218,15 @@ class _BlurWallpaperViewState extends State<BlurWallpaperView> {
               ".jpg");
           file.delete();
           setState(() {});
-          Toast.show("YOUR WALLPAPER IS SET", context,
+          HapticFeedback.heavyImpact();
+          Fluttertoast.showToast(
+              msg: "Your wallpaper is set",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIosWeb: 1,
               backgroundColor: Theme.of(context).colorScheme.primary,
               textColor: Theme.of(context).colorScheme.secondary,
-              duration: Toast.LENGTH_LONG,
-              gravity: Toast.BOTTOM);
+              fontSize: 16.0);
           Navigator.pop(context);
         });
         print(result);

@@ -9,7 +9,7 @@ Fetching all amazing wallpapers directly from the Pexels API to make your device
 
 :rotating_light: All functions work properly on devices excluding MIUI, Color OS and FunTouch OS. :rotating_light:
 
-:bookmark: Release Notes 0.02.20210527 (build 12) (27 May 2021)
+:bookmark: Release Notes 0.02.20210529 (build 14) (29 May 2021)
     - Updated wallpaper viewer UI
     - Added new type of wallpaper (Blur)
     - Favorites can now be removed
